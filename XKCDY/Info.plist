@@ -56,5 +56,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>XKCDY needs access to save photos.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>XKCDY needs access to save photos.</string>
 </dict>
 </plist>
