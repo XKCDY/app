@@ -41,10 +41,8 @@ platform :ios do
 
   	cocoapods()
 
-  	increment_build_number(
-  	    build_number: latest_testflight_build_number + 1,
-  	    xcodeproj: "XKCDY.xcodeproj"
-  	  )
+  	increment_build_number
+    commit_version_bump
 
     build_app(workspace: "XKCDY.xcworkspace", scheme: "XKCDY")
 
