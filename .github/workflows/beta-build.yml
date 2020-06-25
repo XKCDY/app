@@ -1,0 +1,26 @@
+name: Build and upload beta
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build_and_upload:
+    name: Build & upload
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: fregante/setup-git-token@v1
+        name: Set up Git token for Match
+        with:
+          token: ${{ secrets.GIT_APPLICATION_SPECIFIC_TOKEN }}
+
+      - uses: maierj/fastlane-action@master
+        name: Fastlane
+        with:
+          lane: 'beta'
+        env:
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}

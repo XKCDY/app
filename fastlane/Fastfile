@@ -21,6 +21,13 @@ platform :ios do
   	sync_code_signing
 
 	cocoapods()
+
+	match(type: "appstore")
+
+	increment_build_number(
+	    build_number: latest_testflight_build_number + 1,
+	    xcodeproj: "XKCDY.xcodeproj"
+	  )
   	
     build_app(workspace: "XKCDY.xcworkspace", scheme: "XKCDY")
 
