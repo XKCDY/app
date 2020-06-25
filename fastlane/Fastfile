@@ -18,9 +18,25 @@ default_platform(:ios)
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
+    keychain_name = ENV["MATCH_KEYCHAIN_NAME"]
+    keychain_password = ENV["MATCH_KEYCHAIN_PASSWORD"]
+
+    # Create a temporary keychain to
+    # store the certificates.
+    create_keychain(
+      name: keychain_name,
+      password: keychain_password,
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      add_to_search_list: true
+    )
+
     match(
       type: "appstore",
-      readonly: true
+      readonly: true,
+      keychain_name: keychain_name,
+      keychain_password: keychain_password
     )
 
   	cocoapods()
@@ -32,8 +48,12 @@ platform :ios do
 
     build_app(workspace: "XKCDY.xcworkspace", scheme: "XKCDY")
 
-	changelog_from_git_commits
+	  changelog_from_git_commits
 
     upload_to_testflight
+
+    delete_keychain(
+      name: keychain_name
+    )
   end
 end
