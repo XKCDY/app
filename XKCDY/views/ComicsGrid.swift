@@ -42,7 +42,7 @@ struct ComicsGridView: View {
     var hideCurrentComic: Bool
     @EnvironmentObject var store: Store
     @State private var scrollPosition: ASCollectionViewScrollPosition?
-    var comics: Results<ComicObject>
+    var comics: AnyRealmCollection<ComicObject>
     
     func onCellEvent(_ event: CellEvent<ComicObject>) {
         switch event {

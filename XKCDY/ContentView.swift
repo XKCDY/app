@@ -33,15 +33,14 @@ struct ContentView: View {
         showPager = true
     }
     
-    func filteredCollection() -> RealmSwift.Results<ComicObject> {
+    func filteredCollection() -> AnyRealmCollection<ComicObject> {
         if self.selectedPage == "Favorites" {
-            return self.comics.filter("isFavorite == true")
+            return AnyRealmCollection(self.comics.filter("isFavorite == true"))
         } else if self.selectedPage == "Search" && searchText != "" {
-            print("filtering")
-            return self.comics.filter("title CONTAINS[c] %@", searchText)
+            return AnyRealmCollection(self.comics.filter("title CONTAINS[c] %@", searchText))
         }
 
-        return self.comics.filter("isFavorite == false")
+        return AnyRealmCollection(self.comics)
     }
 
     var body: some View {
