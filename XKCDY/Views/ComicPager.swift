@@ -39,7 +39,7 @@ struct ComicPager: View {
     @State private var hidden = false
     @State private var imageFrame: CGRect = CGRect()
     @State private var isLoading = true
-    @ObservedObject var comics = BindableResults(results: try! Realm().objects(ComicObject.self))
+    @ObservedObject var comics = BindableResults(results: try! Realm().objects(Comic.self))
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
     
     init(onHide: @escaping () -> ()) {
@@ -95,8 +95,8 @@ struct ComicPager: View {
         }
     }
     
-    func getCurrentComic() -> ComicObject {
-        return try! Realm().object(ofType: ComicObject.self, forPrimaryKey: self.store.currentComicId)!
+    func getCurrentComic() -> Comic {
+        return try! Realm().object(ofType: Comic.self, forPrimaryKey: self.store.currentComicId)!
     }
     
     func setPage() {
@@ -107,7 +107,7 @@ struct ComicPager: View {
         GeometryReader { geometry in
             ZStack {
                 ZStack {
-                    Pager<ComicObject, Int, AnyView>(page: self.$page, data: Array(self.comics.results), id: \.id, content: { item in
+                    Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics.results), id: \.id, content: { item in
                         AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap)
                             .frame(from: CGRect(origin: .zero, size: geometry.size))
                         )
@@ -199,7 +199,7 @@ struct ComicPager: View {
                                 
                                 Button(action : {
                                     let realm = try! Realm()
-                                    let comics = realm.objects(ComicObject.self)
+                                    let comics = realm.objects(Comic.self)
                                     
                                     if (comics.count > 0) {
                                         let randomComic = comics[Int(arc4random_uniform(UInt32(comics.count) - 1))]
@@ -239,5 +239,11 @@ struct ComicPager: View {
                 self.isLoading = false
             }
         }
+    }
+}
+
+extension Date {
+    func currentTimeMillis() -> Int64 {
+        return Int64(self.timeIntervalSince1970 * 1000)
     }
 }

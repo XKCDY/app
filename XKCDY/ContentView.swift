@@ -22,7 +22,7 @@ struct ContentView: View {
     @State private var pagerOffset: CGPoint = .zero
     @State private var showPager = false
     @State private var isPagerHidden = false
-    @EnvironmentObject var comics: RealmSwift.List<ComicObject>
+    @EnvironmentObject var comics: RealmSwift.List<Comic>
     
     func hidePager() -> Void {
         print("hiding")
@@ -33,7 +33,7 @@ struct ContentView: View {
         showPager = true
     }
     
-    func filteredCollection() -> AnyRealmCollection<ComicObject> {
+    func filteredCollection() -> AnyRealmCollection<Comic> {
         if self.selectedPage == "Favorites" {
             return AnyRealmCollection(self.comics.filter("isFavorite == true"))
         } else if self.selectedPage == "Search" && searchText != "" {
