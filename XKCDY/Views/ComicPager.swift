@@ -39,11 +39,12 @@ struct ComicPager: View {
     @State private var hidden = false
     @State private var imageFrame: CGRect = CGRect()
     @State private var isLoading = true
-    @ObservedObject var comics = BindableResults(results: try! Realm().objects(Comic.self))
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
+    var comics: Results<Comic>
     
-    init(onHide: @escaping () -> ()) {
+    init(onHide: @escaping () -> (), comics: Results<Comic>) {
         self.onHide = onHide
+        self.comics = comics
     }
     
     func openShareSheet() {
@@ -100,14 +101,15 @@ struct ComicPager: View {
     }
     
     func setPage() {
-        self.page = self.comics.results.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
+        self.page = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
     }
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 ZStack {
-                    Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics.results), id: \.id, content: { item in
+                    // TODO: poor performance with Array()?
+                    Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics), id: \.id, content: { item in
                         AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap)
                             .frame(from: CGRect(origin: .zero, size: geometry.size))
                         )
@@ -125,7 +127,8 @@ struct ComicPager: View {
                             
                             self.startedViewingAt = Date().currentTimeMillis()
                             
-                            self.store.currentComicId = Array(self.comics.results)[newIndex].id
+                            // TODO: poor performance with Array()?
+                            self.store.currentComicId = Array(self.comics)[newIndex].id
                         })
                         .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
                     

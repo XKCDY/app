@@ -11,10 +11,6 @@ import RealmSwift
 import ASCollectionView
 import struct Kingfisher.KFImage
 
-struct TestPage: Equatable {
-    var id: Int
-}
-
 struct ContentView: View {
     @State private var searchText = ""
     @State private var selectedPage = "Home"
@@ -33,20 +29,24 @@ struct ContentView: View {
         showPager = true
     }
     
-    func filteredCollection() -> AnyRealmCollection<Comic> {
+    func wrapAndSort(list: Results<Comic>) -> Results<Comic> {
+        return AnyRealmCollection(list).freeze().sorted(byKeyPath: "id", ascending: false)
+    }
+    
+    func filteredCollection() -> Results<Comic> {        
         if self.selectedPage == "Favorites" {
-            return AnyRealmCollection(self.comics.filter("isFavorite == true"))
+            return wrapAndSort(list: self.comics.filter("isFavorite == true"))
         } else if self.selectedPage == "Search" && searchText != "" {
-            return AnyRealmCollection(self.comics.filter("title CONTAINS[c] %@", searchText))
+            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@", searchText))
         }
-
-        return AnyRealmCollection(self.comics)
+        
+        return AnyRealmCollection(self.comics).freeze().sorted(byKeyPath: "id", ascending: false)
     }
 
     var body: some View {
         GeometryReader { geom in
             ZStack {
-                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.showPager, comics: self.filteredCollection().freeze()).edgesIgnoringSafeArea(.bottom)
+                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.showPager, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
 
                 VStack {
                     if (self.selectedPage != "Search") {
@@ -68,7 +68,7 @@ struct ContentView: View {
                     .opacity(self.store.shouldBlurHeader ? 1 : 0)
 
                 if (self.showPager) {
-                    ComicPager(onHide: self.hidePager)
+                    ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
                 }
             }
         }

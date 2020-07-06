@@ -43,7 +43,7 @@ struct ComicsGridView: View {
     @EnvironmentObject var store: Store
     @State private var scrollPosition: ASCollectionViewScrollPosition?
     @State private var showErrorAlert = false
-    var comics: AnyRealmCollection<Comic>
+    var comics: Results<Comic>
     
     func onCellEvent(_ event: CellEvent<Comic>) {
         switch event {
@@ -76,8 +76,6 @@ struct ComicsGridView: View {
                                 self.store.currentComicId = comic.id
                                 self.onComicOpen()
                         }
-                        
-                        print(self.comics.count)
                         
                         let shouldHide = self.hideCurrentComic && self.store.currentComicId == comic.id
                         
