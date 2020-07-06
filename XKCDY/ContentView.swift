@@ -42,38 +42,40 @@ struct ContentView: View {
         
         return AnyRealmCollection(self.comics).freeze().sorted(byKeyPath: "id", ascending: false)
     }
-
+    
     var body: some View {
         GeometryReader { geom in
             ZStack {
                 ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.showPager, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
-
+                
                 VStack {
                     if (self.selectedPage != "Search") {
                         Spacer()
                     }
-
+                    
                     FloatingNavBarView(pages: ["Home", "Favorites", "Search"], selected: self.$selectedPage, searchText: self.$searchText)
                         .animation(.spring())
-
+                    
                     if (self.selectedPage == "Search") {
                         Spacer()
                     }
                 }
-
+                
                 Rectangle().fill(Color.clear)
-                .background(Blur(style: .regular))
-                .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
-                .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
+                    .background(Blur(style: .regular))
+                    .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
+                    .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
                     .opacity(self.store.shouldBlurHeader ? 1 : 0)
-
+                
                 if (self.showPager) {
                     ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
                 }
             }
         }
         .onAppear {
-            self.store.partialRefetchComics()
+            DispatchQueue.global(qos: .background).async {
+                self.store.partialRefetchComics()
+            }
         }
     }
 }
