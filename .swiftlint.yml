@@ -1,0 +1,8 @@
+disabled_rules:
+ - multiple_closures_with_trailing_closure
+ - line_length
+ - identifier_name
+ - force_try
+excluded:
+ - Carthage
+ - Pods

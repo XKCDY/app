@@ -13,11 +13,11 @@ import class Kingfisher.ImagePrefetcher
 import struct Kingfisher.KFImage
 
 class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayoutDelegate {
-    private var cachedHeights: [IndexPath:CGFloat] = [:]
+    private var cachedHeights: [IndexPath: CGFloat] = [:]
     func heightForHeader(sectionIndex: Int) -> CGFloat? {
         0
     }
-    
+
     /// We explicitely provide a height here. If providing no delegate, this layout will use auto-sizing, however this causes problems if rotating the device (due to limitaitons in UICollecitonView and autosizing cells that are not visible)
     func heightForCell(at indexPath: IndexPath, context: ASWaterfallLayout.CellLayoutContext) -> CGFloat {
         //        return 100
@@ -27,7 +27,7 @@ class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayout
         //        }
         //
         //        print("not cached")
-        
+
         guard let comic: Comic = getDataForItem(at: indexPath) else { return 100 }
         let height = context.width / CGFloat(comic.imgs!.x1!.ratio)
         //        cachedHeights[indexPath] = height
@@ -38,28 +38,28 @@ class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayout
 struct ComicsGridView: View {
     @State var columnMinSize: CGFloat = 150
     @State var inViewUrls: [String] = []
-    var onComicOpen: () -> ()
+    var onComicOpen: () -> Void
     var hideCurrentComic: Bool
     @EnvironmentObject var store: Store
     @State private var scrollPosition: ASCollectionViewScrollPosition?
     @State private var showErrorAlert = false
     var comics: Results<Comic>
-    
+
     func onCellEvent(_ event: CellEvent<Comic>) {
         switch event {
         case let .prefetchForData(data):
             var urls: [URL] = []
-            
+
             for comic in data {
                 urls.append(comic.getBestImageURL()!)
             }
-            
+
             ImagePrefetcher(urls: urls).start()
         default:
             return
         }
     }
-    
+
     var body: some View {
         AnyView(ASCollectionView(
             section: ASSection(
@@ -70,32 +70,32 @@ struct ComicsGridView: View {
                     GeometryReader { geom -> AnyView in
                         // TODO: update to use .matchedGeometryEffect
                         //                        self.store.updatePosition(for: comic.id, at: CGRect(x: geom.frame(in: .global).midX, y: geom.frame(in: .global).midY, width: geom.size.width, height: geom.size.height))
-                        
+
                         let image = KFImage(comic.getBestImageURL()!).cancelOnDisappear(true).resizable().scaledToFill().frame(width: geom.size.width, height: geom.size.height).cornerRadius(2)
                             .onTapGesture {
                                 self.store.currentComicId = comic.id
                                 self.onComicOpen()
                         }
-                        
+
                         let shouldHide = self.hideCurrentComic && self.store.currentComicId == comic.id
-                        
+
                         return AnyView(ZStack {
                             image
-                            
+
                             // TODO: actually use alignment guides for this
                             VStack {
                                 Spacer()
-                                
+
                                 HStack {
                                     Spacer()
-                                    
+
                                     HStack {
                                         if comic.isFavorite {
                                             Image(systemName: "heart.fill")
                                                 .font(.caption)
                                                 .foregroundColor(.red)
                                         }
-                                        
+
                                         Text(String(comic.id))
                                             .font(.caption)
                                             .fontWeight(.bold)
@@ -112,9 +112,9 @@ struct ComicsGridView: View {
         )
             .onPullToRefresh { endRefreshing in
                 DispatchQueue.global(qos: .background).async {
-                    self.store.refetchComics() { result in
+                    self.store.refetchComics { result in
                         endRefreshing()
-                        
+
                         switch result {
                         case .success:
                             self.showErrorAlert = false
@@ -128,7 +128,7 @@ struct ComicsGridView: View {
         .layout(self.layout)
         .customDelegate(WaterfallScreenLayoutDelegate.init)
         .contentInsets(.init(top: 0, left: 10, bottom: 0, right: 10))
-        .onReceive(self.store.$currentComicId, perform: { comicId in
+        .onReceive(self.store.$currentComicId, perform: { _ in
             DispatchQueue.global().async {
                 //                    let realm = try! Realm()
                 //

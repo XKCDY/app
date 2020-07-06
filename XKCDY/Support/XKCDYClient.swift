@@ -28,6 +28,9 @@ enum APIError: Error {
     case decoding
 }
 
+enum DateError: String, Error {
+    case invalidDate
+}
 
 let BASE_URL = "https://api.xkcdy.com"
 
@@ -35,9 +38,9 @@ final class API {
     static func getComics(completion: @escaping (Result<[ComicResponse], APIError>) -> Void) {
         self.getComics(since: 0, completion: completion)
     }
-    
+
     static func getComics(since: Int, completion: @escaping (Result<[ComicResponse], APIError>) -> Void) {
-        AF.request("\(BASE_URL)/comics", parameters: ["since": String(since)]).responseDecodable(of: [ComicResponse].self, decoder: self.getDecoder()) { (response: AFDataResponse<[ComicResponse]>) -> () in
+        AF.request("\(BASE_URL)/comics", parameters: ["since": String(since)]).responseDecodable(of: [ComicResponse].self, decoder: self.getDecoder()) { (response: AFDataResponse<[ComicResponse]>) -> Void in
             do {
                 completion(.success(try response.result.get()))
             } catch {
@@ -45,23 +48,19 @@ final class API {
             }
         }
     }
-    
+
     private static func getDecoder() -> JSONDecoder {
-        enum DateError: String, Error {
-            case invalidDate
-        }
-        
         let decoder = JSONDecoder()
-        
+
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .iso8601)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        
+
         decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
             let container = try decoder.singleValueContainer()
             let dateStr = try container.decode(String.self)
-            
+
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
             if let date = formatter.date(from: dateStr) {
                 return date
@@ -72,7 +71,7 @@ final class API {
             }
             throw DateError.invalidDate
         })
-        
+
         return decoder
     }
 }

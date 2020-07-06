@@ -259,6 +259,7 @@
 			buildConfigurationList = 6A60FBA0244535A90070A76B /* Build configuration list for PBXNativeTarget "XKCDY" */;
 			buildPhases = (
 				D39444CEA49A68473B0F3967 /* [CP] Check Pods Manifest.lock */,
+				6ADE583324B3E0510058EF43 /* SwiftLint */,
 				6A60FB72244535A70070A76B /* Sources */,
 				6A60FB73244535A70070A76B /* Frameworks */,
 				6A60FB74244535A70070A76B /* Resources */,
@@ -399,6 +400,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6ADE583324B3E0510058EF43 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 		72E4EBFAB484C66EDD90C2EA /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
