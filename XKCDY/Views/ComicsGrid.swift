@@ -111,14 +111,16 @@ struct ComicsGridView: View {
             }
         )
             .onPullToRefresh { endRefreshing in
-                self.store.refetchComics() { result in
-                    endRefreshing()
-                    
-                    switch result {
-                    case .success:
-                        self.showErrorAlert = false
-                    case .failure:
-                        self.showErrorAlert = true
+                DispatchQueue.global(qos: .background).async {
+                    self.store.refetchComics() { result in
+                        endRefreshing()
+                        
+                        switch result {
+                        case .success:
+                            self.showErrorAlert = false
+                        case .failure:
+                            self.showErrorAlert = true
+                        }
                     }
                 }
         }
