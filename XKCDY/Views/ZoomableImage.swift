@@ -25,11 +25,11 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
 
     convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void) {
         self.init(frame: f)
-        
-        self.onSingleTap = onSingleTap;
+
+        self.onSingleTap = onSingleTap
 
         imageView = image
-        
+
         imageView.frame = f
         imageView.contentMode = .scaleAspectFit
         addSubview(imageView)
@@ -37,12 +37,12 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
         setupScrollView()
         setupGestureRecognizer()
     }
-    
+
     func updateFrame(_ f: CGRect) {
         frame = f
         imageView.frame = f
     }
-    
+
     private func setupScrollView() {
         delegate = self
         minimumZoomScale = 1.0
@@ -50,23 +50,23 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
     }
-    
+
     private func setupGestureRecognizer() {
         doubleTapRecognizer = UIShortTapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
         doubleTapRecognizer.numberOfTapsRequired = 2
         addGestureRecognizer(doubleTapRecognizer)
-        
+
         singleTapRecognizer = UIShortTapGestureRecognizer(target: self, action: #selector(handleSingleTap))
         singleTapRecognizer.numberOfTapsRequired = 1
         addGestureRecognizer(singleTapRecognizer)
-        
+
         singleTapRecognizer.require(toFail: doubleTapRecognizer)
     }
-    
+
     @objc private func handleSingleTap() {
         onSingleTap()
     }
-    
+
     @objc private func handleDoubleTap() {
         if zoomScale == 1 {
             zoom(to: zoomRectForScale(maximumZoomScale, center: doubleTapRecognizer.location(in: doubleTapRecognizer.view)), animated: true)
@@ -74,7 +74,7 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
             setZoomScale(1, animated: true)
         }
     }
-    
+
     private func zoomRectForScale(_ scale: CGFloat, center: CGPoint) -> CGRect {
         var zoomRect = CGRect.zero
         zoomRect.size.height = imageView.frame.size.height / scale
@@ -84,7 +84,7 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
         zoomRect.origin.y = newCenter.y - (zoomRect.size.height / 2.0)
         return zoomRect
     }
-    
+
     internal func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
@@ -98,10 +98,10 @@ struct ZoomableImageView: UIViewRepresentable {
     func makeUIView(context: Context) -> ZoomableImage {
         let image = UIImageView()
         image.kf.setImage(with: imageURL)
-        
+
         return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap)
     }
-    
+
     func updateUIView(_ uiView: ZoomableImage, context: Context) {
         uiView.updateFrame(frame)
     }
@@ -111,7 +111,7 @@ extension ZoomableImageView {
     func frame(from f: CGRect) -> Self {
         var copy = self
         copy.frame = f
-        
+
         return copy
     }
 }

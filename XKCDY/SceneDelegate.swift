@@ -58,7 +58,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            
+
             let realm = try! Realm()
             var comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
             if comics == nil {
@@ -70,8 +70,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController = controller
             self.window = window
             window.makeKeyAndVisible()
-            
-            let tapGesture = AnyGestureRecognizer(target: window, action:#selector(UIView.endEditing))
+
+            let tapGesture = AnyGestureRecognizer(target: window, action: #selector(UIView.endEditing))
             tapGesture.requiresExclusiveTouchType = false
             tapGesture.cancelsTouchesInView = false
             tapGesture.delegate = self //I don't use window as delegate to minimize possible side effects
@@ -105,6 +105,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        // swiftlint:disable:next force_cast
         (UIApplication.shared.delegate as! AppDelegate).scheduleBackgroundRefresh()
     }
 

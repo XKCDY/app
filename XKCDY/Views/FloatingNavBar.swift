@@ -53,7 +53,7 @@ struct CustomTextField: UIViewRepresentable {
 
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<CustomTextField>) {
         uiView.text = text
-        if isFirstResponder && !context.coordinator.didBecomeFirstResponder  {
+        if isFirstResponder && !context.coordinator.didBecomeFirstResponder {
             uiView.becomeFirstResponder()
             context.coordinator.didBecomeFirstResponder = true
         }
@@ -79,13 +79,13 @@ struct FloatingNavBarView: View {
             .frame(height: selected == "Search" ? 50 : 30)
             .cornerRadius(8)
                 .overlay(ZStack {
-            
-                if (selected == "Search") {
+
+                if selected == "Search" {
                     HStack {
                         Image(systemName: "magnifyingglass")
-                        
+
                         CustomTextField(placeholder: "Start typing...", text: $searchText, isFirstResponder: true)
-                        
+
                         Button(action: {
                             UIApplication.shared.endEditing()
                             self.selected = "Home"
@@ -112,4 +112,3 @@ struct FloatingNavBarView: View {
         .shadow(radius: 2)
     }
 }
-
