@@ -19,6 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.maxisom.XKCDY.comicFetcher", using: nil) { task in
             self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
         }
+        
+        // Disable at-rest encryption so background refresh works
+        let realm = try! Realm()
+        
+        // Get our Realm file's parent directory
+        let folderPath = realm.configuration.fileURL!.deletingLastPathComponent().path
+        
+        // Disable file protection for this directory
+        try! FileManager.default.setAttributes([FileAttributeKey(rawValue: FileAttributeKey.protectionKey.rawValue): FileProtectionType.none],  ofItemAtPath: folderPath)
+        
         return true
     }
     
