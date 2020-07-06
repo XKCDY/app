@@ -73,7 +73,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            self.store.refetchComics()
+            self.store.partialRefetchComics()
         }
     }
 }

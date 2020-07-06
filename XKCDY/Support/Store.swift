@@ -55,30 +55,36 @@ final class Store: ObservableObject {
         positions[id] = at
     }
     
-    func refetchComics(callback: ((Result<Int, StoreError>) -> ())? = nil) {
+    func updateDatabaseFrom(results: [ComicResponse], callback: () -> ()) {
         let realm = try! Realm()
         let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
         
+        try! realm.write {
+            for comic in results {
+                let updatedComic = comic.toObject()
+                
+                if let currentlySavedComic = realm.object(ofType: Comic.self, forPrimaryKey: updatedComic.id) {
+                    updatedComic.isFavorite = currentlySavedComic.isFavorite
+                    updatedComic.isRead = currentlySavedComic.isRead
+                }
+                
+                realm.add(updatedComic, update: .modified)
+                
+                // TODO: make more efficient
+                if storedComics!.comics.filter("id == %@", updatedComic.id).count == 0 {
+                    storedComics!.comics.append(updatedComic)
+                }
+            }
+            
+            callback()
+        }
+    }
+    
+    func refetchComics(callback: ((Result<Int, StoreError>) -> ())? = nil) {
         API.getComics { result in
             switch result {
             case .success(let comics): do {
-                try! realm.write {
-                    for comic in comics {
-                        let updatedComic = comic.toObject()
-                        
-                        if let currentlySavedComic = realm.object(ofType: Comic.self, forPrimaryKey: updatedComic.id) {
-                            updatedComic.isFavorite = currentlySavedComic.isFavorite
-                            updatedComic.isRead = currentlySavedComic.isRead
-                        }
-                        
-                        realm.add(updatedComic, update: .modified)
-                        
-                        // TODO: make more efficient
-                        if storedComics!.comics.filter("id == %@", updatedComic.id).count == 0 {
-                            storedComics!.comics.append(updatedComic)
-                        }
-                    }
-                    
+                self.updateDatabaseFrom(results: comics) {
                     callback?(.success(comics.count))
                 }
                 }
@@ -89,8 +95,27 @@ final class Store: ObservableObject {
         }
     }
     
-    func partialRefetchComics() {
+    // Falls through to a full refetch if no comics are stored locally
+    func partialRefetchComics(callback: ((Result<Int, StoreError>) -> ())? = nil) {
+        let realm = try! Realm()
         
+        guard let latestComic = realm.objects(Comic.self).sorted(byKeyPath: "id", ascending: false).first else {
+            return self.refetchComics(callback: callback)
+        }
+        
+        API.getComics(since: latestComic.id) { result in
+            switch result {
+            case .success(let comics): do {
+                self.updateDatabaseFrom(results: comics) {
+                    callback?(.success(comics.count))
+                }
+                }
+            case .failure: do {
+                callback?(.failure(.api))
+                }
+            }
+            
+        }
     }
 }
 
