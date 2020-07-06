@@ -80,12 +80,12 @@ final class Store: ObservableObject {
         }
     }
     
-    func refetchComics(callback: ((Result<Int, StoreError>) -> ())? = nil) {
+    func refetchComics(callback: ((Result<[Int], StoreError>) -> ())? = nil) {
         API.getComics { result in
             switch result {
             case .success(let comics): do {
                 self.updateDatabaseFrom(results: comics) {
-                    callback?(.success(comics.count))
+                    callback?(.success(comics.map { $0.id }))
                 }
                 }
             case .failure: do {
@@ -96,7 +96,7 @@ final class Store: ObservableObject {
     }
     
     // Falls through to a full refetch if no comics are stored locally
-    func partialRefetchComics(callback: ((Result<Int, StoreError>) -> ())? = nil) {
+    func partialRefetchComics(callback: ((Result<[Int], StoreError>) -> ())? = nil) {
         let realm = try! Realm()
         
         guard let latestComic = realm.objects(Comic.self).sorted(byKeyPath: "id", ascending: false).first else {
@@ -107,7 +107,7 @@ final class Store: ObservableObject {
             switch result {
             case .success(let comics): do {
                 self.updateDatabaseFrom(results: comics) {
-                    callback?(.success(comics.count))
+                    callback?(.success(comics.map { $0.id }))
                 }
                 }
             case .failure: do {
