@@ -2,7 +2,6 @@ import UIKit
 import SwiftUI
 import Kingfisher
 
-// TODO: replace with SwiftUI view
 class UIShortTapGestureRecognizer: UITapGestureRecognizer {
     let tapMaxDelay: Double = 0.2 //anything below 0.3 may cause doubleTap to be inaccessible by many users
 

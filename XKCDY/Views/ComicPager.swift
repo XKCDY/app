@@ -107,7 +107,6 @@ struct ComicPager: View {
         GeometryReader { geometry in
             ZStack {
                 ZStack {
-                    // TODO: poor performance with Array()?
                     Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics), id: \.id, content: { item in
                         AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap)
                             .frame(from: CGRect(origin: .zero, size: geometry.size))
@@ -126,8 +125,7 @@ struct ComicPager: View {
 
                             self.startedViewingAt = Date().currentTimeMillis()
 
-                            // TODO: poor performance with Array()?
-                            self.store.currentComicId = Array(self.comics)[newIndex].id
+                            self.store.currentComicId = self.comics[newIndex].id
                         })
                         .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
 

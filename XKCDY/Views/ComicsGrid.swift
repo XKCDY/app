@@ -68,7 +68,6 @@ struct ComicsGridView: View {
                 dataID: \.self,
                 onCellEvent: onCellEvent) { comic, _ in
                     GeometryReader { geom -> AnyView in
-                        // TODO: update to use .matchedGeometryEffect
                         //                        self.store.updatePosition(for: comic.id, at: CGRect(x: geom.frame(in: .global).midX, y: geom.frame(in: .global).midY, width: geom.size.width, height: geom.size.height))
 
                         let image = KFImage(comic.getBestImageURL()!).cancelOnDisappear(true).resizable().scaledToFill().frame(width: geom.size.width, height: geom.size.height).cornerRadius(2)
@@ -79,37 +78,15 @@ struct ComicsGridView: View {
 
                         let shouldHide = self.hideCurrentComic && self.store.currentComicId == comic.id
 
-                        return AnyView(ZStack {
-                            image
-
-                            // TODO: actually use alignment guides for this
-                            VStack {
-                                Spacer()
-
-                                HStack {
-                                    Spacer()
-
-                                    HStack {
-                                        if comic.isFavorite {
-                                            Image(systemName: "heart.fill")
-                                                .font(.caption)
-                                                .foregroundColor(.red)
-                                        }
-
-                                        Text(String(comic.id))
-                                            .font(.caption)
-                                            .fontWeight(.bold)
-                                            .colorScheme(.dark)
-                                    }
-                                    .padding(EdgeInsets(top: 5, leading: 8, bottom: 5, trailing: 8))
-                                    .background(comic.isRead ? Color(.gray) : Color(.darkGray))
-                                    .cornerRadius(10)
-                                }
-                            }.padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5))
-                        }.opacity(shouldHide ? 0 : 1))
+                        return AnyView(
+                            image.overlay(
+                                ComicBadge(comic: comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)),
+                                alignment: .bottomTrailing
+                            )
+                            .opacity(shouldHide ? 0 : 1)
+                        )
                     }
-            }
-        )
+        })
             .onPullToRefresh { endRefreshing in
                 DispatchQueue.global(qos: .background).async {
                     self.store.refetchComics { result in

@@ -70,7 +70,6 @@ final class Store: ObservableObject {
 
                 realm.add(updatedComic, update: .modified)
 
-                // TODO: make more efficient
                 if storedComics!.comics.filter("id == %@", updatedComic.id).count == 0 {
                     storedComics!.comics.append(updatedComic)
                 }
