@@ -19,6 +19,7 @@ struct ContentView: View {
     @State private var showPager = false
     @State private var isPagerHidden = false
     @EnvironmentObject var comics: RealmSwift.List<Comic>
+    let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
 
     func hidePager() {
         print("hiding")
@@ -41,6 +42,13 @@ struct ContentView: View {
         }
 
         return AnyRealmCollection(self.comics).freeze().sorted(byKeyPath: "id", ascending: false)
+    }
+
+    func refetchComics() {
+        DispatchQueue.global(qos: .background).async {
+            print("asdf")
+            self.store.partialRefetchComics()
+        }
     }
 
     var body: some View {
@@ -72,10 +80,9 @@ struct ContentView: View {
                 }
             }
         }
-        .onAppear {
-            DispatchQueue.global(qos: .background).async {
-                self.store.partialRefetchComics()
-            }
+        .onAppear(perform: refetchComics)
+        .onReceive(foregroundPublisher) { _ in
+            self.refetchComics()
         }
     }
 }
