@@ -161,12 +161,20 @@ struct ComicPager: View {
 
                 if self.showOverlay && !self.hidden {
                     VStack {
-                        Text("#\(String(self.getCurrentComic().id)) \(self.getCurrentComic().title)").font(.title).multilineTextAlignment(.center).padding()
+                        Text("#\(String(self.getCurrentComic().id)) \(self.getCurrentComic().title)")
+                            .font(.title)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .animation(.none)
 
                         Spacer()
 
                         VStack {
-                            Text(self.getCurrentComic().alt).font(.caption).multilineTextAlignment(.center).padding()
+                            Text(self.getCurrentComic().alt)
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .padding()
+                                .animation(.none)
 
                             HStack {
                                 Button(action: self.openShareSheet) {
