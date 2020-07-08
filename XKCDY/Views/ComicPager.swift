@@ -91,7 +91,7 @@ struct ComicPager: View {
 
     func handleSingleTap() {
         withAnimation {
-            showOverlay = !showOverlay
+            showOverlay.toggle()
         }
     }
 
@@ -125,7 +125,9 @@ struct ComicPager: View {
 
                             self.startedViewingAt = Date().currentTimeMillis()
 
-                            self.store.currentComicId = self.comics[newIndex].id
+                            DispatchQueue.main.async {
+                                self.store.currentComicId = self.comics[newIndex].id
+                            }
                         })
                         .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
 
