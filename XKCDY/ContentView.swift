@@ -9,7 +9,6 @@
 import SwiftUI
 import RealmSwift
 import ASCollectionView
-import struct Kingfisher.KFImage
 
 struct ContentView: View {
     @State private var searchText = ""

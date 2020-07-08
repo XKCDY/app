@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftUIPager
 import RealmSwift
 import class Kingfisher.ImageCache
-import struct Kingfisher.KFImage
+import KingfisherSwiftUI
 
 func CGPointToDegree(_ point: CGPoint) -> Double {
     // Provides a directional bearing from (0,0) to the given point.

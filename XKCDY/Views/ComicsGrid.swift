@@ -10,7 +10,7 @@ import SwiftUI
 import RealmSwift
 import ASCollectionView
 import class Kingfisher.ImagePrefetcher
-import struct Kingfisher.KFImage
+import KingfisherSwiftUI
 
 class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayoutDelegate {
     func heightForHeader(sectionIndex: Int) -> CGFloat? {
