@@ -38,7 +38,11 @@ struct ContentView: View {
         if self.selectedPage == "Favorites" {
             return wrapAndSort(list: self.comics.filter("isFavorite == true"))
         } else if self.selectedPage == "Search" && searchText != "" {
-            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@", searchText))
+            if let searchId = Int(searchText) {
+                return wrapAndSort(list: self.comics.filter("id == %@", searchId))
+            }
+
+            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@ OR alt CONTAINS %@ OR transcript CONTAINS %@", searchText, searchText, searchText))
         }
 
         return AnyRealmCollection(self.comics).freeze().sorted(byKeyPath: "id", ascending: false)
@@ -46,7 +50,6 @@ struct ContentView: View {
 
     func refetchComics() {
         DispatchQueue.global(qos: .background).async {
-            print("asdf")
             self.store.partialRefetchComics()
         }
     }
@@ -69,11 +72,13 @@ struct ContentView: View {
                     }
                 }
 
-                Rectangle().fill(Color.clear)
-                    .background(Blur(style: .regular))
-                    .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
-                    .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
-                    .opacity(self.store.shouldBlurHeader ? 1 : 0)
+                if !self.showPager {
+                    Rectangle().fill(Color.clear)
+                        .background(Blur(style: .regular))
+                        .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
+                        .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
+                        .opacity(self.store.shouldBlurHeader ? 1 : 0)
+                }
 
                 if self.showPager {
                     ComicPager(onHide: self.hidePager, comics: self.filteredCollection())

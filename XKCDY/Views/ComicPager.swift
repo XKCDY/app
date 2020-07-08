@@ -132,7 +132,7 @@ struct ComicPager: View {
                     Group<AnyView> {
                         let image = KFImage(self.getCurrentComic().getBestImageURL()).resizable().aspectRatio(contentMode: .fit)
 
-                        guard let targetRect = self.store.positions[self.store.currentComicId] else {
+                        guard let targetRect = self.store.positions[self.store.currentComicId ?? 100] else {
                             return AnyView(EmptyView())
                         }
 
@@ -161,7 +161,7 @@ struct ComicPager: View {
 
                 if self.showOverlay && !self.hidden {
                     VStack {
-                        Text(self.getCurrentComic().title).font(.title).multilineTextAlignment(.center).padding()
+                        Text("#\(String(self.getCurrentComic().id)) \(self.getCurrentComic().title)").font(.title).multilineTextAlignment(.center).padding()
 
                         Spacer()
 

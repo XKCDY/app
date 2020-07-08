@@ -13,24 +13,13 @@ import class Kingfisher.ImagePrefetcher
 import struct Kingfisher.KFImage
 
 class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayoutDelegate {
-    private var cachedHeights: [IndexPath: CGFloat] = [:]
     func heightForHeader(sectionIndex: Int) -> CGFloat? {
         0
     }
 
-    /// We explicitely provide a height here. If providing no delegate, this layout will use auto-sizing, however this causes problems if rotating the device (due to limitaitons in UICollecitonView and autosizing cells that are not visible)
     func heightForCell(at indexPath: IndexPath, context: ASWaterfallLayout.CellLayoutContext) -> CGFloat {
-        //        return 100
-        //        if let cachedHeight = cachedHeights[indexPath] {
-        //            print("returing cached value")
-        //            return cachedHeight
-        //        }
-        //
-        //        print("not cached")
-
         guard let comic: Comic = getDataForItem(at: indexPath) else { return 100 }
         let height = context.width / CGFloat(comic.imgs!.x1!.ratio)
-        //        cachedHeights[indexPath] = height
         return height
     }
 }
@@ -68,7 +57,7 @@ struct ComicsGridView: View {
                 dataID: \.self,
                 onCellEvent: onCellEvent) { comic, _ in
                     GeometryReader { geom -> AnyView in
-                        //                        self.store.updatePosition(for: comic.id, at: CGRect(x: geom.frame(in: .global).midX, y: geom.frame(in: .global).midY, width: geom.size.width, height: geom.size.height))
+                        self.store.updatePosition(for: comic.id, at: CGRect(x: geom.frame(in: .global).midX, y: geom.frame(in: .global).midY, width: geom.size.width, height: geom.size.height))
 
                         let image = KFImage(comic.getBestImageURL()!).cancelOnDisappear(true).resizable().scaledToFill().frame(width: geom.size.width, height: geom.size.height).cornerRadius(2)
                             .onTapGesture {
@@ -83,7 +72,7 @@ struct ComicsGridView: View {
                                 ComicBadge(comic: comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)),
                                 alignment: .bottomTrailing
                             )
-                            .opacity(shouldHide ? 0 : 1)
+                                .opacity(shouldHide ? 0 : 1)
                         )
                     }
         })
@@ -106,14 +95,12 @@ struct ComicsGridView: View {
         .customDelegate(WaterfallScreenLayoutDelegate.init)
         .contentInsets(.init(top: 0, left: 10, bottom: 0, right: 10))
         .onReceive(self.store.$currentComicId, perform: { _ in
-            DispatchQueue.global().async {
-                //                    let realm = try! Realm()
-                //
-                //                      let comic = realm.object(ofType: ComicObject.self, forPrimaryKey: comicId)
-                //
-                //                    if (comic != nil) {
-                //                         self.scrollPosition = .indexPath(IndexPath(item: self.dbComics.results.firstIndex(of: comic!) ?? 0, section: 0))
-                //                    }
+            if self.store.currentComicId == nil {
+                return
+            }
+
+            if let comicIndex = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) {
+                self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
             }
         })
         )

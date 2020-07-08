@@ -48,7 +48,7 @@ enum StoreError: Error {
 
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
-    @Published var currentComicId = 100
+    @Published var currentComicId: Int?
     @Published var shouldBlurHeader = true
 
     func updatePosition(for id: Int, at: CGRect) {
