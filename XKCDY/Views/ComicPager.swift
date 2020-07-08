@@ -26,6 +26,8 @@ func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
 }
 
 let TIME_TO_MARK_AS_READ_MS: Int64 = 2 * 1000
+// https://www.objc.io/blog/2019/09/26/swiftui-animation-timing-curves/
+let SPRING_ANIMATION_TIME_SECONDS = 0.59
 
 struct ComicPager: View {
     @State var page: Int = 0
@@ -81,7 +83,7 @@ struct ComicPager: View {
                 hidden = true
             }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
                 self.onHide()
             }
         } else {
@@ -244,7 +246,7 @@ struct ComicPager: View {
                 self.hidden = false
             }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
                 self.isLoading = false
             }
         }
