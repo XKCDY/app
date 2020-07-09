@@ -39,8 +39,6 @@ platform :ios do
       keychain_password: keychain_password
     )
 
-  	cocoapods()
-
     increment_build_number({
       build_number: latest_testflight_build_number + 1
     })

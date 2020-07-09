@@ -9,7 +9,6 @@
 import SwiftUI
 import RealmSwift
 import ASCollectionView
-import struct Kingfisher.KFImage
 
 struct ContentView: View {
     @State private var searchText = ""
@@ -19,6 +18,7 @@ struct ContentView: View {
     @State private var showPager = false
     @State private var isPagerHidden = false
     @EnvironmentObject var comics: RealmSwift.List<Comic>
+    let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
 
     func hidePager() {
         print("hiding")
@@ -37,10 +37,20 @@ struct ContentView: View {
         if self.selectedPage == "Favorites" {
             return wrapAndSort(list: self.comics.filter("isFavorite == true"))
         } else if self.selectedPage == "Search" && searchText != "" {
-            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@", searchText))
+            if let searchId = Int(searchText) {
+                return wrapAndSort(list: self.comics.filter("id == %@", searchId))
+            }
+
+            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@ OR alt CONTAINS %@ OR transcript CONTAINS %@", searchText, searchText, searchText))
         }
 
         return AnyRealmCollection(self.comics).freeze().sorted(byKeyPath: "id", ascending: false)
+    }
+
+    func refetchComics() {
+        DispatchQueue.global(qos: .background).async {
+            self.store.partialRefetchComics()
+        }
     }
 
     var body: some View {
@@ -61,21 +71,22 @@ struct ContentView: View {
                     }
                 }
 
-                Rectangle().fill(Color.clear)
-                    .background(Blur(style: .regular))
-                    .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
-                    .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
-                    .opacity(self.store.shouldBlurHeader ? 1 : 0)
+                if !self.showPager {
+                    Rectangle().fill(Color.clear)
+                        .background(Blur(style: .regular))
+                        .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
+                        .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
+                        .opacity(self.store.shouldBlurHeader ? 1 : 0)
+                }
 
                 if self.showPager {
                     ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
                 }
             }
         }
-        .onAppear {
-            DispatchQueue.global(qos: .background).async {
-                self.store.partialRefetchComics()
-            }
+        .onAppear(perform: refetchComics)
+        .onReceive(foregroundPublisher) { _ in
+            self.refetchComics()
         }
     }
 }

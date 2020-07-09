@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import RealmSwift
+import Combine
 
 extension Binding {
     func onChange(_ handler: @escaping (Value) -> Void) -> Binding<Value> {
@@ -48,8 +49,20 @@ enum StoreError: Error {
 
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
-    @Published var currentComicId = 100
+    @Published var currentComicId: Int?
+    @Published var debouncedCurrentComicId: Int?
     @Published var shouldBlurHeader = true
+
+    private var disposables = Set<AnyCancellable>()
+
+    init() {
+        DispatchQueue.main.async {
+            self.$currentComicId
+                .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+                .assign(to: \.debouncedCurrentComicId, on: self)
+                .store(in: &self.disposables)
+        }
+    }
 
     func updatePosition(for id: Int, at: CGRect) {
         positions[id] = at
@@ -70,7 +83,6 @@ final class Store: ObservableObject {
 
                 realm.add(updatedComic, update: .modified)
 
-                // TODO: make more efficient
                 if storedComics!.comics.filter("id == %@", updatedComic.id).count == 0 {
                     storedComics!.comics.append(updatedComic)
                 }
