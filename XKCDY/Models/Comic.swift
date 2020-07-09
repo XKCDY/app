@@ -66,6 +66,21 @@ class Comic: Object, Identifiable {
         return nil
     }
 
+    static func getSample() -> Comic {
+        let comic = self.init()
+
+        comic.id = 100
+        comic.publishedAt = Date()
+        comic.safeTitle = "Sample Comic"
+        comic.title = "Sample Comic"
+        comic.transcript = "A very short transcript."
+        comic.alt = "Some alt text."
+        comic.eURL = "https://www.explainxkcd.com/wiki/index.php/2328:_Space_Basketball"
+        comic.iURL = "https://victorz.ca/xkcd_map/#10/1.1000/0.2000"
+
+        return comic
+    }
+
     override static func primaryKey() -> String? {
         return "id"
     }

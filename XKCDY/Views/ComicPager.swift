@@ -29,11 +29,16 @@ let TIME_TO_MARK_AS_READ_MS: Int64 = 2 * 1000
 // https://www.objc.io/blog/2019/09/26/swiftui-animation-timing-curves/
 let SPRING_ANIMATION_TIME_SECONDS = 0.59
 
+enum ActiveSheet {
+    case share, details
+}
+
 struct ComicPager: View {
     @State var page: Int = 0
     var onHide: () -> Void
     @State private var showOverlay = false
-    @State private var showShareSheet = false
+    @State private var showSheet = false
+    @State private var activeSheet: ActiveSheet = .details
     @State private var imageToShare: UIImage?
     @State private var offset = CGSize.zero
     @State private var scale: CGFloat = 0
@@ -62,7 +67,8 @@ struct ComicPager: View {
                 print(error)
             }
 
-            self.showShareSheet = true
+            self.activeSheet = .share
+            self.showSheet = true
         }
     }
 
@@ -165,7 +171,7 @@ struct ComicPager: View {
 
                 if self.showOverlay && !self.hidden {
                     VStack {
-                        Text("#\(String(self.getCurrentComic().id)) \(self.getCurrentComic().title)")
+                        Text(self.getCurrentComic().title)
                             .font(.title)
                             .multilineTextAlignment(.center)
                             .padding()
@@ -174,15 +180,18 @@ struct ComicPager: View {
                         Spacer()
 
                         VStack {
-                            Text(self.getCurrentComic().alt)
-                                .font(.caption)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                                .animation(.none)
-
                             HStack {
                                 Button(action: self.openShareSheet) {
                                     Image(systemName: "square.and.arrow.up").resizable().scaledToFit().frame(width: 24, height: 24)
+                                }
+
+                                Rectangle().fill(Color.clear).frame(width: 12, height: 24)
+
+                                Button(action: {
+                                    self.activeSheet = .details
+                                    self.showSheet = true
+                                }) {
+                                    Image(systemName: "info.circle.fill").resizable().scaledToFit().frame(width: 24, height: 24)
                                 }
 
                                 HStack {
@@ -208,6 +217,8 @@ struct ComicPager: View {
                                     }
                                 }
 
+                                Rectangle().fill(Color.clear).frame(width: 36, height: 24)
+
                                 Button(action: {
                                     let realm = try! Realm()
                                     let comics = realm.objects(Comic.self)
@@ -232,9 +243,15 @@ struct ComicPager: View {
         }
         .background(Color(.systemBackground).opacity(self.hidden ? 0 : 1 - Double(abs(self.offset.height) / 200)))
         .edgesIgnoringSafeArea(.bottom)
-        .sheet(isPresented: $showShareSheet) {
-            if self.imageToShare != nil {
-                SwiftUIActivityViewController(uiImage: self.imageToShare!, title: self.getCurrentComic().title, url: self.getCurrentComic().sourceURL!)
+        .sheet(isPresented: $showSheet) {
+            if self.activeSheet == .share {
+                if self.imageToShare != nil {
+                    SwiftUIActivityViewController(uiImage: self.imageToShare!, title: self.getCurrentComic().title, url: self.getCurrentComic().sourceURL!)
+                }
+            } else if self.activeSheet == .details {
+                ComicDetailsSheet(comic: self.getCurrentComic(), onDismiss: {
+                    self.showSheet = false
+                })
             }
         }
         .onAppear {
