@@ -21,6 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
         }
 
+        // Set Realm file location
+        let realmFileURL = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: "group.com.maxisom.XKCDY")!
+            .appendingPathComponent("default.realm")
+        Realm.Configuration.defaultConfiguration.fileURL = realmFileURL
+
         // Disable at-rest encryption so background refresh works
         let realm = try! Realm()
 
