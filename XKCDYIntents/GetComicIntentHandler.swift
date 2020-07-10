@@ -11,17 +11,22 @@ import RealmSwift
 
 class GetComicIntentHandler: NSObject, GetComicIntentHandling {
     func handle(intent: GetComicIntent, completion: @escaping (GetComicIntentResponse) -> Void) {
-        let comicId = intent.comicId!.intValue
+        // Update store
+        let store = Store()
 
-        let realm = try! Realm()
+        store.partialRefetchComics { _ in
+            let comicId = intent.comicId!.intValue
 
-        let savedComic = realm.object(ofType: Comic.self, forPrimaryKey: comicId)
+            let realm = try! Realm()
 
-        let response = GetComicIntentResponse(code: .success, userActivity: nil)
+            let savedComic = realm.object(ofType: Comic.self, forPrimaryKey: comicId)
 
-        response.comic = savedComic?.toIntentResponse()
+            let response = GetComicIntentResponse(code: .success, userActivity: nil)
 
-        completion(response)
+            response.comic = savedComic?.toIntentResponse()
+
+            completion(response)
+        }
     }
 
     func resolveComicId(for intent: GetComicIntent, with completion: @escaping (GetComicComicIdResolutionResult) -> Void) {

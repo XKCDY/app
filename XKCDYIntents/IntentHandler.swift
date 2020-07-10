@@ -21,9 +21,13 @@ class IntentHandler: INExtension {
     override func handler(for intent: INIntent) -> Any {
         configureRealm()
 
-        let getComicIntentHandler = GetComicIntentHandler()
+        if intent is GetComicIntent {
+            return GetComicIntentHandler()
+        } else if intent is GetLatestComicIntent {
+            return GetLatestComicIntentHandler()
+        }
 
-        return getComicIntentHandler
+        return GetComicIntentHandler()
     }
 
 }
