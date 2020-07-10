@@ -34,6 +34,7 @@ platform :ios do
 
     match(
       type: "appstore",
+      app_identifier: ["com.maxisom.XKCDY", "com.maxisom.XKCDY.XKCDYIntents"]
       readonly: true,
       keychain_name: keychain_name,
       keychain_password: keychain_password
