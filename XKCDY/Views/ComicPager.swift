@@ -48,6 +48,7 @@ struct ComicPager: View {
     @State private var isLoading = true
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
     var comics: Results<Comic>
+    private var generator = UIImpactFeedbackGenerator()
 
     init(onHide: @escaping () -> Void, comics: Results<Comic>) {
         self.onHide = onHide
@@ -201,15 +202,13 @@ struct ComicPager: View {
                                         .font(.system(size: 24))
                                         .foregroundColor(self.getCurrentComic().isFavorite ? .red : .blue)
                                         .scaleEffect(self.getCurrentComic().isFavorite ? 1.1 : 1)
-                                        .animation(.spring())
+                                        .animation(.interactiveSpring())
 
                                     Spacer()
                                 }
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    let generator = UIImpactFeedbackGenerator(style: .rigid)
-
-                                    generator.impactOccurred()
+                                    self.generator.impactOccurred()
 
                                     let comic = self.getCurrentComic()
                                     let realm = try! Realm()
