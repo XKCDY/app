@@ -48,6 +48,7 @@ struct ComicPager: View {
     @State private var isLoading = true
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
     var comics: Results<Comic>
+    private var generator = UIImpactFeedbackGenerator()
 
     init(onHide: @escaping () -> Void, comics: Results<Comic>) {
         self.onHide = onHide
@@ -182,7 +183,7 @@ struct ComicPager: View {
                         VStack {
                             HStack {
                                 Button(action: self.openShareSheet) {
-                                    Image(systemName: "square.and.arrow.up").resizable().scaledToFit().frame(width: 24, height: 24)
+                                    Image(systemName: "square.and.arrow.up").font(.system(size: 24))
                                 }
 
                                 Rectangle().fill(Color.clear).frame(width: 12, height: 24)
@@ -191,23 +192,23 @@ struct ComicPager: View {
                                     self.activeSheet = .details
                                     self.showSheet = true
                                 }) {
-                                    Image(systemName: "info.circle.fill").resizable().scaledToFit().frame(width: 24, height: 24)
+                                    Image(systemName: "info.circle.fill").font(.system(size: 24))
                                 }
 
                                 HStack {
                                     Spacer()
 
-                                    Image(systemName: self.getCurrentComic().isFavorite ? "heart.fill" : "heart").resizable().scaledToFit().frame(width: 24, height: 24).foregroundColor(self.getCurrentComic().isFavorite ? .red : .blue)
+                                    Image(systemName: self.getCurrentComic().isFavorite ? "heart.fill" : "heart")
+                                        .font(.system(size: 24))
+                                        .foregroundColor(self.getCurrentComic().isFavorite ? .red : .blue)
                                         .scaleEffect(self.getCurrentComic().isFavorite ? 1.1 : 1)
-                                        .animation(.spring())
+                                        .animation(.interactiveSpring())
 
                                     Spacer()
                                 }
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    let generator = UIImpactFeedbackGenerator(style: .rigid)
-
-                                    generator.impactOccurred()
+                                    self.generator.impactOccurred()
 
                                     let comic = self.getCurrentComic()
                                     let realm = try! Realm()
@@ -230,7 +231,7 @@ struct ComicPager: View {
                                         self.setPage()
                                     }
                                 }) {
-                                    Image(systemName: "shuffle").resizable().scaledToFit().frame(width: 24, height: 24)
+                                    Image(systemName: "shuffle").font(.system(size: 24))
                                 }
                             }.padding()
                         }
