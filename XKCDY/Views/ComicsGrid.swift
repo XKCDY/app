@@ -10,7 +10,6 @@ import SwiftUI
 import RealmSwift
 import ASCollectionView
 import class Kingfisher.ImagePrefetcher
-import KingfisherSwiftUI
 
 class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayoutDelegate {
     func heightForHeader(sectionIndex: Int) -> CGFloat? {
@@ -49,32 +48,23 @@ struct ComicsGridView: View {
         }
     }
 
+    func handleComicTap(of comicId: Int) {
+        self.store.currentComicId = comicId
+        self.onComicOpen()
+    }
+
     var body: some View {
         AnyView(ASCollectionView(
             section: ASSection(
                 id: 0,
                 data: self.comics,
                 dataID: \.self,
-                onCellEvent: onCellEvent) { comic, _ in
-                    GeometryReader { geom -> AnyView in
-                        self.store.updatePosition(for: comic.id, at: CGRect(x: geom.frame(in: .global).midX, y: geom.frame(in: .global).midY, width: geom.size.width, height: geom.size.height))
-
-                        let image = KFImage(comic.getBestImageURL()!).cancelOnDisappear(true).resizable().scaledToFill().frame(width: geom.size.width, height: geom.size.height).cornerRadius(2)
-                            .onTapGesture {
-                                self.store.currentComicId = comic.id
-                                self.onComicOpen()
-                        }
-
-                        let shouldHide = self.hideCurrentComic && self.store.currentComicId == comic.id
-
-                        return AnyView(
-                            image.overlay(
-                                ComicBadge(comic: comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)),
-                                alignment: .bottomTrailing
-                            )
-                                .opacity(shouldHide ? 0 : 1)
-                        )
+                onCellEvent: onCellEvent) { comic, _ -> AnyView in
+                    if self.hideCurrentComic && comic.id == self.store.currentComicId {
+                        return AnyView(ComicGridItem(comic: comic, onTap: self.handleComicTap).hidden())
                     }
+
+                    return AnyView(ComicGridItem(comic: comic, onTap: self.handleComicTap))
         })
             .onPullToRefresh { endRefreshing in
                 DispatchQueue.global(qos: .background).async {
@@ -113,7 +103,12 @@ struct ComicsGridView: View {
 extension ComicsGridView {
     var layout: ASCollectionLayout<Int> {
         ASCollectionLayout {
-            ASWaterfallLayout()
+            let layout = ASWaterfallLayout()
+
+            layout.columnSpacing = 10
+            layout.itemSpacing = 10
+
+            return layout
         }
     }
 }

@@ -67,7 +67,7 @@ extension UIApplication {
 }
 
 struct FloatingNavBarView: View {
-    @State var pages: [String] = []
+    var pages: [String] = []
     @Binding var selected: String
     @Binding var searchText: String
 
