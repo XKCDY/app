@@ -33,14 +33,29 @@ struct ComicGridItem: View {
     var comic: Comic
     var onTap: (Int) -> Void
     @EnvironmentObject var store: Store
+    @State private var pulseEnded = false
 
     var body: some View {
         GeometryReader { geom -> AnyView in
             self.store.updatePosition(for: self.comic.id, at: CGRect(x: geom.frame(in: .global).midX, y: geom.frame(in: .global).midY, width: geom.size.width, height: geom.size.height))
 
-            let image = KFImage(self.comic.getBestImageURL()!).cancelOnDisappear(true).resizable().scaledToFill().frame(width: geom.size.width, height: geom.size.height)
-                .onTapGesture {
-                    self.onTap(self.comic.id)
+            let image = KFImage(self.comic.getBestImageURL()!)
+                .placeholder {
+                    Rectangle()
+                        .fill(Color.secondary)
+                        .opacity(self.pulseEnded ? 0.4 : 0.2)
+                        .frame(width: geom.size.width, height: geom.size.height)
+                        .animation(Animation.easeInOut(duration: 0.75).repeatForever())
+                        .onAppear {
+                            self.pulseEnded = true
+                    }
+            }
+            .cancelOnDisappear(true)
+            .resizable()
+            .scaledToFill()
+            .frame(width: geom.size.width, height: geom.size.height)
+            .onTapGesture {
+                self.onTap(self.comic.id)
             }
 
             return AnyView(
