@@ -21,7 +21,7 @@ class AnyGestureRecognizer: UIGestureRecognizer {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-       state = .ended
+        state = .ended
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -46,15 +46,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Create the SwiftUI view that provides the window contents.
-//        let contentView = ContentView()
-//
-//        // Use a UIHostingController as window root view controller.
-//        if let windowScene = scene as? UIWindowScene {
-//            let window = UIWindow(windowScene: windowScene)
-//            window.rootViewController = UIHostingController(rootView: contentView)
-//            self.window = window
-//            window.makeKeyAndVisible()
-//        }
+        //        let contentView = ContentView()
+        //
+        //        // Use a UIHostingController as window root view controller.
+        //        if let windowScene = scene as? UIWindowScene {
+        //            let window = UIWindow(windowScene: windowScene)
+        //            window.rootViewController = UIHostingController(rootView: contentView)
+        //            self.window = window
+        //            window.makeKeyAndVisible()
+        //        }
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
@@ -76,6 +76,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             tapGesture.cancelsTouchesInView = false
             tapGesture.delegate = self //I don't use window as delegate to minimize possible side effects
             window.addGestureRecognizer(tapGesture)
+
+            self.navigate(connectionOptions.urlContexts)
+        }
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        self.navigate(URLContexts)
+    }
+
+    func navigate(_ URLContexts: Set<UIOpenURLContext>?) {
+        if let urlContext = URLContexts?.first {
+            if urlContext.url.host == "comics" {
+                if let id = Int(urlContext.url.path.replacingOccurrences(of: "/", with: "")) {
+                    self.store.currentComicId = id
+                    self.store.showPager = true
+                }
+            }
         }
     }
 

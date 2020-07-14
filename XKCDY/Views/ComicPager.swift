@@ -268,6 +268,9 @@ struct ComicPager: View {
                 self.isLoading = false
             }
         }
+        .onReceive(self.store.$debouncedCurrentComicId) { _ in
+            self.setPage()
+        }
     }
 }
 
