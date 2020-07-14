@@ -15,18 +15,17 @@ struct ContentView: View {
     @State private var selectedPage = "Home"
     @EnvironmentObject var store: Store
     @State private var pagerOffset: CGPoint = .zero
-    @State private var showPager = false
     @State private var isPagerHidden = false
     @EnvironmentObject var comics: RealmSwift.List<Comic>
     let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
 
     func hidePager() {
         print("hiding")
-        showPager = false
+        store.showPager = false
     }
 
     func handleComicOpen() {
-        showPager = true
+        store.showPager = true
     }
 
     func wrapAndSort(list: Results<Comic>) -> Results<Comic> {
@@ -56,7 +55,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geom in
             ZStack {
-                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.showPager, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
+                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
 
                 VStack {
                     if self.selectedPage != "Search" {
@@ -71,7 +70,7 @@ struct ContentView: View {
                     }
                 }
 
-                if !self.showPager {
+                if !self.store.showPager {
                     Rectangle().fill(Color.clear)
                         .background(Blur(style: .regular))
                         .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
@@ -79,7 +78,7 @@ struct ContentView: View {
                         .opacity(self.store.shouldBlurHeader ? 1 : 0)
                 }
 
-                if self.showPager {
+                if self.store.showPager {
                     ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
                 }
             }

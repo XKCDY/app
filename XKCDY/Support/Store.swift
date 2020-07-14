@@ -52,6 +52,7 @@ final class Store: ObservableObject {
     @Published var currentComicId: Int?
     @Published var debouncedCurrentComicId: Int?
     @Published var shouldBlurHeader = true
+    @Published var showPager = false
 
     private var disposables = Set<AnyCancellable>()
 

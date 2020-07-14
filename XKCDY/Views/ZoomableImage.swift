@@ -114,22 +114,3 @@ extension ZoomableImageView {
         return copy
     }
 }
-
-//struct _OffsetEffect: GeometryEffect {
-//    var offset: CGSize
-//    
-//    var animatableData: CGSize.AnimatableData {
-//        get { CGSize.AnimatableData(offset.width, offset.height) }
-//        set { offset = CGSize(width: newValue.first, height: newValue.second) }
-//    }
-//
-//    public func effectValue(size: CGSize) -> ProjectionTransform {
-//        return ProjectionTransform(CGAffineTransform(translationX: offset.width, y: offset.height))
-//    }
-//}
-//
-//extension ZoomableImageView {
-//    func selfOffset(_ offset: CGSize) -> Self {
-//        return modifier(_OffsetEffect(offset: offset))
-//    }
-//}
