@@ -40,7 +40,7 @@ struct ContentView: View {
                 return wrapAndSort(list: self.comics.filter("id == %@", searchId))
             }
 
-            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@ OR alt CONTAINS %@ OR transcript CONTAINS %@", searchText, searchText, searchText))
+            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", searchText, searchText, searchText))
         }
 
         return AnyRealmCollection(self.comics).freeze().sorted(byKeyPath: "id", ascending: false)
