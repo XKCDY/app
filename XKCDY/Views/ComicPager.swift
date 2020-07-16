@@ -64,8 +64,8 @@ struct ComicPager: View {
             case .success(let value):
                 self.imageToShare = value.image
 
-            case .failure(let error):
-                print(error)
+            case .failure:
+                return
             }
 
             self.activeSheet = .share

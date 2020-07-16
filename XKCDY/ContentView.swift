@@ -10,17 +10,23 @@ import SwiftUI
 import RealmSwift
 import ASCollectionView
 
+enum Page: String, CaseIterable {
+    case all = "All"
+    case favorites = "Favorites"
+}
+
 struct ContentView: View {
+    @State private var isSearching = false
     @State private var searchText = ""
-    @State private var selectedPage = "Home"
+    @State private var selectedPage: Pages = .all
     @EnvironmentObject var store: Store
     @State private var pagerOffset: CGPoint = .zero
     @State private var isPagerHidden = false
     @EnvironmentObject var comics: RealmSwift.List<Comic>
     let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+    @State private var scrollDirection: ScrollDirection = .up
 
     func hidePager() {
-        print("hiding")
         store.showPager = false
     }
 
@@ -28,22 +34,22 @@ struct ContentView: View {
         store.showPager = true
     }
 
-    func wrapAndSort(list: Results<Comic>) -> Results<Comic> {
-        return AnyRealmCollection(list).freeze().sorted(byKeyPath: "id", ascending: false)
-    }
-
     func filteredCollection() -> Results<Comic> {
-        if self.selectedPage == "Favorites" {
-            return wrapAndSort(list: self.comics.filter("isFavorite == true"))
-        } else if self.selectedPage == "Search" && searchText != "" {
-            if let searchId = Int(searchText) {
-                return wrapAndSort(list: self.comics.filter("id == %@", searchId))
-            }
+        var results = AnyRealmCollection(self.comics)
 
-            return wrapAndSort(list: self.comics.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", searchText, searchText, searchText))
+        if searchText != "" {
+            if let searchId = Int(searchText) {
+                results = AnyRealmCollection(results.filter("id == %@", searchId))
+            } else {
+                results = AnyRealmCollection(results.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", searchText, searchText, searchText))
+            }
         }
 
-        return AnyRealmCollection(self.comics).freeze().sorted(byKeyPath: "id", ascending: false)
+        if selectedPage == .favorites {
+            results = AnyRealmCollection(results.filter("isFavorite == true"))
+        }
+
+        return results.freeze().sorted(byKeyPath: "id", ascending: false)
     }
 
     func refetchComics() {
@@ -53,34 +59,23 @@ struct ContentView: View {
     }
 
     var body: some View {
-        GeometryReader { geom in
-            ZStack {
-                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
+        ZStack {
+            ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
 
-                VStack {
-                    if self.selectedPage != "Search" {
-                        Spacer()
-                    }
+            VStack {
+                FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText)
+                    .padding()
+                    .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
+                    .animation(.default)
 
-                    FloatingNavBarView(pages: ["Home", "Favorites", "Search"], selected: self.$selectedPage, searchText: self.$searchText)
-                        .animation(.spring())
+                Spacer()
 
-                    if self.selectedPage == "Search" {
-                        Spacer()
-                    }
-                }
+                FloatingNavBarView(selected: self.$selectedPage)
+                    .animation(.spring())
+            }
 
-                if !self.store.showPager {
-                    Rectangle().fill(Color.clear)
-                        .background(Blur(style: .regular))
-                        .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
-                        .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
-                        .opacity(self.store.shouldBlurHeader ? 1 : 0)
-                }
-
-                if self.store.showPager {
-                    ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
-                }
+            if self.store.showPager {
+                ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
             }
         }
         .onAppear(perform: refetchComics)
