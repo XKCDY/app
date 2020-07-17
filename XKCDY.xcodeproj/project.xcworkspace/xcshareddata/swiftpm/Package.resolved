@@ -74,15 +74,6 @@
         }
       },
       {
-        "package": "SwiftUIFlux",
-        "repositoryURL": "https://github.com/Dimillian/SwiftUIFlux",
-        "state": {
-          "branch": null,
-          "revision": "a48dd509702797028fa103844008239dded85063",
-          "version": "0.5.1"
-        }
-      },
-      {
         "package": "SwiftUIPager",
         "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
         "state": {

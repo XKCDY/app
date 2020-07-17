@@ -10,17 +10,6 @@ import Foundation
 import SwiftUI
 import Introspect
 
-enum Pages: String, CaseIterable, Hashable, Identifiable {
-    case all
-    case favorites
-
-    var name: String {
-        "\(self)".map { $0.isUppercase ? " \($0)" : "\($0)" }.joined().capitalized
-    }
-
-    var id: Pages {self}
-}
-
 struct Blur: UIViewRepresentable {
     var style: UIBlurEffect.Style = .systemMaterial
     func makeUIView(context: Context) -> UIVisualEffectView {
@@ -38,27 +27,12 @@ extension UIApplication {
 }
 
 struct FloatingNavBarView: View {
-    @Binding var selected: Pages
+    @Binding var selected: Page
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Rectangle()
-            .fill(Color.clear)
-            .background(Blur(style: .regular))
-            .frame(height: 30)
-            .cornerRadius(8)
-                .overlay(ZStack {
-                    Picker("Current page", selection: self.$selected) {
-                        ForEach(Pages.allCases) { page in
-                            Text(page.name).tag(page)
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .top)))
-                    .animation(.easeInOut)
-            }).animation(.easeInOut)
+            SegmentedPicker(selection: $selected)
         }
-        .cornerRadius(8)
         .padding()
         .shadow(radius: 2)
     }

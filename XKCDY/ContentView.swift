@@ -10,15 +10,10 @@ import SwiftUI
 import RealmSwift
 import ASCollectionView
 
-enum Page: String, CaseIterable {
-    case all = "All"
-    case favorites = "Favorites"
-}
-
 struct ContentView: View {
     @State private var isSearching = false
     @State private var searchText = ""
-    @State private var selectedPage: Pages = .all
+    @State private var selectedPage: Page = .all
     @EnvironmentObject var store: Store
     @State private var pagerOffset: CGPoint = .zero
     @State private var isPagerHidden = false
