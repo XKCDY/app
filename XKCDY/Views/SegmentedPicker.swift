@@ -156,6 +156,7 @@ struct SegmentedPicker: View {
                 .frame(minWidth: 0, maxWidth: .infinity)
                 // Watch for the size of the
                 .modifier(SizeAwareViewModifier(viewSize: self.$segmentSize))
+                .contentShape(Rectangle())
                 .gesture(DragGesture().onChanged(self.handleDragChange).onEnded(self.handleDragEnd))
                 .onTapGesture { self.onItemTap(page: page) }
                 .eraseToAnyView()
