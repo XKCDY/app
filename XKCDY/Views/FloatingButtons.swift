@@ -13,7 +13,7 @@ struct RoundButtonIcon: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .padding()
+            .padding(12)
             .background(Blur())
             .clipShape(Circle())
             .font(.title)
@@ -74,7 +74,7 @@ struct FloatingButtons: View {
 
                         TextField("Start typing...", text: $searchText)
                     }
-                    .padding()
+                    .padding(12)
                     .background(Blur())
                     .cornerRadius(8)
                     .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
