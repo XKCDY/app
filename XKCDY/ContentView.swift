@@ -20,6 +20,7 @@ struct ContentView: View {
     @EnvironmentObject var comics: RealmSwift.List<Comic>
     let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
     @State private var scrollDirection: ScrollDirection = .up
+    @State private var showSettings = false
 
     func hidePager() {
         store.showPager = false
@@ -58,7 +59,9 @@ struct ContentView: View {
             ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
 
             VStack {
-                FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText)
+                FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
+                    self.showSettings = true
+                })
                     .padding()
                     .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
                     .animation(.default)
@@ -72,6 +75,11 @@ struct ContentView: View {
             if self.store.showPager {
                 ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
             }
+        }
+        .sheet(isPresented: self.$showSettings) {
+            SettingsSheet(onDismiss: {
+                self.showSettings = false
+            })
         }
         .onAppear(perform: refetchComics)
         .onReceive(foregroundPublisher) { _ in

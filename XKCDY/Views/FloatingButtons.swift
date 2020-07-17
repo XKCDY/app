@@ -24,10 +24,12 @@ struct RoundButtonIcon: ViewModifier {
 struct FloatingButtons: View {
     @Binding var isSearching: Bool
     @Binding var searchText: String
+    var onOpenSettings: () -> Void
 
-    init(isSearching: Binding<Bool>, searchText: Binding<String>) {
+    init(isSearching: Binding<Bool>, searchText: Binding<String>, onOpenSettings: @escaping () -> Void) {
         self._isSearching = isSearching
         self._searchText = searchText
+        self.onOpenSettings = onOpenSettings
         UITextField.appearance().clearButtonMode = .always
     }
 
@@ -39,6 +41,7 @@ struct FloatingButtons: View {
         HStack {
             if !self.isSearching {
                 Button(action: {
+                    self.onOpenSettings()
                 }) {
                     Image(systemName: "gear")
                         .modifier(RoundButtonIcon())
@@ -84,6 +87,8 @@ struct FloatingButtons: View {
 
 struct FloatingButtons_Previews: PreviewProvider {
     static var previews: some View {
-        FloatingButtons(isSearching: .constant(true), searchText: .constant(""))
+        FloatingButtons(isSearching: .constant(true), searchText: .constant(""), onOpenSettings: {
+            print("Settings button clicked.")
+        })
     }
 }
