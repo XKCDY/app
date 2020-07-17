@@ -83,8 +83,10 @@ struct SegmentedPicker: View {
         let isInitialized: Bool = segmentSize != .zero
         if !isInitialized { return EmptyView().eraseToAnyView() }
         return
-            RoundedRectangle(cornerRadius: self.SegmentCornerRadius)
-                .foregroundColor(self.ActiveSegmentColor)
+            Rectangle()
+                .fill(Color.clear)
+                .background(Blur(style: .prominent))
+                .cornerRadius(self.SegmentCornerRadius)
                 .shadow(color: self.ShadowColor, radius: self.ShadowRadius)
                 .frame(width: self.segmentSize.width, height: self.segmentSize.height)
                 .offset(x: self.computeActiveSegmentHorizontalOffset(), y: 0)
@@ -126,7 +128,7 @@ struct SegmentedPicker: View {
             }
         }
         .padding(self.PickerPadding)
-        .background(self.BackgroundColor)
+        .background(Blur())
         .clipShape(RoundedRectangle(cornerRadius: self.SegmentCornerRadius))
     }
 
