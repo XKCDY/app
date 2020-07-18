@@ -41,7 +41,6 @@
 		6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */; };
 		6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */; };
 		6ACD2C6024C298D000D6EFE1 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
-		6ACD2C6224C2A22C00D6EFE1 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C6124C2A22C00D6EFE1 /* AppStore.swift */; };
 		6ADBCBD42447B65100594DBD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADBCBD32447B65100594DBD /* Alamofire */; };
 		6AE0D7B4244FBC9C00AE982C /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0D7B3244FBC9C00AE982C /* SearchBar.swift */; };
 		6AE0D7B6244FF1A700AE982C /* FloatingNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */; };
@@ -128,7 +127,6 @@
 		6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicBadge.swift; sourceTree = "<group>"; };
 		6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicPagerOverlay.swift; sourceTree = "<group>"; };
 		6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
-		6ACD2C6124C2A22C00D6EFE1 /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
 		6AE0D7B3244FBC9C00AE982C /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingNavBar.swift; sourceTree = "<group>"; };
 		6AE116EF2465F82B00194F57 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
@@ -299,7 +297,6 @@
 				6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */,
 				6A20865D248415A7002C98E5 /* Store.swift */,
 				6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */,
-				6ACD2C6124C2A22C00D6EFE1 /* AppStore.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -538,7 +535,6 @@
 				6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */,
 				6AE116F4246653CE00194F57 /* ComicPager.swift in Sources */,
 				6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */,
-				6ACD2C6224C2A22C00D6EFE1 /* AppStore.swift in Sources */,
 				6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */,
 				6AE116F02465F82B00194F57 /* ShareSheet.swift in Sources */,
 				6ACD2C6024C298D000D6EFE1 /* UserSettings.swift in Sources */,
