@@ -94,7 +94,7 @@ struct SegmentedPicker: View {
     }
 
     private func handleDragEnd(_: DragGesture.Value) {
-        var i = (self.computeActiveSegmentHorizontalOffset() + self.offset.width) / (self.segmentSize.width + self.SegmentXPadding / 2)
+        var i = CGFloat((self.computeActiveSegmentHorizontalOffset() + self.offset.width)) / CGFloat((self.segmentSize.width + self.SegmentXPadding / 2))
         i.round()
 
         self.offset = .zero
