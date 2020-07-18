@@ -13,7 +13,7 @@ import ASCollectionView
 struct ContentView: View {
     @State private var isSearching = false
     @State private var searchText = ""
-    @State private var selectedPage: Page = .all
+    private var oldFavorites: [Int] = []
     @EnvironmentObject var store: Store
     @State private var pagerOffset: CGPoint = .zero
     @State private var isPagerHidden = false
@@ -41,8 +41,8 @@ struct ContentView: View {
             }
         }
 
-        if selectedPage == .favorites {
-            results = AnyRealmCollection(results.filter("isFavorite == true"))
+        if self.store.selectedPage == .favorites {
+            results = AnyRealmCollection(results.filter("isFavorite == true OR id IN %@", self.store.currentFavoriteIds))
         }
 
         return results.freeze().sorted(byKeyPath: "id", ascending: false)
@@ -73,7 +73,7 @@ struct ContentView: View {
 
                 Spacer()
 
-                FloatingNavBarView(selected: self.$selectedPage)
+                FloatingNavBarView()
                     .animation(.spring())
             }
 

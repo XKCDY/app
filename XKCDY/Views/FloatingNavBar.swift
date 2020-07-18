@@ -27,11 +27,9 @@ extension UIApplication {
 }
 
 struct FloatingNavBarView: View {
-    @Binding var selected: Page
-
     var body: some View {
         ZStack(alignment: .bottom) {
-            SegmentedPicker(selection: $selected)
+            SegmentedPicker()
         }
         .padding()
         .shadow(radius: 2)

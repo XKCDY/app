@@ -44,17 +44,6 @@ extension Comparable {
     }
 }
 
-enum Page: String, CaseIterable, Hashable, Identifiable {
-    case all
-    case favorites
-
-    var name: String {
-        "\(self)".map { $0.isUppercase ? " \($0)" : "\($0)" }.joined().capitalized
-    }
-
-    var id: Page {self}
-}
-
 // Note: ideally we could pass in a CaseIterable enum as a parameter.
 // Couldn't figure out a quick and dirty way to do it, so this works for now.
 struct SegmentedPicker: View {
@@ -74,6 +63,7 @@ struct SegmentedPicker: View {
 
     @State private var offset: CGSize = .zero
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var store: Store
 
     // Stores the size of a segment, used to create the active segment rect
     @State private var segmentSize: CGSize = .zero
@@ -108,13 +98,7 @@ struct SegmentedPicker: View {
         i.round()
 
         self.offset = .zero
-        self.selection = Page.allCases[Int(i).clamped(to: 0...Page.allCases.count)]
-    }
-
-    @Binding private var selection: Page
-
-    init(selection: Binding<Page>) {
-        self._selection = selection
+        self.store.selectedPage = Page.allCases[Int(i).clamped(to: 0...Page.allCases.count)]
     }
 
     var body: some View {
@@ -135,7 +119,7 @@ struct SegmentedPicker: View {
 
     // Helper method to compute the offset based on the selected index
     private func computeActiveSegmentHorizontalOffset() -> CGFloat {
-        let index = Page.allCases.firstIndex(of: self.selection)!
+        let index = Page.allCases.firstIndex(of: self.store.selectedPage)!
 
         return CGFloat(index) * (self.segmentSize.width + self.SegmentXPadding / 2)
     }
@@ -146,7 +130,7 @@ struct SegmentedPicker: View {
 
     // Gets text view for the segment
     private func getSegmentView(for page: Page) -> some View {
-        let isSelected = self.selection == page
+        let isSelected = self.store.selectedPage == page
         return
             Text(page.name)
                 .font(Font.body.bold())
@@ -167,7 +151,7 @@ struct SegmentedPicker: View {
 
     // On tap to change the selection
     private func onItemTap(page: Page) {
-        self.selection = page
+        self.store.selectedPage = page
     }
 
 }
@@ -177,7 +161,7 @@ struct PreviewView: View {
     private let items: [String] = ["M", "T", "W", "T", "F"]
 
     var body: some View {
-        SegmentedPicker(selection: self.$selection)
+        SegmentedPicker()
             .padding()
     }
 }
