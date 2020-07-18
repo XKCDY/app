@@ -65,7 +65,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 comics = try! realm.write { realm.create(Comics.self, value: []) }
             }
 
-            let controller = UIHostingController(rootView: ContentView().environmentObject(comics!.comics).environmentObject(store))
+            let userSettings = UserSettings()
+
+            let controller = UIHostingController(rootView: ContentView().environmentObject(comics!.comics).environmentObject(store).environmentObject(userSettings))
 
             window.rootViewController = controller
             self.window = window

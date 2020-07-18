@@ -85,6 +85,18 @@ struct ComicPager: View {
         self.page = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
     }
 
+    func handleShuffle() {
+        let realm = try! Realm()
+        let comics = realm.objects(Comic.self)
+
+        if comics.count > 0 {
+            let randomComic = comics[Int(arc4random_uniform(UInt32(comics.count) - 1))]
+
+            self.store.currentComicId = randomComic.id
+            self.setPage()
+        }
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -144,9 +156,9 @@ struct ComicPager: View {
                 .onEnded(self.handleDragEnd))
 
                 if self.showOverlay && !self.hidden {
-                    ComicPagerOverlay(comic: self.getCurrentComic())
-                    .zIndex(100)
-                    .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
+                    ComicPagerOverlay(comic: self.getCurrentComic(), onShuffle: self.handleShuffle)
+                        .zIndex(100)
+                        .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
                 }
             }
         }

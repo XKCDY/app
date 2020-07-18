@@ -39,6 +39,7 @@ struct UncontrolledWebView: View {
             })
             .edgesIgnoringSafeArea(.bottom)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
             self.webViewStore.webView.load(URLRequest(url: self.url))
         }

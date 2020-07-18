@@ -21,9 +21,11 @@ struct ComicPagerOverlay: View {
     @State private var showSheet = false
     @State private var activeSheet: ActiveSheet = .details
     @EnvironmentObject var store: Store
+    var onShuffle: () -> Void
 
-    init(comic: Comic) {
+    init(comic: Comic, onShuffle: @escaping () -> Void) {
         self.comic = comic
+        self.onShuffle = onShuffle
     }
 
     private func openShareSheet() {
@@ -99,16 +101,7 @@ struct ComicPagerOverlay: View {
 
                         Rectangle().fill(Color.clear).frame(width: 36, height: 24)
 
-                        Button(action: {
-                            let realm = try! Realm()
-                            let comics = realm.objects(Comic.self)
-
-                            if comics.count > 0 {
-                                let randomComic = comics[Int(arc4random_uniform(UInt32(comics.count) - 1))]
-
-                                self.store.currentComicId = randomComic.id
-                            }
-                        }) {
+                        Button(action: self.onShuffle) {
                             Image(systemName: "shuffle").font(.system(size: 24))
                         }
                     }.padding()
@@ -134,6 +127,8 @@ struct ComicPagerOverlay: View {
 
 struct ComicPagerOverlay_Previews: PreviewProvider {
     static var previews: some View {
-        ComicPagerOverlay(comic: .getSample()).colorScheme(.dark)
+        ComicPagerOverlay(comic: .getSample(), onShuffle: {
+            print("shuffling")
+        }).colorScheme(.dark)
     }
 }
