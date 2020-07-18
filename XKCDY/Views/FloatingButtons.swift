@@ -33,10 +33,6 @@ struct FloatingButtons: View {
         UITextField.appearance().clearButtonMode = .always
     }
 
-    func handleTextFieldRef(_ textField: UITextField) {
-        textField.becomeFirstResponder()
-    }
-
     var body: some View {
         HStack {
             if !self.isSearching {
@@ -78,7 +74,6 @@ struct FloatingButtons: View {
                     .background(Blur())
                     .cornerRadius(8)
                     .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
-                    .introspectTextField(customize: self.handleTextFieldRef)
                 }
             }
         }

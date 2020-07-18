@@ -128,7 +128,7 @@ struct ComicsGridView: View {
                 .background(Blur(style: .regular))
                 .frame(width: geom.size.width, height: geom.safeAreaInsets.top)
                 .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
-                .opacity(self.shouldBlurStatusBar ? 1 : 0)
+                .opacity(self.shouldBlurStatusBar && !self.store.showPager ? 1 : 0)
                 .animation(.default)
         }
     }

@@ -73,6 +73,7 @@ struct SegmentedPicker: View {
     private let PickerPadding: CGFloat = 4
 
     @State private var offset: CGSize = .zero
+    @Environment(\.colorScheme) var colorScheme
 
     // Stores the size of a segment, used to create the active segment rect
     @State private var segmentSize: CGSize = .zero
@@ -85,7 +86,7 @@ struct SegmentedPicker: View {
         return
             Rectangle()
                 .fill(Color.clear)
-                .background(Blur(style: .prominent))
+                .background(Blur(style: colorScheme == .dark ? .light : .prominent))
                 .cornerRadius(self.SegmentCornerRadius)
                 .shadow(color: self.ShadowColor, radius: self.ShadowRadius)
                 .frame(width: self.segmentSize.width, height: self.segmentSize.height)

@@ -65,6 +65,11 @@ struct ContentView: View {
                     .padding()
                     .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
                     .animation(.default)
+                    .sheet(isPresented: self.$showSettings) {
+                        SettingsSheet(onDismiss: {
+                            self.showSettings = false
+                        })
+                }
 
                 Spacer()
 
@@ -75,11 +80,6 @@ struct ContentView: View {
             if self.store.showPager {
                 ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
             }
-        }
-        .sheet(isPresented: self.$showSettings) {
-            SettingsSheet(onDismiss: {
-                self.showSettings = false
-            })
         }
         .onAppear(perform: refetchComics)
         .onReceive(foregroundPublisher) { _ in
