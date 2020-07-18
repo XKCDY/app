@@ -68,13 +68,14 @@ struct ComicDetailsSheet: View {
                         .padding(.leading)
                     }
                 }
-                .padding(.trailing, 30)
+                .padding(30)
             }
             .navigationBarTitle(Text(comic.title), displayMode: .inline)
             .navigationBarItems(trailing: Button(action: self.onDismiss) {
                 Text("Done").bold()
             })
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $showSheet) {
                 UncontrolledWebView(url: self.sheetUrl ?? URL(string: "https://xkcdy.com")!, onDismiss: {
                     self.showSheet = false

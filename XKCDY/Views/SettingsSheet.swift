@@ -8,6 +8,7 @@
 
 import SwiftUI
 import RealmSwift
+import StoreKit
 
 struct SettingsSheet: View {
     var onDismiss: () -> Void
@@ -28,16 +29,43 @@ struct SettingsSheet: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                Text("Miscellaneous Options")
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Miscellaneous Options").font(.system(size: 24))
 
-                Button(action: {
-                    self.showMarkReadAlert = true
-                }) {
-                    Text("Mark all as read")
+                    Button(action: {
+                        self.showMarkReadAlert = true
+                    }) {
+                        Text("Mark all as read")
+                    }
+                }
+                .padding(.bottom)
+
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Feedback").font(.system(size: 24))
+
+                    Button(action: {
+                        UIApplication.shared.open(URL(string: "mailto:app@xkcdy.com")!)
+                    }) {
+                        Text("Send an email")
+                    }
+
+                    Button(action: {
+                        UIApplication.shared.open(URL(string: "https://github.com/XKCDY/app/issues")!)
+                    }) {
+                        Text("Open an issue")
+                    }
+
+                    Button(action: {
+                        SKStoreReviewController.requestReview()
+                    }) {
+                        Text("Rate on the App Store")
+                    }
                 }
 
                 Spacer()
             }
+            .padding()
+            .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
             .navigationBarTitle(Text("Settings"), displayMode: .inline)
             .navigationBarItems(trailing: HStack {
                 Button(action: onDismiss) {
@@ -50,6 +78,7 @@ struct SettingsSheet: View {
                     }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
