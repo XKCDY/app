@@ -47,11 +47,28 @@ enum StoreError: Error {
     case api
 }
 
+enum Page: String, CaseIterable, Hashable, Identifiable {
+    case all
+    case favorites
+
+    var name: String {
+        "\(self)".map { $0.isUppercase ? " \($0)" : "\($0)" }.joined().capitalized
+    }
+
+    var id: Page {self}
+}
+
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
     @Published var currentComicId: Int?
     @Published var debouncedCurrentComicId: Int?
     @Published var showPager = false
+    @Published var selectedPage: Page = .all {
+        willSet {
+            self.handlePageChange(newValue)
+        }
+    }
+    @Published var currentFavoriteIds: [Int] = []
 
     private var disposables = Set<AnyCancellable>()
 
@@ -61,6 +78,16 @@ final class Store: ObservableObject {
                 .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
                 .assign(to: \.debouncedCurrentComicId, on: self)
                 .store(in: &self.disposables)
+        }
+    }
+
+    func handlePageChange(_ page: Page) {
+        if page == .favorites {
+            let realm = try! Realm()
+            let comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+            self.currentFavoriteIds = comics!.comics.filter { $0.isFavorite }.map { $0.id }
+        } else {
+            self.currentFavoriteIds = []
         }
     }
 
