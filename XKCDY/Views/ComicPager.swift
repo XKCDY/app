@@ -9,7 +9,6 @@
 import SwiftUI
 import SwiftUIPager
 import RealmSwift
-import class Kingfisher.ImageCache
 import KingfisherSwiftUI
 
 func CGPointToDegree(_ point: CGPoint) -> Double {
@@ -29,17 +28,10 @@ let TIME_TO_MARK_AS_READ_MS: Int64 = 2 * 1000
 // https://www.objc.io/blog/2019/09/26/swiftui-animation-timing-curves/
 let SPRING_ANIMATION_TIME_SECONDS = 0.59
 
-enum ActiveSheet {
-    case share, details
-}
-
 struct ComicPager: View {
     @State var page: Int = 0
     var onHide: () -> Void
     @State private var showOverlay = false
-    @State private var showSheet = false
-    @State private var activeSheet: ActiveSheet = .details
-    @State private var imageToShare: UIImage?
     @State private var offset = CGSize.zero
     @State private var scale: CGFloat = 0
     @EnvironmentObject var store: Store
@@ -48,29 +40,10 @@ struct ComicPager: View {
     @State private var isLoading = true
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
     var comics: Results<Comic>
-    private var generator = UIImpactFeedbackGenerator()
 
     init(onHide: @escaping () -> Void, comics: Results<Comic>) {
         self.onHide = onHide
         self.comics = comics
-    }
-
-    func openShareSheet() {
-        let cache = ImageCache.default
-
-        let currentComic = getCurrentComic()
-        cache.retrieveImage(forKey: currentComic.getBestImageURL()!.absoluteString) { result in
-            switch result {
-            case .success(let value):
-                self.imageToShare = value.image
-
-            case .failure(let error):
-                print(error)
-            }
-
-            self.activeSheet = .share
-            self.showSheet = true
-        }
     }
 
     func handleDragChange(_ value: DragGesture.Value) {
@@ -171,90 +144,14 @@ struct ComicPager: View {
                 .onEnded(self.handleDragEnd))
 
                 if self.showOverlay && !self.hidden {
-                    VStack {
-                        Text(self.getCurrentComic().title)
-                            .font(.title)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                            .animation(.none)
-
-                        Spacer()
-
-                        VStack {
-                            HStack {
-                                Button(action: self.openShareSheet) {
-                                    Image(systemName: "square.and.arrow.up").font(.system(size: 24))
-                                }
-
-                                Rectangle().fill(Color.clear).frame(width: 12, height: 24)
-
-                                Button(action: {
-                                    self.activeSheet = .details
-                                    self.showSheet = true
-                                }) {
-                                    Image(systemName: "info.circle.fill").font(.system(size: 24))
-                                }
-
-                                HStack {
-                                    Spacer()
-
-                                    Image(systemName: self.getCurrentComic().isFavorite ? "heart.fill" : "heart")
-                                        .font(.system(size: 24))
-                                        .foregroundColor(self.getCurrentComic().isFavorite ? .red : .blue)
-                                        .scaleEffect(self.getCurrentComic().isFavorite ? 1.1 : 1)
-                                        .animation(.interactiveSpring())
-
-                                    Spacer()
-                                }
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    self.generator.impactOccurred()
-
-                                    let comic = self.getCurrentComic()
-                                    let realm = try! Realm()
-
-                                    try! realm.write {
-                                        comic.isFavorite = !comic.isFavorite
-                                    }
-                                }
-
-                                Rectangle().fill(Color.clear).frame(width: 36, height: 24)
-
-                                Button(action: {
-                                    let realm = try! Realm()
-                                    let comics = realm.objects(Comic.self)
-
-                                    if comics.count > 0 {
-                                        let randomComic = comics[Int(arc4random_uniform(UInt32(comics.count) - 1))]
-
-                                        self.store.currentComicId = randomComic.id
-                                        self.setPage()
-                                    }
-                                }) {
-                                    Image(systemName: "shuffle").font(.system(size: 24))
-                                }
-                            }.padding()
-                        }
-                        .padding()
-                        .background(Blur())
-                    }
+                    ComicPagerOverlay(comic: self.getCurrentComic())
+                    .zIndex(100)
                     .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
                 }
             }
         }
         .background(Color(.systemBackground).opacity(self.hidden ? 0 : 1 - Double(abs(self.offset.height) / 200)))
         .edgesIgnoringSafeArea(.bottom)
-        .sheet(isPresented: $showSheet) {
-            if self.activeSheet == .share {
-                if self.imageToShare != nil {
-                    SwiftUIActivityViewController(uiImage: self.imageToShare!, title: self.getCurrentComic().title, url: self.getCurrentComic().sourceURL!)
-                }
-            } else if self.activeSheet == .details {
-                ComicDetailsSheet(comic: self.getCurrentComic(), onDismiss: {
-                    self.showSheet = false
-                })
-            }
-        }
         .onAppear {
             self.setPage()
 

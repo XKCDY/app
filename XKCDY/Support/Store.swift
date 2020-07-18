@@ -51,7 +51,6 @@ final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
     @Published var currentComicId: Int?
     @Published var debouncedCurrentComicId: Int?
-    @Published var shouldBlurHeader = true
     @Published var showPager = false
 
     private var disposables = Set<AnyCancellable>()

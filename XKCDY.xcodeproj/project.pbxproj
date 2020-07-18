@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6A06FAC82445517B002202DC /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 6A06FAC72445517B002202DC /* ASCollectionView */; };
 		6A20865E248415A7002C98E5 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A20865D248415A7002C98E5 /* Store.swift */; };
+		6A40086524C14F6B009AE2D9 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */; };
 		6A4A353E24BA48C700D4EDED /* ComicGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */; };
 		6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A5430E624994A6500C92B78 /* RealmSwift */; };
 		6A60FB7A244535A70070A76B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB79244535A70070A76B /* AppDelegate.swift */; };
@@ -23,6 +24,7 @@
 		6A7D1C9624B8E502005F2F9A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A20865D248415A7002C98E5 /* Store.swift */; };
 		6A7D1C9724B8E562005F2F9A /* XKCDYClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */; };
 		6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7D1C9824B8E57F005F2F9A /* Alamofire */; };
+		6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */; };
 		6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123324B62C7000F51ABF /* Kingfisher */; };
 		6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */; };
 		6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */; };
@@ -37,6 +39,7 @@
 		6AAE179224B7D03700181C4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAE179124B7D03700181C4B /* RealmSwift */; };
 		6AAE179324B7E2F300181C4B /* Comic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFD224B28CEA006BC9D9 /* Comic.swift */; };
 		6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */; };
+		6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */; };
 		6ADBCBD42447B65100594DBD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADBCBD32447B65100594DBD /* Alamofire */; };
 		6AE0D7B4244FBC9C00AE982C /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0D7B3244FBC9C00AE982C /* SearchBar.swift */; };
 		6AE0D7B6244FF1A700AE982C /* FloatingNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */; };
@@ -46,9 +49,9 @@
 		6AEB62B82463A333001FAF67 /* ZoomableImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEB62B72463A333001FAF67 /* ZoomableImage.swift */; };
 		6AECCFD024B0DBD1006BC9D9 /* XKCDYClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */; };
 		6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFD224B28CEA006BC9D9 /* Comic.swift */; };
-		6AEFE7A2244628E7003057F8 /* SwiftUIFlux in Frameworks */ = {isa = PBXBuildFile; productRef = 6AEFE7A1244628E7003057F8 /* SwiftUIFlux */; };
 		6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEFE7AD244644A7003057F8 /* ComicsGrid.swift */; };
 		6AF016A2246239CD00A51375 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 6AF016A1246239CD00A51375 /* Introspect */; };
+		6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF1386424BF8F64005579D2 /* FloatingButtons.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +94,7 @@
 
 /* Begin PBXFileReference section */
 		6A20865D248415A7002C98E5 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicGridItem.swift; sourceTree = "<group>"; };
 		6A60FB76244535A70070A76B /* XKCDY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XKCDY.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A60FB79244535A70070A76B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +111,7 @@
 		6A60FB9B244535A90070A76B /* XKCDYUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XKCDYUITests.swift; sourceTree = "<group>"; };
 		6A60FB9D244535A90070A76B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6A7D1C9424B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLatestComicIntentHandler.swift; sourceTree = "<group>"; };
+		6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicDetailsSheet.swift; sourceTree = "<group>"; };
 		6AA0123C24B6643000F51ABF /* UncontrolledWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncontrolledWebView.swift; sourceTree = "<group>"; };
 		6AAE174D24B7968E00181C4B /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Intents.intentdefinition; path = XKCDY/Intents.intentdefinition; sourceTree = SOURCE_ROOT; };
@@ -119,6 +124,7 @@
 		6AAE179424B7EE2A00181C4B /* XKCDYIntentsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDYIntentsRelease.entitlements; sourceTree = "<group>"; };
 		6AAE179524B7EE3700181C4B /* XKCDYIntentsDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDYIntentsDebug.entitlements; sourceTree = "<group>"; };
 		6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicBadge.swift; sourceTree = "<group>"; };
+		6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicPagerOverlay.swift; sourceTree = "<group>"; };
 		6AE0D7B3244FBC9C00AE982C /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingNavBar.swift; sourceTree = "<group>"; };
 		6AE116EF2465F82B00194F57 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
@@ -127,6 +133,7 @@
 		6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XKCDYClient.swift; sourceTree = "<group>"; };
 		6AECCFD224B28CEA006BC9D9 /* Comic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comic.swift; sourceTree = "<group>"; };
 		6AEFE7AD244644A7003057F8 /* ComicsGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicsGrid.swift; sourceTree = "<group>"; };
+		6AF1386424BF8F64005579D2 /* FloatingButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButtons.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,7 +148,6 @@
 				6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */,
 				6AF016A2246239CD00A51375 /* Introspect in Frameworks */,
 				6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */,
-				6AEFE7A2244628E7003057F8 /* SwiftUIFlux in Frameworks */,
 				6A06FAC82445517B002202DC /* ASCollectionView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,6 +250,7 @@
 		6A60FBAC24453DA50070A76B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */,
 				6AEFE7AD244644A7003057F8 /* ComicsGrid.swift */,
 				6AE0D7B3244FBC9C00AE982C /* SearchBar.swift */,
 				6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */,
@@ -254,6 +261,9 @@
 				6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */,
 				6AA0123C24B6643000F51ABF /* UncontrolledWebView.swift */,
 				6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */,
+				6AF1386424BF8F64005579D2 /* FloatingButtons.swift */,
+				6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */,
+				6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -317,7 +327,6 @@
 			name = XKCDY;
 			packageProductDependencies = (
 				6A06FAC72445517B002202DC /* ASCollectionView */,
-				6AEFE7A1244628E7003057F8 /* SwiftUIFlux */,
 				6ADBCBD32447B65100594DBD /* Alamofire */,
 				6AF016A1246239CD00A51375 /* Introspect */,
 				6AEB62B3246373E7001FAF67 /* SwiftUIPager */,
@@ -425,7 +434,6 @@
 			mainGroup = 6A60FB6D244535A70070A76B;
 			packageReferences = (
 				6A06FAC62445517B002202DC /* XCRemoteSwiftPackageReference "ASCollectionView" */,
-				6AEFE7A0244628E7003057F8 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */,
 				6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */,
 				6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				6AEB62B2246373E7001FAF67 /* XCRemoteSwiftPackageReference "SwiftUIPager" */,
@@ -509,8 +517,11 @@
 				6A60FB7A244535A70070A76B /* AppDelegate.swift in Sources */,
 				6A20865E248415A7002C98E5 /* Store.swift in Sources */,
 				6A60FB7C244535A70070A76B /* SceneDelegate.swift in Sources */,
+				6A40086524C14F6B009AE2D9 /* SettingsSheet.swift in Sources */,
+				6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */,
 				6A60FB7E244535A70070A76B /* ContentView.swift in Sources */,
 				6A4A353E24BA48C700D4EDED /* ComicGridItem.swift in Sources */,
+				6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */,
 				6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */,
 				6AAE174E24B7968E00181C4B /* Intents.intentdefinition in Sources */,
 				6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */,
@@ -520,6 +531,7 @@
 				6AE0D7B4244FBC9C00AE982C /* SearchBar.swift in Sources */,
 				6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */,
 				6AE116F4246653CE00194F57 /* ComicPager.swift in Sources */,
+				6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */,
 				6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */,
 				6AE116F02465F82B00194F57 /* ShareSheet.swift in Sources */,
 			);
@@ -982,14 +994,6 @@
 				minimumVersion = 1.4.1;
 			};
 		};
-		6AEFE7A0244628E7003057F8 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Dimillian/SwiftUIFlux";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.1;
-			};
-		};
 		6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/timbersoftware/SwiftUI-Introspect.git";
@@ -1050,11 +1054,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AEB62B2246373E7001FAF67 /* XCRemoteSwiftPackageReference "SwiftUIPager" */;
 			productName = SwiftUIPager;
-		};
-		6AEFE7A1244628E7003057F8 /* SwiftUIFlux */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AEFE7A0244628E7003057F8 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */;
-			productName = SwiftUIFlux;
 		};
 		6AF016A1246239CD00A51375 /* Introspect */ = {
 			isa = XCSwiftPackageProductDependency;
