@@ -72,7 +72,6 @@ struct ComicPagerOverlay: View {
                         Button(action: {
                             self.activeSheet = .details
                             self.showSheet = true
-                            print("showing", self.showSheet)
                         }) {
                             Image(systemName: "info.circle.fill").font(.system(size: 24))
                         }

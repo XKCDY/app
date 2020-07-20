@@ -10,9 +10,50 @@ import SwiftUI
 import RealmSwift
 import StoreKit
 
+class NotificationPreferenceStore: ObservableObject {
+    @Published var isToggled: Bool {
+        willSet {
+            self.handleNotificationToggle(newValue)
+        }
+    }
+    @Published var showAlert = false
+    @Published var alertTitle = ""
+    @Published var alertMessage = ""
+    @ObservedObject private var userSettings = UserSettings()
+
+    init() {
+        self.isToggled = UserSettings().sendNotifications
+    }
+
+    func handleNotificationToggle(_ toggled: Bool) {
+        if toggled {
+            Notifications.requestPermissionAndRegisterForNotifications { granted in
+                if !granted {
+                    DispatchQueue.main.async {
+                        self.isToggled = false
+                        self.alertTitle = "Whoops..."
+                        self.alertMessage = "Looks like you denied notification permissions. Do you want to open Settings to allow notifications?"
+                        self.showAlert = true
+                    }
+                }
+            }
+        } else {
+            Notifications.unregister()
+        }
+
+        self.userSettings.sendNotifications = toggled
+    }
+
+    func alertClosed() {
+        Notifications.openSettings()
+    }
+}
+
 struct SettingsSheet: View {
     var onDismiss: () -> Void
     @State private var showMarkReadAlert = false
+    @ObservedObject private var notificationPreference = NotificationPreferenceStore()
+    @EnvironmentObject var userSettings: UserSettings
 
     func markAsRead() {
         let realm = try! Realm()
@@ -31,6 +72,8 @@ struct SettingsSheet: View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Miscellaneous Options").font(.system(size: 24))
+
+                    Toggle("Send push notifications", isOn: self.$notificationPreference.isToggled)
 
                     Button(action: {
                         self.showMarkReadAlert = true
@@ -79,6 +122,11 @@ struct SettingsSheet: View {
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .alert(isPresented: self.$notificationPreference.showAlert) {
+            Alert(title: Text(self.notificationPreference.alertTitle), message: Text(self.notificationPreference.alertMessage), primaryButton: Alert.Button.default(Text("OK"), action: {
+                self.notificationPreference.alertClosed()
+            }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
+        }
     }
 }
 

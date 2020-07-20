@@ -16,7 +16,14 @@ class UserSettings: ObservableObject {
         }
     }
 
+    @Published var sendNotifications: Bool {
+        didSet {
+            UserDefaults.standard.set(sendNotifications, forKey: "sendNotifications")
+        }
+    }
+
     init() {
         self.invertImages = UserDefaults.standard.object(forKey: "invertImages") as? Bool ?? false
+        self.sendNotifications = UserDefaults.standard.object(forKey: "sendNotifications") as? Bool ?? false
     }
 }

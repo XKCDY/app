@@ -13,7 +13,6 @@ import class Kingfisher.ImagePrefetcher
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.maxisom.XKCDY.comicFetcher", using: nil) { task in
@@ -35,6 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Disable file protection for this directory
         try! FileManager.default.setAttributes([FileAttributeKey(rawValue: FileAttributeKey.protectionKey.rawValue): FileProtectionType.none], ofItemAtPath: folderPath)
+
+        // Register for push notifications if enabled
+        Notifications.registerIfEnabled()
 
         return true
     }
@@ -98,4 +100,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         scheduleBackgroundRefresh()
     }
 
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Notifications.didRegisterForRemoteNotificationsWithDeviceToken(deviceToken)
+    }
 }
