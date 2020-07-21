@@ -14,6 +14,14 @@ enum ActiveSheet {
     case share, details
 }
 
+struct ButtonBarItem: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 24))
+            .padding(.horizontal)
+    }
+}
+
 struct ComicPagerOverlay: View {
     var comic: Comic
     private var generator = UIImpactFeedbackGenerator()
@@ -61,51 +69,49 @@ struct ComicPagerOverlay: View {
 
                 Spacer()
 
-                VStack {
+                HStack {
+                    Button(action: self.openShareSheet) {
+                        Image(systemName: "square.and.arrow.up").modifier(ButtonBarItem())
+                    }
+
+                    Button(action: {
+                        self.activeSheet = .details
+                        self.showSheet = true
+                    }) {
+                        Image(systemName: "info.circle.fill").modifier(ButtonBarItem())
+                    }
+
                     HStack {
-                        Button(action: self.openShareSheet) {
-                            Image(systemName: "square.and.arrow.up").font(.system(size: 24))
+                        Spacer()
+
+                        Image(systemName: self.comic.isFavorite ? "heart.fill" : "heart")
+                            .modifier(ButtonBarItem())
+                            .foregroundColor(self.comic.isFavorite ? .red : .blue)
+                            .scaleEffect(self.comic.isFavorite ? 1.1 : 1)
+                            .animation(.interactiveSpring())
+
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        self.generator.impactOccurred()
+
+                        let realm = try! Realm()
+
+                        try! realm.write {
+                            self.comic.isFavorite = !self.comic.isFavorite
                         }
+                    }
 
-                        Rectangle().fill(Color.clear).frame(width: 12, height: 24)
+                    // Invisible icon for padding
+                    Image(systemName: "info.circle.fill").modifier(ButtonBarItem()).hidden()
 
-                        Button(action: {
-                            self.activeSheet = .details
-                            self.showSheet = true
-                        }) {
-                            Image(systemName: "info.circle.fill").font(.system(size: 24))
-                        }
-
-                        HStack {
-                            Spacer()
-
-                            Image(systemName: self.comic.isFavorite ? "heart.fill" : "heart")
-                                .font(.system(size: 24))
-                                .foregroundColor(self.comic.isFavorite ? .red : .blue)
-                                .scaleEffect(self.comic.isFavorite ? 1.1 : 1)
-                                .animation(.interactiveSpring())
-
-                            Spacer()
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            self.generator.impactOccurred()
-
-                            let realm = try! Realm()
-
-                            try! realm.write {
-                                self.comic.isFavorite = !self.comic.isFavorite
-                            }
-                        }
-
-                        Rectangle().fill(Color.clear).frame(width: 36, height: 24)
-
-                        Button(action: self.onShuffle) {
-                            Image(systemName: "shuffle").font(.system(size: 24))
-                        }
-                    }.padding()
+                    Button(action: self.onShuffle) {
+                        Image(systemName: "shuffle").modifier(ButtonBarItem())
+                    }
                 }
                 .padding()
+                .padding(.bottom, geom.safeAreaInsets.bottom)
                 .background(Blur())
             }
             .edgesIgnoringSafeArea(.top)
