@@ -49,6 +49,31 @@ final class API {
         }
     }
 
+    static func putDeviceToken(token: String, version: String, completion: @escaping (Result<Void, APIError>) -> Void) {
+        let parameters = [
+            "token": token,
+            "version": version
+        ]
+
+        AF.request("\(BASE_URL)/device-tokens", method: .put, parameters: parameters, encoder: JSONParameterEncoder.default).response { response in
+            if response.error != nil {
+                completion(.failure(.other))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+
+    static func removeDeviceToken(token: String, completion: @escaping (Result<Void, APIError>) -> Void) {
+        AF.request("\(BASE_URL)/device-tokens/\(token)", method: .delete).response { response in
+            if response.error != nil {
+                completion(.failure(.other))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+
     private static func getDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
 

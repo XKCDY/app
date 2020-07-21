@@ -54,10 +54,41 @@ struct Notifications {
     static func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
+
         print("Device Token: \(token)")
+
+        // Store device token
+        UserSettings().deviceToken = token
+
+        guard let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+            return
+        }
+
+        API.putDeviceToken(token: token, version: appVersion) { result in
+            switch result {
+            case .success:
+                print("Registered for notifications with XKCDY")
+            case .failure:
+                print("Failed to register for notifications with XKCDY")
+            }
+        }
     }
 
     static func unregister() {
         print("Unregistering...")
+
+        guard let currentToken = UserSettings().deviceToken else {
+            return
+        }
+
+        API.removeDeviceToken(token: currentToken) { result in
+            switch result {
+            case .success:
+                print("Successfully unregistered.")
+                UserSettings().deviceToken = nil
+            case .failure:
+                print("Failed to unregister.")
+            }
+        }
     }
 }
