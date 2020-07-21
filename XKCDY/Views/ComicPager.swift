@@ -157,7 +157,6 @@ struct ComicPager: View {
 
                 if self.showOverlay && !self.hidden {
                     ComicPagerOverlay(comic: self.getCurrentComic(), onShuffle: self.handleShuffle)
-                        .zIndex(100)
                         .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
                 }
             }
