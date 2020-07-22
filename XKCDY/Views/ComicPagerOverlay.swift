@@ -24,15 +24,17 @@ struct ButtonBarItem: ViewModifier {
 
 struct ComicPagerOverlay: View {
     var comic: Comic
+    @Binding var showSheet: Bool
+    @Binding var activeSheet: ActiveSheet
     private var generator = UIImpactFeedbackGenerator()
     @State private var imageToShare: UIImage?
-    @State private var showSheet = false
-    @State private var activeSheet: ActiveSheet = .details
     @EnvironmentObject var store: Store
     var onShuffle: () -> Void
 
-    init(comic: Comic, onShuffle: @escaping () -> Void) {
+    init(comic: Comic, showSheet: Binding<Bool>, activeSheet: Binding<ActiveSheet>, onShuffle: @escaping () -> Void) {
         self.comic = comic
+        self._showSheet = showSheet
+        self._activeSheet = activeSheet
         self.onShuffle = onShuffle
     }
 
@@ -132,7 +134,7 @@ struct ComicPagerOverlay: View {
 
 struct ComicPagerOverlay_Previews: PreviewProvider {
     static var previews: some View {
-        ComicPagerOverlay(comic: .getSample(), onShuffle: {
+        ComicPagerOverlay(comic: .getSample(), showSheet: .constant(false), activeSheet: .constant(.details), onShuffle: {
             print("shuffling")
         }).colorScheme(.dark)
     }

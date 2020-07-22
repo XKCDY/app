@@ -39,6 +39,8 @@ struct ComicPager: View {
     @State private var imageFrame: CGRect = CGRect()
     @State private var isLoading = true
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
+    @State private var showSheet = false
+    @State private var activeSheet: ActiveSheet = .details
     var comics: Results<Comic>
 
     init(onHide: @escaping () -> Void, comics: Results<Comic>) {
@@ -77,6 +79,12 @@ struct ComicPager: View {
         }
     }
 
+    func handleLongPress() {
+        self.showOverlay = true
+        self.activeSheet = .details
+        self.showSheet = true
+    }
+
     func getCurrentComic() -> Comic {
         return try! Realm().object(ofType: Comic.self, forPrimaryKey: self.store.currentComicId)!
     }
@@ -102,7 +110,7 @@ struct ComicPager: View {
             ZStack {
                 ZStack {
                     Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics), id: \.id, content: { item in
-                        AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap)
+                        AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress)
                             .frame(from: CGRect(origin: .zero, size: geometry.size))
                         )
                     })
@@ -156,7 +164,7 @@ struct ComicPager: View {
                 .onEnded(self.handleDragEnd))
 
                 if self.showOverlay && !self.hidden {
-                    ComicPagerOverlay(comic: self.getCurrentComic(), onShuffle: self.handleShuffle)
+                    ComicPagerOverlay(comic: self.getCurrentComic(), showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle)
                         .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
                 }
             }
