@@ -70,7 +70,6 @@ struct ContentView: View {
                         SettingsSheet(onDismiss: {
                             self.showSettings = false
                         })
-                            .environmentObject(self.userSettings)
                 }
 
                 Spacer()

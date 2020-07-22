@@ -53,7 +53,6 @@ struct SettingsSheet: View {
     var onDismiss: () -> Void
     @State private var showMarkReadAlert = false
     @ObservedObject private var notificationPreference = NotificationPreferenceStore()
-    @EnvironmentObject var userSettings: UserSettings
 
     func markAsRead() {
         let realm = try! Realm()
