@@ -23,12 +23,14 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
     var longPressRecognizer: UILongPressGestureRecognizer!
     var onSingleTap: () -> Void = {}
     var onLongPress: () -> Void = {}
+    var onScale: (CGFloat) -> Void = {_ in}
 
-    convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void, onLongPress: @escaping () -> Void) {
+    convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void, onLongPress: @escaping () -> Void, onScale: @escaping (CGFloat) -> Void) {
         self.init(frame: f)
 
         self.onSingleTap = onSingleTap
         self.onLongPress = onLongPress
+        self.onScale = onScale
 
         imageView = image
 
@@ -76,8 +78,12 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
         if zoomScale == 1 {
             zoom(to: zoomRectForScale(maximumZoomScale, center: doubleTapRecognizer.location(in: doubleTapRecognizer.view)), animated: true)
         } else {
-            setZoomScale(1, animated: true)
+            setZoomScale(minimumZoomScale, animated: true)
         }
+    }
+
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        self.onScale(scale)
     }
 
     @objc private func handleLongPress() {
@@ -103,18 +109,17 @@ struct ZoomableImageView: UIViewRepresentable {
     var imageURL: URL
     var onSingleTap: () -> Void
     var onLongPress: () -> Void
+    var onScale: (CGFloat) -> Void
     var frame: CGRect = .infinite
 
     func makeUIView(context: Context) -> ZoomableImage {
         let image = UIImageView()
         image.kf.setImage(with: imageURL)
 
-        return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap, onLongPress: onLongPress)
+        return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap, onLongPress: onLongPress, onScale: onScale)
     }
 
-    func updateUIView(_ uiView: ZoomableImage, context: Context) {
-        uiView.updateFrame(frame)
-    }
+    func updateUIView(_ uiView: ZoomableImage, context: Context) {}
 }
 
 extension ZoomableImageView {

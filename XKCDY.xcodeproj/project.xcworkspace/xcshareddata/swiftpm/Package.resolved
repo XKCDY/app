@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
         "state": {
           "branch": null,
-          "revision": "2777659076fda38bd4e487739ee331c7a65b5924",
-          "version": "5.2.1"
+          "revision": "becd9a729a37bdbef5bc39dc3c702b99f9e3d046",
+          "version": "5.2.2"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/realm/realm-cocoa",
         "state": {
           "branch": null,
-          "revision": "20091eb21fa0e72b031750a9df158e487b02defd",
-          "version": "5.3.0"
+          "revision": "5d296d8a3750ac86e731263b44e2ba0c3c85f2cb",
+          "version": "5.3.2"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/realm/realm-core",
         "state": {
           "branch": null,
-          "revision": "38307ec3665c2bcd39bfe6425b598332ed87d69f",
-          "version": "6.0.9"
+          "revision": "55a0d32516c0f3a5fd3ab8c0224ee22efcc7cd58",
+          "version": "6.0.12"
         }
       },
       {

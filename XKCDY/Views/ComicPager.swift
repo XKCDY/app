@@ -41,6 +41,7 @@ struct ComicPager: View {
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
     @State private var showSheet = false
     @State private var activeSheet: ActiveSheet = .details
+    @State private var isZoomed = false
     var comics: Results<Comic>
 
     init(onHide: @escaping () -> Void, comics: Results<Comic>) {
@@ -105,15 +106,24 @@ struct ComicPager: View {
         }
     }
 
+    func handleImageScale(_ scale: CGFloat) {
+        if scale == CGFloat(1) {
+            self.isZoomed = false
+        } else {
+            self.isZoomed = true
+        }
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 ZStack {
                     Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics), id: \.id, content: { item in
-                        AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress)
+                        AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
                             .frame(from: CGRect(origin: .zero, size: geometry.size))
                         )
                     })
+                        .allowsDragging(!self.isZoomed)
                         .itemSpacing(self.offset == .zero ? 30 : 1000)
                         .onPageChanged({ newIndex in
                             let currentTimestamp = Date().currentTimeMillis()
@@ -163,10 +173,9 @@ struct ComicPager: View {
                 .onChanged(self.handleDragChange)
                 .onEnded(self.handleDragEnd))
 
-                if self.showOverlay && !self.hidden {
-                    ComicPagerOverlay(comic: self.getCurrentComic(), showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle)
-                        .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
-                }
+                ComicPagerOverlay(comic: self.getCurrentComic(), showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle)
+                    .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
+                    .opacity(self.showOverlay && !self.hidden ? 1 : 0)
             }
         }
         .background(Color(.systemBackground).opacity(self.hidden ? 0 : 1 - Double(abs(self.offset.height) / 200)))
