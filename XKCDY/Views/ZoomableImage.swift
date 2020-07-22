@@ -20,12 +20,15 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
     var imageView: UIImageView!
     var singleTapRecognizer: UITapGestureRecognizer!
     var doubleTapRecognizer: UITapGestureRecognizer!
+    var longPressRecognizer: UILongPressGestureRecognizer!
     var onSingleTap: () -> Void = {}
+    var onLongPress: () -> Void = {}
 
-    convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void) {
+    convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void, onLongPress: @escaping () -> Void) {
         self.init(frame: f)
 
         self.onSingleTap = onSingleTap
+        self.onLongPress = onLongPress
 
         imageView = image
 
@@ -60,6 +63,9 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
         addGestureRecognizer(singleTapRecognizer)
 
         singleTapRecognizer.require(toFail: doubleTapRecognizer)
+
+        longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+        addGestureRecognizer(longPressRecognizer)
     }
 
     @objc private func handleSingleTap() {
@@ -72,6 +78,10 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
         } else {
             setZoomScale(1, animated: true)
         }
+    }
+
+    @objc private func handleLongPress() {
+        onLongPress()
     }
 
     private func zoomRectForScale(_ scale: CGFloat, center: CGPoint) -> CGRect {
@@ -92,13 +102,14 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
 struct ZoomableImageView: UIViewRepresentable {
     var imageURL: URL
     var onSingleTap: () -> Void
+    var onLongPress: () -> Void
     var frame: CGRect = .infinite
 
     func makeUIView(context: Context) -> ZoomableImage {
         let image = UIImageView()
         image.kf.setImage(with: imageURL)
 
-        return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap)
+        return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap, onLongPress: onLongPress)
     }
 
     func updateUIView(_ uiView: ZoomableImage, context: Context) {
