@@ -34,6 +34,7 @@ struct Notifications {
             guard settings.authorizationStatus == .authorized else { return }
 
             DispatchQueue.main.async {
+                print("Registering...")
                 UIApplication.shared.registerForRemoteNotifications()
             }
         }
