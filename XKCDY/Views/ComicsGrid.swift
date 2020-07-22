@@ -17,7 +17,7 @@ enum ScrollDirection {
 
 class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayoutDelegate {
     func heightForHeader(sectionIndex: Int) -> CGFloat? {
-        80
+        0
     }
 
     func heightForCell(at indexPath: IndexPath, context: ASWaterfallLayout.CellLayoutContext) -> CGFloat {
@@ -109,7 +109,7 @@ struct ComicsGridView: View {
             .scrollPositionSetter(self.$scrollPosition)
             .layout(self.layout)
             .customDelegate(WaterfallScreenLayoutDelegate.init)
-            .contentInsets(.init(top: 0, left: 10, bottom: 0, right: 10))
+            .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
             .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
                 if self.store.currentComicId == nil {
                     return
