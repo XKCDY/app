@@ -11,6 +11,7 @@
 		6A20865E248415A7002C98E5 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A20865D248415A7002C98E5 /* Store.swift */; };
 		6A40086524C14F6B009AE2D9 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */; };
 		6A4A353E24BA48C700D4EDED /* ComicGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */; };
+		6A53239424C50D8A003D0D12 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A53239324C50D8A003D0D12 /* Notifications.swift */; };
 		6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A5430E624994A6500C92B78 /* RealmSwift */; };
 		6A60FB7A244535A70070A76B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB79244535A70070A76B /* AppDelegate.swift */; };
 		6A60FB7C244535A70070A76B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB7B244535A70070A76B /* SceneDelegate.swift */; };
@@ -97,6 +98,7 @@
 		6A20865D248415A7002C98E5 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicGridItem.swift; sourceTree = "<group>"; };
+		6A53239324C50D8A003D0D12 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		6A60FB76244535A70070A76B /* XKCDY.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XKCDY.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A60FB79244535A70070A76B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A60FB7B244535A70070A76B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 				6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */,
 				6A20865D248415A7002C98E5 /* Store.swift */,
 				6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */,
+				6A53239324C50D8A003D0D12 /* Notifications.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -535,6 +538,7 @@
 				6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */,
 				6AE116F4246653CE00194F57 /* ComicPager.swift in Sources */,
 				6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */,
+				6A53239424C50D8A003D0D12 /* Notifications.swift in Sources */,
 				6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */,
 				6AE116F02465F82B00194F57 /* ShareSheet.swift in Sources */,
 				6ACD2C6024C298D000D6EFE1 /* UserSettings.swift in Sources */,

@@ -14,13 +14,14 @@ struct ContentView: View {
     @State private var isSearching = false
     @State private var searchText = ""
     private var oldFavorites: [Int] = []
-    @EnvironmentObject var store: Store
+    @EnvironmentObject private var store: Store
     @State private var pagerOffset: CGPoint = .zero
     @State private var isPagerHidden = false
     @EnvironmentObject var comics: RealmSwift.List<Comic>
     let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
     @State private var scrollDirection: ScrollDirection = .up
     @State private var showSettings = false
+    @EnvironmentObject private var userSettings: UserSettings
 
     func hidePager() {
         store.showPager = false
