@@ -57,7 +57,11 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
+            if self.filteredCollection().count > 0 {
+                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
+            } else if self.store.selectedPage == .favorites {
+                Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
+            }
 
             VStack {
                 FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
