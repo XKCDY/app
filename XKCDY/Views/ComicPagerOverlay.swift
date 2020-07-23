@@ -19,6 +19,7 @@ struct ButtonBarItem: ViewModifier {
         content
             .font(.system(size: 24))
             .padding(.horizontal)
+            .padding(.top)
     }
 }
 
@@ -36,6 +37,7 @@ struct ComicPagerOverlay: View {
         self._showSheet = showSheet
         self._activeSheet = activeSheet
         self.onShuffle = onShuffle
+        self.generator.prepare()
     }
 
     private func openShareSheet() {
@@ -86,11 +88,22 @@ struct ComicPagerOverlay: View {
                     HStack {
                         Spacer()
 
-                        Image(systemName: self.comic.isFavorite ? "heart.fill" : "heart")
-                            .modifier(ButtonBarItem())
-                            .foregroundColor(self.comic.isFavorite ? .red : .blue)
-                            .scaleEffect(self.comic.isFavorite ? 1.1 : 1)
-                            .animation(.interactiveSpring())
+                        ZStack {
+                            Image(systemName: "heart.fill")
+                                .opacity(self.comic.isFavorite ? 1 : 0)
+                                .animation(.none)
+                                .scaleEffect(self.comic.isFavorite ? 1 : 0)
+                                .foregroundColor(.red)
+
+                            Image(systemName: "heart")
+                                .opacity(self.comic.isFavorite ? 0 : 1)
+                                .animation(.none)
+                                .scaleEffect(self.comic.isFavorite ? 0 : 1)
+                                .foregroundColor(.accentColor)
+                        }
+                        .modifier(ButtonBarItem())
+                        .scaleEffect(self.comic.isFavorite ? 1.1 : 1)
+                        .animation(.interpolatingSpring(stiffness: 180, damping: 15))
 
                         Spacer()
                     }
