@@ -30,7 +30,7 @@
 		6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */; };
 		6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */; };
 		6AA0123B24B6538700F51ABF /* WebView in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123A24B6538700F51ABF /* WebView */; };
-		6AA0123D24B6643000F51ABF /* UncontrolledWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123C24B6643000F51ABF /* UncontrolledWebView.swift */; };
+		6AA0123D24B6643000F51ABF /* ControlledWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123C24B6643000F51ABF /* ControlledWebView.swift */; };
 		6AAE174E24B7968E00181C4B /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 6AAE174D24B7968E00181C4B /* Intents.intentdefinition */; };
 		6AAE177F24B79CD700181C4B /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AAE177E24B79CD700181C4B /* IntentHandler.swift */; };
 		6AAE178324B79CD700181C4B /* XKCDYIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6AAE177C24B79CD700181C4B /* XKCDYIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -116,7 +116,7 @@
 		6A7D1C9424B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLatestComicIntentHandler.swift; sourceTree = "<group>"; };
 		6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicDetailsSheet.swift; sourceTree = "<group>"; };
-		6AA0123C24B6643000F51ABF /* UncontrolledWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncontrolledWebView.swift; sourceTree = "<group>"; };
+		6AA0123C24B6643000F51ABF /* ControlledWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlledWebView.swift; sourceTree = "<group>"; };
 		6AAE174D24B7968E00181C4B /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Intents.intentdefinition; path = XKCDY/Intents.intentdefinition; sourceTree = SOURCE_ROOT; };
 		6AAE175124B79B8B00181C4B /* XKCDY.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDY.entitlements; sourceTree = "<group>"; };
 		6AAE176124B79BCD00181C4B /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
@@ -263,7 +263,7 @@
 				6AE116F3246653CE00194F57 /* ComicPager.swift */,
 				6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */,
 				6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */,
-				6AA0123C24B6643000F51ABF /* UncontrolledWebView.swift */,
+				6AA0123C24B6643000F51ABF /* ControlledWebView.swift */,
 				6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */,
 				6AF1386424BF8F64005579D2 /* FloatingButtons.swift */,
 				6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */,
@@ -410,7 +410,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1150;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Max Isom";
 				TargetAttributes = {
 					6A60FB75244535A70070A76B = {
@@ -531,7 +531,7 @@
 				6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */,
 				6AAE174E24B7968E00181C4B /* Intents.intentdefinition in Sources */,
 				6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */,
-				6AA0123D24B6643000F51ABF /* UncontrolledWebView.swift in Sources */,
+				6AA0123D24B6643000F51ABF /* ControlledWebView.swift in Sources */,
 				6AECCFD024B0DBD1006BC9D9 /* XKCDYClient.swift in Sources */,
 				6AEB62B82463A333001FAF67 /* ZoomableImage.swift in Sources */,
 				6AE0D7B4244FBC9C00AE982C /* SearchBar.swift in Sources */,
@@ -633,6 +633,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -695,6 +696,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -783,6 +785,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = DCKXTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -804,6 +807,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = DCKXTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -824,6 +828,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = DCKXUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -843,6 +848,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = DCKXUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

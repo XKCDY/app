@@ -7,12 +7,13 @@
 //
 
 import SwiftUI
+import WebView
 
 struct ComicDetailsSheet: View {
     var comic: Comic
     var onDismiss: () -> Void
     @State private var showSheet = false
-    @State private var sheetUrl: URL?
+    @ObservedObject var webViewStore = WebViewStore()
 
     func getDateFormatter() -> DateFormatter {
         let formatter = DateFormatter()
@@ -49,7 +50,7 @@ struct ComicDetailsSheet: View {
 
                     Button(action: {
                         if let explainURL = self.comic.explainURL {
-                            self.sheetUrl = explainURL
+                            self.webViewStore.webView.load(URLRequest(url: explainURL))
                             self.showSheet = true
                         }
                     }) {
@@ -59,7 +60,7 @@ struct ComicDetailsSheet: View {
                     if self.comic.interactiveUrl != nil {
                         Button(action: {
                             if let interactiveURL = self.comic.interactiveUrl {
-                                self.sheetUrl = interactiveURL
+                                self.webViewStore.webView.load(URLRequest(url: interactiveURL))
                                 self.showSheet = true
                             }
                         }) {
@@ -77,9 +78,9 @@ struct ComicDetailsSheet: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $showSheet) {
-                UncontrolledWebView(url: self.sheetUrl ?? URL(string: "https://xkcdy.com")!, onDismiss: {
+                ControlledWebView(onDismiss: {
                     self.showSheet = false
-            })
+                }, webViewStore: self.webViewStore)
         }
     }
 }

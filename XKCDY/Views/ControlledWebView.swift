@@ -39,9 +39,6 @@ struct ControlledWebView: View {
             .edgesIgnoringSafeArea(.bottom)
         }
         .navigationViewStyle(StackNavigationViewStyle())
-//        .onAppear {
-//            self.webViewStore.webView.load(URLRequest(url: self.url))
-//        }
     }
 
     func goBack() {
@@ -55,6 +52,6 @@ struct ControlledWebView: View {
 
 struct UncontrolledWebView_Previews: PreviewProvider {
     static var previews: some View {
-        ControlledWebView(url: URL(string: "https://apple.com")!, onDismiss: {}, webViewStore: WebViewStore())
+        ControlledWebView(onDismiss: {}, webViewStore: WebViewStore())
     }
 }
