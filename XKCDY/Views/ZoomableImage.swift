@@ -3,7 +3,7 @@ import SwiftUI
 import Kingfisher
 
 class UIShortTapGestureRecognizer: UITapGestureRecognizer {
-    let tapMaxDelay: Double = 0.2 //anything below 0.3 may cause doubleTap to be inaccessible by many users
+    let tapMaxDelay: Double = 0.3 //anything below 0.3 may cause doubleTap to be inaccessible by many users
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         super.touchesBegan(touches, with: event)
