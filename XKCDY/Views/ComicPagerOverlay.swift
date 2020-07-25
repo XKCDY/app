@@ -8,6 +8,7 @@
 
 import SwiftUI
 import RealmSwift
+import StoreKit
 import class Kingfisher.ImageCache
 
 enum ActiveSheet {
@@ -115,6 +116,13 @@ struct ComicPagerOverlay: View {
 
                         try! realm.write {
                             self.comic.isFavorite = !self.comic.isFavorite
+                        }
+
+                        // Request review if appropriate
+                        let numberOfFavoritedComics = realm.objects(Comic.self).filter {$0.isFavorite}.count
+
+                        if numberOfFavoritedComics == 2 {
+                            SKStoreReviewController.requestReview()
                         }
                     }
 
