@@ -21,7 +21,6 @@ struct ContentView: View {
     let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
     @State private var scrollDirection: ScrollDirection = .up
     @State private var showSettings = false
-    @EnvironmentObject private var userSettings: UserSettings
 
     func hidePager() {
         store.showPager = false

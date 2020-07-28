@@ -21,6 +21,10 @@
 		6A60FB86244535A90070A76B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A60FB84244535A90070A76B /* LaunchScreen.storyboard */; };
 		6A60FB91244535A90070A76B /* XKCDYTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB90244535A90070A76B /* XKCDYTests.swift */; };
 		6A60FB9C244535A90070A76B /* XKCDYUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB9B244535A90070A76B /* XKCDYUITests.swift */; };
+		6A64932724CDF0A9004BC488 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A64932624CDF0A9004BC488 /* StoreKit.framework */; };
+		6A64932E24CDF2CF004BC488 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A64932D24CDF2CF004BC488 /* SwiftyStoreKit */; };
+		6A64933024CE08C3004BC488 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A64932F24CE08C3004BC488 /* IAPHelper.swift */; };
+		6A64933324CE6F87004BC488 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 6A64933224CE6F87004BC488 /* TPInAppReceipt */; };
 		6A7D1C9524B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7D1C9424B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift */; };
 		6A7D1C9624B8E502005F2F9A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A20865D248415A7002C98E5 /* Store.swift */; };
 		6A7D1C9724B8E562005F2F9A /* XKCDYClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */; };
@@ -113,6 +117,8 @@
 		6A60FB97244535A90070A76B /* XKCDYUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XKCDYUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A60FB9B244535A90070A76B /* XKCDYUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XKCDYUITests.swift; sourceTree = "<group>"; };
 		6A60FB9D244535A90070A76B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6A64932624CDF0A9004BC488 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		6A64932F24CE08C3004BC488 /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		6A7D1C9424B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLatestComicIntentHandler.swift; sourceTree = "<group>"; };
 		6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicDetailsSheet.swift; sourceTree = "<group>"; };
@@ -145,8 +151,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A64932724CDF0A9004BC488 /* StoreKit.framework in Frameworks */,
 				6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */,
 				6ADBCBD42447B65100594DBD /* Alamofire in Frameworks */,
+				6A64932E24CDF2CF004BC488 /* SwiftyStoreKit in Frameworks */,
+				6A64933324CE6F87004BC488 /* TPInAppReceipt in Frameworks */,
 				6AEB62B4246373E7001FAF67 /* SwiftUIPager in Frameworks */,
 				6AA0123B24B6538700F51ABF /* WebView in Frameworks */,
 				6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */,
@@ -275,6 +284,7 @@
 		6AAE176024B79BCD00181C4B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6A64932624CDF0A9004BC488 /* StoreKit.framework */,
 				6AAE176124B79BCD00181C4B /* IntentsUI.framework */,
 			);
 			name = Frameworks;
@@ -300,6 +310,7 @@
 				6A20865D248415A7002C98E5 /* Store.swift */,
 				6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */,
 				6A53239324C50D8A003D0D12 /* Notifications.swift */,
+				6A64932F24CE08C3004BC488 /* IAPHelper.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -340,6 +351,8 @@
 				6AA0123324B62C7000F51ABF /* Kingfisher */,
 				6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */,
 				6AA0123A24B6538700F51ABF /* WebView */,
+				6A64932D24CDF2CF004BC488 /* SwiftyStoreKit */,
+				6A64933224CE6F87004BC488 /* TPInAppReceipt */,
 			);
 			productName = DCKX;
 			productReference = 6A60FB76244535A70070A76B /* XKCDY.app */;
@@ -446,6 +459,8 @@
 				6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				6AA0123924B6538700F51ABF /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */,
+				6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				6A64933124CE6F87004BC488 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
 			);
 			productRefGroup = 6A60FB77244535A70070A76B /* Products */;
 			projectDirPath = "";
@@ -537,6 +552,7 @@
 				6AE0D7B4244FBC9C00AE982C /* SearchBar.swift in Sources */,
 				6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */,
 				6AE116F4246653CE00194F57 /* ComicPager.swift in Sources */,
+				6A64933024CE08C3004BC488 /* IAPHelper.swift in Sources */,
 				6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */,
 				6A53239424C50D8A003D0D12 /* Notifications.swift in Sources */,
 				6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */,
@@ -976,6 +992,22 @@
 				minimumVersion = 5.0.3;
 			};
 		};
+		6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.16.1;
+			};
+		};
+		6A64933124CE6F87004BC488 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tikhop/TPInAppReceipt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.2;
+			};
+		};
 		6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -1028,6 +1060,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
+		};
+		6A64932D24CDF2CF004BC488 /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
+		};
+		6A64933224CE6F87004BC488 /* TPInAppReceipt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A64933124CE6F87004BC488 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */;
+			productName = TPInAppReceipt;
 		};
 		6A7D1C9824B8E57F005F2F9A /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -9,28 +9,33 @@
 import Foundation
 import Combine
 
-class UserSettings: ObservableObject {
-    @Published var invertImages: Bool {
-        didSet {
-            UserDefaults.standard.set(invertImages, forKey: "invertImages")
-        }
-    }
+@propertyWrapper
+struct UserDefault<T> {
+  let key: String
+  let defaultValue: T
 
-    @Published var sendNotifications: Bool {
-        didSet {
-            UserDefaults.standard.set(sendNotifications, forKey: "sendNotifications")
-        }
+  var wrappedValue: T {
+    get {
+      return UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
     }
+    set {
+      UserDefaults.standard.set(newValue, forKey: key)
+    }
+  }
+}
 
-    @Published var deviceToken: String? {
-        didSet {
-            UserDefaults.standard.set(deviceToken, forKey: "deviceToken")
-        }
-    }
+final class UserSettings: ObservableObject {
+    let objectWillChange = ObservableObjectPublisher()
+
+    @UserDefault(key: "sendNotifications", defaultValue: false) var sendNotifications: Bool
+    @UserDefault(key: "deviceToken", defaultValue: nil) var deviceToken: String?
+    @UserDefault(key: "isSubscribedToPro", defaultValue: false) var isSubscribedToPro: Bool
+
+    private var notificationSubscription: AnyCancellable?
 
     init() {
-        self.invertImages = UserDefaults.standard.object(forKey: "invertImages") as? Bool ?? false
-        self.sendNotifications = UserDefaults.standard.object(forKey: "sendNotifications") as? Bool ?? false
-        self.deviceToken = UserDefaults.standard.object(forKey: "deviceToken") as? String ?? nil
+        notificationSubscription = NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification).sink { _ in
+            self.objectWillChange.send()
+        }
     }
 }

@@ -9,6 +9,7 @@
 import UIKit
 import BackgroundTasks
 import RealmSwift
+import SwiftyStoreKit
 import class Kingfisher.ImagePrefetcher
 
 @UIApplicationMain
@@ -19,6 +20,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // swiftlint:disable:next force_cast
             self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
         }
+
+        // Add transaction observer
+        SwiftyStoreKit.completeTransactions(atomically: true) { _ in
+            do {
+                try IAPHelper.checkForPurchaseAndUpdate()
+            } catch {}
+        }
+
+        // Look for receipt and update server state
+        do {
+            try IAPHelper.checkForPurchaseAndUpdate()
+        } catch {}
 
         // Set Realm file location
         let realmFileURL = FileManager.default

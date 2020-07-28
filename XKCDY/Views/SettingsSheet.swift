@@ -9,6 +9,15 @@
 import SwiftUI
 import RealmSwift
 import StoreKit
+import SwiftyStoreKit
+
+let XKCDY_PRO_DESCRIPTION = """
+XKCDY Pro is a feature pack. Because notifications result in ongoing server costs, this is a subscription. Pro includes:
+    • Notifications when new comics are published
+    • Ability to set a custom accent color
+    • Custom app icons
+    • Support XKCDY's development
+"""
 
 class NotificationPreferenceStore: ObservableObject {
     @Published var isToggled: Bool {
@@ -49,10 +58,39 @@ class NotificationPreferenceStore: ObservableObject {
     }
 }
 
+struct SettingsGroup<Content: View>: View {
+    let label: String
+    let content: Content
+
+    init(label: String, @ViewBuilder content: () -> Content) {
+        self.label = label
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(self.label).font(Font.title.bold())
+
+            content
+        }
+        .padding(.bottom, 30)
+    }
+}
+
 struct SettingsSheet: View {
     var onDismiss: () -> Void
     @State private var showMarkReadAlert = false
     @ObservedObject private var notificationPreference = NotificationPreferenceStore()
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var showAlert = false
+    @ObservedObject private var userSettings = UserSettings()
+
+    func openAlert(title: String, message: String) {
+        self.alertTitle = title
+        self.alertMessage = message
+        self.showAlert = true
+    }
 
     func markAsRead() {
         let realm = try! Realm()
@@ -66,25 +104,74 @@ struct SettingsSheet: View {
         } catch { }
     }
 
+    func showPurchaseResult(result: PurchaseResult) {
+        switch result {
+        case .success:
+            self.openAlert(title: "Success!", message: "You are now subscribed to XKCDY Pro.")
+        case .error(let error):
+            let errorMessage = SKErrorCodeMapping[error.code] ?? "Unknown error. Please contact support."
+
+            self.openAlert(title: "Something went wrong", message: errorMessage)
+        }
+    }
+
+    func handlePurchase() {
+        IAPHelper.purchasePro(completion: self.showPurchaseResult)
+    }
+
+    func handleRestorePurchase() {
+        IAPHelper.restorePurchases { result in
+            print(result)
+            switch result {
+            case .success:
+                self.openAlert(title: "Success!", message: "Purchase was restored.")
+            case .failure(let error):
+                switch error {
+                case .restoreFailed:
+                    self.openAlert(title: "Something went wrong", message: "Purchase restore failed.")
+                case .noPreviousValidPurchaseFound:
+                    self.openAlert(title: "Something went wrong", message: "No previous valid purchase found.")
+                }
+            }
+        }
+    }
+
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Miscellaneous Options").font(.system(size: 24))
+                SettingsGroup(label: "XKCDY Pro") {
+                    Text(XKCDY_PRO_DESCRIPTION).lineLimit(nil).padding(.bottom, 10)
 
-                    Toggle("Send push notifications", isOn: self.$notificationPreference.isToggled)
+                    HStack {
+                        Button(action: self.handlePurchase) {
+                            Image(systemName: "bag.fill")
 
+                            Text("$2.99 / year")
+                        }
+                        .padding(10)
+                        .foregroundColor(Color.white)
+                        .background(Color.accentColor)
+                        .cornerRadius(8)
+
+                        Button(action: self.handleRestorePurchase) {
+                            Text("Restore purchase")
+                        }
+                    }
+
+                    if self.userSettings.isSubscribedToPro {
+                        Text("Subscribed to pro")
+                    }
+                }
+
+                SettingsGroup(label: "Options") {
                     Button(action: {
                         self.showMarkReadAlert = true
                     }) {
                         Text("Mark all as read")
                     }
                 }
-                .padding(.bottom)
 
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Feedback").font(.system(size: 24))
-
+                SettingsGroup(label: "Feedback") {
                     Button(action: {
                         UIApplication.shared.open(URL(string: "mailto:app@xkcdy.com")!)
                     }) {
@@ -114,10 +201,13 @@ struct SettingsSheet: View {
                     Text("Done")
                 }
             })
-                .alert(isPresented: $showMarkReadAlert) {
-                    Alert(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
-                        self.markAsRead()
-                    }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
+            .alert(isPresented: $showMarkReadAlert) {
+                Alert(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
+                    self.markAsRead()
+                }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(self.alertTitle), message: Text(self.alertMessage))
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())

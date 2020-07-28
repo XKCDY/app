@@ -65,12 +65,14 @@ struct Notifications {
             return
         }
 
-        API.putDeviceToken(token: token, version: appVersion) { result in
-            switch result {
-            case .success:
-                print("Registered for notifications with XKCDY")
-            case .failure:
-                print("Failed to register for notifications with XKCDY")
+        if UserSettings().isSubscribedToPro {
+            API.putDeviceToken(token: token, version: appVersion) { result in
+                switch result {
+                case .success:
+                    print("Registered for notifications with XKCDY")
+                case .failure:
+                    print("Failed to register for notifications with XKCDY")
+                }
             }
         }
     }
@@ -78,11 +80,11 @@ struct Notifications {
     static func unregister() {
         print("Unregistering...")
 
-        guard let currentToken = UserSettings().deviceToken else {
+        guard let deviceToken = UserSettings().deviceToken else {
             return
         }
 
-        API.removeDeviceToken(token: currentToken) { result in
+        API.removeDeviceToken(token: deviceToken) { result in
             switch result {
             case .success:
                 print("Successfully unregistered.")
