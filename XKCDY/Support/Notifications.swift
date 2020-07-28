@@ -80,15 +80,16 @@ struct Notifications {
     static func unregister() {
         print("Unregistering...")
 
-        guard let deviceToken = UserSettings().deviceToken else {
+        if UserSettings().deviceToken == "" {
             return
         }
 
-        API.removeDeviceToken(token: deviceToken) { result in
+        API.removeDeviceToken(token: UserSettings().deviceToken) { result in
             switch result {
             case .success:
                 print("Successfully unregistered.")
-                UserSettings().deviceToken = nil
+                UserSettings().deviceToken = ""
+                UserSettings().sendNotifications = false
             case .failure:
                 print("Failed to unregister.")
             }

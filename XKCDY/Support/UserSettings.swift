@@ -28,7 +28,7 @@ final class UserSettings: ObservableObject {
     let objectWillChange = ObservableObjectPublisher()
 
     @UserDefault(key: "sendNotifications", defaultValue: false) var sendNotifications: Bool
-    @UserDefault(key: "deviceToken", defaultValue: nil) var deviceToken: String?
+    @UserDefault(key: "deviceToken", defaultValue: "") var deviceToken: String
     @UserDefault(key: "isSubscribedToPro", defaultValue: false) var isSubscribedToPro: Bool
 
     private var notificationSubscription: AnyCancellable?

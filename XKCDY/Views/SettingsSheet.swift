@@ -77,19 +77,22 @@ struct SettingsGroup<Content: View>: View {
     }
 }
 
+struct AlertItem: Identifiable {
+    var id = UUID()
+    var title: Text
+    var message: Text?
+    var primaryButton: Alert.Button = Alert.Button.default(Text("OK"))
+    var dismissButton: Alert.Button = Alert.Button.cancel(Text("Cancel"))
+}
+
 struct SettingsSheet: View {
     var onDismiss: () -> Void
-    @State private var showMarkReadAlert = false
     @ObservedObject private var notificationPreference = NotificationPreferenceStore()
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alertItem: AlertItem?
     @ObservedObject private var userSettings = UserSettings()
 
     func openAlert(title: String, message: String) {
-        self.alertTitle = title
-        self.alertMessage = message
-        self.showAlert = true
+        self.alertItem = AlertItem(title: Text(title), message: Text(message))
     }
 
     func markAsRead() {
@@ -121,7 +124,6 @@ struct SettingsSheet: View {
 
     func handleRestorePurchase() {
         IAPHelper.restorePurchases { result in
-            print(result)
             switch result {
             case .success:
                 self.openAlert(title: "Success!", message: "Purchase was restored.")
@@ -140,32 +142,34 @@ struct SettingsSheet: View {
         NavigationView {
             VStack(alignment: .leading) {
                 SettingsGroup(label: "XKCDY Pro") {
-                    Text(XKCDY_PRO_DESCRIPTION).lineLimit(nil).padding(.bottom, 10)
-
-                    HStack {
-                        Button(action: self.handlePurchase) {
-                            Image(systemName: "bag.fill")
-
-                            Text("$2.99 / year")
-                        }
-                        .padding(10)
-                        .foregroundColor(Color.white)
-                        .background(Color.accentColor)
-                        .cornerRadius(8)
-
-                        Button(action: self.handleRestorePurchase) {
-                            Text("Restore purchase")
-                        }
-                    }
-
                     if self.userSettings.isSubscribedToPro {
-                        Text("Subscribed to pro")
+                        Toggle("Send notifications for new comics", isOn: self.$notificationPreference.isToggled)
+                    } else {
+                        Text(XKCDY_PRO_DESCRIPTION).lineLimit(nil).padding(.bottom, 10)
+
+                        HStack {
+                            Button(action: self.handlePurchase) {
+                                Image(systemName: "bag.fill")
+
+                                Text("$2.99 / year")
+                            }
+                            .padding(10)
+                            .foregroundColor(Color.white)
+                            .background(Color.accentColor)
+                            .cornerRadius(8)
+
+                            Button(action: self.handleRestorePurchase) {
+                                Text("Restore purchase")
+                            }
+                        }
                     }
                 }
 
                 SettingsGroup(label: "Options") {
                     Button(action: {
-                        self.showMarkReadAlert = true
+                        self.alertItem = AlertItem(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
+                            self.markAsRead()
+                        }))
                     }) {
                         Text("Mark all as read")
                     }
@@ -201,16 +205,12 @@ struct SettingsSheet: View {
                     Text("Done")
                 }
             })
-            .alert(isPresented: $showMarkReadAlert) {
-                Alert(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
-                    self.markAsRead()
-                }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
-            }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(self.alertTitle), message: Text(self.alertMessage))
+            .alert(item: $alertItem) { alertItem in
+                Alert(title: alertItem.title, message: alertItem.message, primaryButton: alertItem.primaryButton, secondaryButton: alertItem.dismissButton)
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        // Yes, this is hacky but it works for now
         .alert(isPresented: self.$notificationPreference.showAlert) {
             Alert(title: Text(self.notificationPreference.alertTitle), message: Text(self.notificationPreference.alertMessage), primaryButton: Alert.Button.default(Text("OK"), action: {
                 self.notificationPreference.alertClosed()
