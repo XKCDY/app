@@ -81,6 +81,24 @@
           "revision": "51c81003d87bea61a171f4f5dd3cbb3f719c9941",
           "version": "1.9.0"
         }
+      },
+      {
+        "package": "SwiftyStoreKit",
+        "repositoryURL": "https://github.com/bizz84/SwiftyStoreKit.git",
+        "state": {
+          "branch": null,
+          "revision": "9974acf07b31b6f5bf363d5118dc1bd4fcac6122",
+          "version": "0.16.1"
+        }
+      },
+      {
+        "package": "TPInAppReceipt",
+        "repositoryURL": "https://github.com/tikhop/TPInAppReceipt.git",
+        "state": {
+          "branch": null,
+          "revision": "61591a73792280d73baade63f2429b87e0659125",
+          "version": "2.6.2"
+        }
       }
     ]
   },
