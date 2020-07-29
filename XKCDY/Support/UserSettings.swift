@@ -8,20 +8,21 @@
 
 import Foundation
 import Combine
+import UIKit
 
 @propertyWrapper
 struct UserDefault<T> {
-  let key: String
-  let defaultValue: T
+    let key: String
+    let defaultValue: T
 
-  var wrappedValue: T {
-    get {
-      return UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
+    var wrappedValue: T {
+        get {
+            return UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: key)
+        }
     }
-    set {
-      UserDefaults.standard.set(newValue, forKey: key)
-    }
-  }
 }
 
 final class UserSettings: ObservableObject {
@@ -30,6 +31,28 @@ final class UserSettings: ObservableObject {
     @UserDefault(key: "sendNotifications", defaultValue: false) var sendNotifications: Bool
     @UserDefault(key: "deviceToken", defaultValue: "") var deviceToken: String
     @UserDefault(key: "isSubscribedToPro", defaultValue: false) var isSubscribedToPro: Bool
+    var tintColor: UIColor {
+        get {
+            if let colorData = UserDefaults.standard.data(forKey: "tintColor") {
+                do {
+                    if let color = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(colorData) as? UIColor {
+                        return color
+                    }
+                } catch {}
+            }
+
+            return UIColor.systemBlue
+        }
+        set {
+            var colorData: NSData?
+            do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: newValue, requiringSecureCoding: false) as NSData?
+                colorData = data
+            } catch {}
+
+            UserDefaults.standard.set(colorData, forKey: "tintColor")
+        }
+    }
 
     private var notificationSubscription: AnyCancellable?
 

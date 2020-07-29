@@ -81,8 +81,8 @@ struct AlertItem: Identifiable {
     var id = UUID()
     var title: Text
     var message: Text?
-    var primaryButton: Alert.Button = Alert.Button.default(Text("OK"))
-    var dismissButton: Alert.Button = Alert.Button.cancel(Text("Cancel"))
+    var primaryButton: Alert.Button?
+    var dismissButton = Alert.Button.cancel(Text("Cancel"))
 }
 
 struct SettingsSheet: View {
@@ -144,6 +144,14 @@ struct SettingsSheet: View {
                 SettingsGroup(label: "XKCDY Pro") {
                     if self.userSettings.isSubscribedToPro {
                         Toggle("Send notifications for new comics", isOn: self.$notificationPreference.isToggled)
+
+                        NavigationLink(destination: TintColorPicker()) {
+                            Text("Change accent color")
+                        }
+
+                        NavigationLink(destination: AppIconPicker()) {
+                            Text("Change app icon")
+                        }
                     } else {
                         Text(XKCDY_PRO_DESCRIPTION).lineLimit(nil).padding(.bottom, 10)
 
@@ -206,7 +214,11 @@ struct SettingsSheet: View {
                 }
             })
             .alert(item: $alertItem) { alertItem in
-                Alert(title: alertItem.title, message: alertItem.message, primaryButton: alertItem.primaryButton, secondaryButton: alertItem.dismissButton)
+                if let primaryButton = alertItem.primaryButton {
+                    return Alert(title: alertItem.title, message: alertItem.message, primaryButton: primaryButton, secondaryButton: alertItem.dismissButton)
+                }
+
+                return Alert(title: alertItem.title, message: alertItem.message)
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())

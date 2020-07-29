@@ -9,6 +9,7 @@
 import UIKit
 import SwiftUI
 import RealmSwift
+import Combine
 
 class AnyGestureRecognizer: UIGestureRecognizer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -39,6 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     var store = Store()
+    var notificationSubscriptions: [AnyCancellable] = []
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -77,6 +79,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             tapGesture.delegate = self //I don't use window as delegate to minimize possible side effects
             window.addGestureRecognizer(tapGesture)
 
+            // Set and update tint color
+            let userSettings = UserSettings()
+            window.tintColor = userSettings.tintColor
+
+            notificationSubscriptions.append(userSettings.objectWillChange.sink {
+                window.tintColor = userSettings.tintColor
+            })
+
+            // Check for initial URL
             self.navigate(connectionOptions.urlContexts)
         }
     }
