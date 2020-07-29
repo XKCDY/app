@@ -119,7 +119,14 @@ struct ZoomableImageView: UIViewRepresentable {
         return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap, onLongPress: onLongPress, onScale: onScale)
     }
 
-    func updateUIView(_ uiView: ZoomableImage, context: Context) {}
+    func updateUIView(_ uiView: ZoomableImage, context: Context) {
+        if uiView.frame != frame {
+            uiView.updateFrame(frame)
+            uiView.zoomScale = 1
+            uiView.contentSize = uiView.imageView.image?.size ?? .zero
+            uiView.imageView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+        }
+    }
 }
 
 extension ZoomableImageView {

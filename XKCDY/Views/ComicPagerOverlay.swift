@@ -138,6 +138,7 @@ struct ComicPagerOverlay: View {
                 .background(Blur())
             }
             .edgesIgnoringSafeArea(.top)
+            .edgesIgnoringSafeArea(.horizontal)
         }
         .sheet(isPresented: self.$showSheet) {
             if self.activeSheet == .share {
