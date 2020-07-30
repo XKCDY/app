@@ -68,11 +68,10 @@ struct ComicsGridView: View {
                     data: self.comics,
                     dataID: \.self,
                     onCellEvent: self.onCellEvent) { comic, _ -> AnyView in
-                        if self.hideCurrentComic && comic.id == self.store.currentComicId {
-                            return AnyView(ComicGridItem(comic: comic, onTap: self.handleComicTap).hidden())
-                        }
-
-                        return AnyView(ComicGridItem(comic: comic, onTap: self.handleComicTap))
+                        AnyView(
+                            ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId)
+                                .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
+                        )
             })
                 .onPullToRefresh { endRefreshing in
                     DispatchQueue.global(qos: .background).async {
