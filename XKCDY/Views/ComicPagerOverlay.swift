@@ -137,7 +137,7 @@ struct ComicPagerOverlay: View {
                 .padding(.bottom, geom.safeAreaInsets.bottom)
                 .background(Blur())
             }
-            .edgesIgnoringSafeArea(.top)
+            .edgesIgnoringSafeArea(.all)
         }
         .sheet(isPresented: self.$showSheet) {
             if self.activeSheet == .share {

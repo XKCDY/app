@@ -32,6 +32,7 @@ extension View {
 struct ComicGridItem: View {
     var comic: Comic
     var onTap: (Int) -> Void
+    var hideBadge = false
     @EnvironmentObject var store: Store
     @State private var pulseEnded = false
     @State private var isLoaded = false
@@ -43,9 +44,9 @@ struct ComicGridItem: View {
             let stack = ZStack {
                 KFImage(self.comic.getBestImageURL()!, isLoaded: self.$isLoaded)
                     .cancelOnDisappear(true)
-                .resizable()
-                .scaledToFill()
-                .opacity(self.isLoaded ? 1 : 0)
+                    .resizable()
+                    .scaledToFill()
+                    .opacity(self.isLoaded ? 1 : 0)
 
                 Rectangle()
                     .fill(Color.secondary)
@@ -66,7 +67,7 @@ struct ComicGridItem: View {
             return AnyView(
                 stack
                     .overlay(
-                        ComicBadge(comic: self.comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)),
+                        ComicBadge(comic: self.comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)).opacity(self.hideBadge ? 0 : 1).animation(.easeInOut),
                         alignment: .bottomTrailing
                 )
             )

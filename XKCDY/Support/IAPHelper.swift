@@ -31,9 +31,11 @@ public let SKErrorCodeMapping: [SKError.Code: String] = [
 
 final class IAPHelper {
     private static func hasActiveSubscription() throws -> Bool {
-        let receipt = try InAppReceipt.localReceipt()
+        if let receipt = try? InAppReceipt.localReceipt() {
+            return receipt.hasActiveAutoRenewablePurchases
+        }
 
-        return receipt.hasActiveAutoRenewablePurchases
+        return false
     }
 
     private static func removeProFeatures() {

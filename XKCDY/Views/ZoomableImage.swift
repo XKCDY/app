@@ -24,6 +24,7 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
     var onSingleTap: () -> Void = {}
     var onLongPress: () -> Void = {}
     var onScale: (CGFloat) -> Void = {_ in}
+    var orientation = UIDevice.current.orientation
 
     convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void, onLongPress: @escaping () -> Void, onScale: @escaping (CGFloat) -> Void) {
         self.init(frame: f)
@@ -40,11 +41,14 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
 
         setupScrollView()
         setupGestureRecognizer()
+
+        updateInset()
     }
 
-    func updateFrame(_ f: CGRect) {
-        frame = f
-        imageView.frame = f
+    func updateInset() {
+        if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
+            contentInset = UIEdgeInsets(top: window.safeAreaInsets.top, left: window.safeAreaInsets.left, bottom: window.safeAreaInsets.bottom, right: window.safeAreaInsets.right)
+        }
     }
 
     private func setupScrollView() {
@@ -84,6 +88,11 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         self.onScale(scale)
+        if scale == 1 {
+            isScrollEnabled = false
+        } else {
+            isScrollEnabled = true
+        }
     }
 
     @objc private func handleLongPress() {
@@ -119,7 +128,23 @@ struct ZoomableImageView: UIViewRepresentable {
         return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap, onLongPress: onLongPress, onScale: onScale)
     }
 
-    func updateUIView(_ uiView: ZoomableImage, context: Context) {}
+    func updateUIView(_ uiView: ZoomableImage, context: Context) {
+        // Only should update on orientation change
+        if uiView.orientation != UIDevice.current.orientation {
+            uiView.updateInset()
+            uiView.frame = frame
+            uiView.setZoomScale(1, animated: false)
+            uiView.isScrollEnabled = false
+            uiView.imageView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+            uiView.contentSize = frame.size
+
+            uiView.orientation = UIDevice.current.orientation
+
+            DispatchQueue.main.async {
+                self.onScale(1)
+            }
+        }
+    }
 }
 
 extension ZoomableImageView {
