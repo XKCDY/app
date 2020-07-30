@@ -117,6 +117,12 @@ struct ComicPager: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+                Rectangle()
+                    .fill(Color(.systemBackground)
+                        .opacity(self.hidden ? 0 : 1 - Double(abs(self.offset.height) / 200)))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .edgesIgnoringSafeArea(.all)
+
                 ZStack {
                     Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics), id: \.id, content: { item in
                         AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
@@ -142,6 +148,7 @@ struct ComicPager: View {
                             }
                         })
                         .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
+                        .edgesIgnoringSafeArea(.all)
 
                     Group<AnyView> {
                         let image = KFImage(self.getCurrentComic().getBestImageURL()).resizable().aspectRatio(contentMode: .fit)
@@ -155,7 +162,7 @@ struct ComicPager: View {
 
                         let origin = CGPoint(
                             x: targetRect.origin.x,
-                            y: targetRect.origin.y - globalOffset.y)
+                            y: targetRect.origin.y - globalOffset.y + geometry.safeAreaInsets.top)
 
                         let framedSize = self.hidden ? CGSize(width: targetRect.size.width, height: targetRect.size.height) : geometry.size
 
@@ -164,7 +171,8 @@ struct ComicPager: View {
                                 .frame(width: framedSize.width, height: framedSize.height)
                                 .scaleEffect(self.hidden ? 1 : 1 - CGFloat(abs(self.offset.height) / geometry.size.width))
                                 .offset(self.hidden ? .zero : self.offset)
-                                .position(self.hidden ? origin : CGPoint(x: framedSize.width / 2, y: framedSize.height / 2))
+                                .position(self.hidden ? origin : CGPoint(x: framedSize.width / 2 + geometry.safeAreaInsets.leading, y: framedSize.height / 2 + geometry.safeAreaInsets.top))
+                                .edgesIgnoringSafeArea(.all)
                         )
                     }
                     .opacity(self.offset == .zero && !self.isLoading ? 0 : 1)
@@ -178,8 +186,6 @@ struct ComicPager: View {
                     .opacity(self.showOverlay && !self.hidden ? 1 : 0)
             }
         }
-        .background(Color(.systemBackground).opacity(self.hidden ? 0 : 1 - Double(abs(self.offset.height) / 200)))
-        .edgesIgnoringSafeArea(.bottom)
         .onAppear {
             self.setPage()
 
