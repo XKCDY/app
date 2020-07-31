@@ -13,10 +13,10 @@ import SwiftyStoreKit
 
 let XKCDY_PRO_DESCRIPTION = """
 XKCDY Pro is a feature pack. Because notifications result in ongoing server costs, this is a subscription. Pro includes:
-    • Notifications when new comics are published
-    • Ability to set a custom accent color
-    • Custom app icons
-    • Support XKCDY's development
+• Notifications when new comics are published
+• Ability to set a custom accent color
+• Custom app icons
+• Support XKCDY's development
 """
 
 class NotificationPreferenceStore: ObservableObject {
@@ -90,6 +90,7 @@ struct SettingsSheet: View {
     @ObservedObject private var notificationPreference = NotificationPreferenceStore()
     @State private var alertItem: AlertItem?
     @ObservedObject private var userSettings = UserSettings()
+    @State private var loading = false
 
     func openAlert(title: String, message: String) {
         self.alertItem = AlertItem(title: Text(title), message: Text(message))
@@ -116,13 +117,19 @@ struct SettingsSheet: View {
 
             self.openAlert(title: "Something went wrong", message: errorMessage)
         }
+
+        self.loading = false
     }
 
     func handlePurchase() {
+        self.loading = true
+
         IAPHelper.purchasePro(completion: self.showPurchaseResult)
     }
 
     func handleRestorePurchase() {
+        self.loading = true
+
         IAPHelper.restorePurchases { result in
             switch result {
             case .success:
@@ -135,12 +142,22 @@ struct SettingsSheet: View {
                     self.openAlert(title: "Something went wrong", message: "No previous valid purchase found.")
                 }
             }
+
+            self.loading = false
         }
     }
 
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
+                if self.loading {
+                    HStack {
+                        Spacer()
+                        ActivityIndicator(style: .large)
+                        Spacer()
+                    }
+                }
+
                 SettingsGroup(label: "XKCDY Pro") {
                     if self.userSettings.isSubscribedToPro {
                         Toggle("Send notifications for new comics", isOn: self.$notificationPreference.isToggled)
@@ -205,6 +222,7 @@ struct SettingsSheet: View {
 
                 Spacer()
             }
+                .animation(.easeInOut)
             .padding()
             .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
             .navigationBarTitle(Text("Settings"), displayMode: .inline)
@@ -213,20 +231,20 @@ struct SettingsSheet: View {
                     Text("Done")
                 }
             })
-            .alert(item: $alertItem) { alertItem in
-                if let primaryButton = alertItem.primaryButton {
-                    return Alert(title: alertItem.title, message: alertItem.message, primaryButton: primaryButton, secondaryButton: alertItem.dismissButton)
-                }
+                .alert(item: $alertItem) { alertItem in
+                    if let primaryButton = alertItem.primaryButton {
+                        return Alert(title: alertItem.title, message: alertItem.message, primaryButton: primaryButton, secondaryButton: alertItem.dismissButton)
+                    }
 
-                return Alert(title: alertItem.title, message: alertItem.message)
+                    return Alert(title: alertItem.title, message: alertItem.message)
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        // Yes, this is hacky but it works for now
-        .alert(isPresented: self.$notificationPreference.showAlert) {
-            Alert(title: Text(self.notificationPreference.alertTitle), message: Text(self.notificationPreference.alertMessage), primaryButton: Alert.Button.default(Text("OK"), action: {
-                self.notificationPreference.alertClosed()
-            }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
+            // Yes, this is hacky but it works for now
+            .alert(isPresented: self.$notificationPreference.showAlert) {
+                Alert(title: Text(self.notificationPreference.alertTitle), message: Text(self.notificationPreference.alertMessage), primaryButton: Alert.Button.default(Text("OK"), action: {
+                    self.notificationPreference.alertClosed()
+                }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
         }
     }
 }

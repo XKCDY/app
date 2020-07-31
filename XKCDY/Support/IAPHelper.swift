@@ -41,7 +41,10 @@ final class IAPHelper {
     private static func removeProFeatures() {
         Notifications.unregister()
         UserDefaults().removeObject(forKey: "tintColor")
-        UIApplication.shared.setAlternateIconName(nil)
+
+        if UIApplication.shared.alternateIconName != nil {
+            UIApplication.shared.setAlternateIconName(nil)
+        }
     }
 
     static func checkForPurchaseAndUpdate() throws {
