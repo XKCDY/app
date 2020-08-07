@@ -31,6 +31,8 @@ final class UserSettings: ObservableObject {
     @UserDefault(key: "sendNotifications", defaultValue: false) var sendNotifications: Bool
     @UserDefault(key: "deviceToken", defaultValue: "") var deviceToken: String
     @UserDefault(key: "isSubscribedToPro", defaultValue: false) var isSubscribedToPro: Bool
+    @UserDefault(key: "timeSpentInApp", defaultValue: 0) var timeSpentInApp: Int64
+    @UserDefault(key: "showedProAlert", defaultValue: false) var showedProAlert: Bool
     var tintColor: UIColor {
         get {
             if let colorData = UserDefaults.standard.data(forKey: "tintColor") {

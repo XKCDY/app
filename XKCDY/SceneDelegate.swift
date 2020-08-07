@@ -36,6 +36,8 @@ extension SceneDelegate: UIGestureRecognizerDelegate {
     }
 }
 
+let timeTracker = TimeTracker()
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -121,6 +123,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        timeTracker.startTracker()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -139,6 +142,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
         // swiftlint:disable:next force_cast
         (UIApplication.shared.delegate as! AppDelegate).scheduleBackgroundRefresh()
+        timeTracker.stopTracker()
     }
 
 }

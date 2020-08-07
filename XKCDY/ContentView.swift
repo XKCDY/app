@@ -21,6 +21,7 @@ struct ContentView: View {
     let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
     @State private var scrollDirection: ScrollDirection = .up
     @State private var showSettings = false
+    @State private var showProAlert = false
 
     func hidePager() {
         store.showPager = false
@@ -54,6 +55,24 @@ struct ContentView: View {
         }
     }
 
+    func handleAppear() {
+        self.refetchComics()
+    }
+
+    func handleShowProAlert() {
+        let FIVE_MINUTES_IN_MS = 5 * 60 * 1000
+        let settings = UserSettings()
+
+        if !settings.showedProAlert && !settings.isSubscribedToPro && settings.timeSpentInApp > FIVE_MINUTES_IN_MS {
+            self.showProAlert = true
+            settings.showedProAlert = true
+        }
+    }
+
+    func handleProDetailsOpen() {
+        self.showSettings = true
+    }
+
     var body: some View {
         ZStack {
             if self.filteredCollection().count > 0 {
@@ -66,13 +85,13 @@ struct ContentView: View {
                 FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
                     self.showSettings = true
                 })
-                    .padding()
-                    .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
-                    .animation(.default)
-                    .sheet(isPresented: self.$showSettings) {
-                        SettingsSheet(onDismiss: {
-                            self.showSettings = false
-                        })
+                .padding()
+                .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
+                .animation(.default)
+                .sheet(isPresented: self.$showSettings) {
+                    SettingsSheet(onDismiss: {
+                        self.showSettings = false
+                    })
                 }
 
                 Spacer()
@@ -83,9 +102,13 @@ struct ContentView: View {
 
             if self.store.showPager {
                 ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
+                    .onAppear(perform: handleShowProAlert)
             }
         }
-        .onAppear(perform: refetchComics)
+        .alert(isPresented: self.$showProAlert) {
+            Alert(title: Text("Enjoying XKCDY?"), message: Text("Consider upgrading to XKCDY Pro for a few perks and to help support development!"), primaryButton: .default(Text("More Details"), action: self.handleProDetailsOpen), secondaryButton: .default(Text("Don't show this again")))
+        }
+        .onAppear(perform: handleAppear)
         .onReceive(foregroundPublisher) { _ in
             self.refetchComics()
         }
