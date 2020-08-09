@@ -22,6 +22,8 @@ struct ContentView: View {
     @State private var scrollDirection: ScrollDirection = .up
     @State private var showSettings = false
     @State private var showProAlert = false
+    @State private var isLoadingFromScratch = false
+    @Environment(\.colorScheme) private var colorScheme
 
     func hidePager() {
         store.showPager = false
@@ -50,8 +52,14 @@ struct ContentView: View {
     }
 
     func refetchComics() {
+        if self.comics.count == 0 {
+            self.isLoadingFromScratch = true
+        }
+
         DispatchQueue.global(qos: .background).async {
-            self.store.partialRefetchComics()
+            self.store.partialRefetchComics { _ in
+                self.isLoadingFromScratch = false
+            }
         }
     }
 
@@ -85,13 +93,13 @@ struct ContentView: View {
                 FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
                     self.showSettings = true
                 })
-                .padding()
-                .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
-                .animation(.default)
-                .sheet(isPresented: self.$showSettings) {
-                    SettingsSheet(onDismiss: {
-                        self.showSettings = false
-                    })
+                    .padding()
+                    .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
+                    .animation(.default)
+                    .sheet(isPresented: self.$showSettings) {
+                        SettingsSheet(onDismiss: {
+                            self.showSettings = false
+                        })
                 }
 
                 Spacer()
@@ -103,6 +111,12 @@ struct ContentView: View {
             if self.store.showPager {
                 ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
                     .onAppear(perform: handleShowProAlert)
+            }
+
+            if self.isLoadingFromScratch {
+                FortuneLoader()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(self.colorScheme == .dark ? Color.black : Color.white)
             }
         }
         .alert(isPresented: self.$showProAlert) {
