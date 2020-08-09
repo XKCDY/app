@@ -10,6 +10,8 @@
 		6A06FAC82445517B002202DC /* ASCollectionView in Frameworks */ = {isa = PBXBuildFile; productRef = 6A06FAC72445517B002202DC /* ASCollectionView */; };
 		6A20865E248415A7002C98E5 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A20865D248415A7002C98E5 /* Store.swift */; };
 		6A2E64AC24DBC13400B767C3 /* TimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E64AB24DBC13400B767C3 /* TimeTracker.swift */; };
+		6A2E64AE24DCE01C00B767C3 /* Fortunes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E64AD24DCE01C00B767C3 /* Fortunes.swift */; };
+		6A2E64B024DCE18000B767C3 /* FortuneLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E64AF24DCE18000B767C3 /* FortuneLoader.swift */; };
 		6A2E9AC724D38F110036A7DC /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E9AC624D38F110036A7DC /* ActivityIndicator.swift */; };
 		6A40086524C14F6B009AE2D9 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */; };
 		6A4A353E24BA48C700D4EDED /* ComicGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */; };
@@ -125,6 +127,8 @@
 /* Begin PBXFileReference section */
 		6A20865D248415A7002C98E5 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		6A2E64AB24DBC13400B767C3 /* TimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTracker.swift; sourceTree = "<group>"; };
+		6A2E64AD24DCE01C00B767C3 /* Fortunes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fortunes.swift; sourceTree = "<group>"; };
+		6A2E64AF24DCE18000B767C3 /* FortuneLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FortuneLoader.swift; sourceTree = "<group>"; };
 		6A2E9AC624D38F110036A7DC /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicGridItem.swift; sourceTree = "<group>"; };
@@ -330,6 +334,7 @@
 				6AF2A49924D0BEF900DE016A /* ColorPickerRow.swift */,
 				6AF2A49B24D0CC5400DE016A /* AppIconPicker.swift */,
 				6A2E9AC624D38F110036A7DC /* ActivityIndicator.swift */,
+				6A2E64AF24DCE18000B767C3 /* FortuneLoader.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -366,6 +371,7 @@
 				6A53239324C50D8A003D0D12 /* Notifications.swift */,
 				6A64932F24CE08C3004BC488 /* IAPHelper.swift */,
 				6A2E64AB24DBC13400B767C3 /* TimeTracker.swift */,
+				6A2E64AD24DCE01C00B767C3 /* Fortunes.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -640,9 +646,11 @@
 				6A40086524C14F6B009AE2D9 /* SettingsSheet.swift in Sources */,
 				6A2E64AC24DBC13400B767C3 /* TimeTracker.swift in Sources */,
 				6AF2A49C24D0CC5400DE016A /* AppIconPicker.swift in Sources */,
+				6A2E64B024DCE18000B767C3 /* FortuneLoader.swift in Sources */,
 				6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */,
 				6AF2A49A24D0BEF900DE016A /* ColorPickerRow.swift in Sources */,
 				6A60FB7E244535A70070A76B /* ContentView.swift in Sources */,
+				6A2E64AE24DCE01C00B767C3 /* Fortunes.swift in Sources */,
 				6A4A353E24BA48C700D4EDED /* ComicGridItem.swift in Sources */,
 				6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */,
 				6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */,

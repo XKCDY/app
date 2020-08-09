@@ -69,7 +69,7 @@ struct SettingsGroup<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(self.label).font(Font.title.bold())
+            Text(self.label).font(Font.title.bold()).animation(.none)
 
             content
         }
@@ -124,119 +124,125 @@ struct SettingsSheet: View {
     func handlePurchase() {
         self.loading = true
 
-        IAPHelper.purchasePro(completion: self.showPurchaseResult)
+        withAnimation(.easeInOut) {
+            IAPHelper.purchasePro(completion: self.showPurchaseResult)
+        }
     }
 
     func handleRestorePurchase() {
         self.loading = true
 
-        IAPHelper.restorePurchases { result in
-            switch result {
-            case .success:
-                self.openAlert(title: "Success!", message: "Purchase was restored.")
-            case .failure(let error):
-                switch error {
-                case .restoreFailed:
-                    self.openAlert(title: "Something went wrong", message: "Purchase restore failed.")
-                case .noPreviousValidPurchaseFound:
-                    self.openAlert(title: "Something went wrong", message: "No previous valid purchase found.")
+        withAnimation(.easeInOut) {
+            IAPHelper.restorePurchases { result in
+                switch result {
+                case .success:
+                    self.openAlert(title: "Success!", message: "Purchase was restored.")
+                case .failure(let error):
+                    switch error {
+                    case .restoreFailed:
+                        self.openAlert(title: "Something went wrong", message: "Purchase restore failed.")
+                    case .noPreviousValidPurchaseFound:
+                        self.openAlert(title: "Something went wrong", message: "No previous valid purchase found.")
+                    }
                 }
-            }
 
-            self.loading = false
+                self.loading = false
+            }
         }
     }
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading) {
-                if self.loading {
-                    HStack {
-                        Spacer()
-                        ActivityIndicator(style: .large)
-                        Spacer()
-                    }
-                }
-
-                SettingsGroup(label: "XKCDY Pro") {
-                    if self.userSettings.isSubscribedToPro {
-                        Toggle("Send notifications for new comics", isOn: self.$notificationPreference.isToggled)
-
-                        NavigationLink(destination: TintColorPicker()) {
-                            Text("Change accent color")
-                        }
-
-                        NavigationLink(destination: AppIconPicker()) {
-                            Text("Change app icon")
-                        }
-                    } else {
-                        Text(XKCDY_PRO_DESCRIPTION).lineLimit(nil).padding(.bottom, 10)
-
+            ScrollView {
+                VStack(alignment: .leading) {
+                    if self.loading {
                         HStack {
-                            Button(action: self.handlePurchase) {
-                                Image(systemName: "bag.fill")
+                            Spacer()
+                            ActivityIndicator(style: .large)
+                            Spacer()
+                        }
+                    }
 
-                                Text("$2.99 / year")
+                    SettingsGroup(label: "XKCDY Pro") {
+                        if self.userSettings.isSubscribedToPro {
+                            Toggle("Send notifications for new comics", isOn: self.$notificationPreference.isToggled)
+
+                            NavigationLink(destination: TintColorPicker()) {
+                                Text("Change accent color")
                             }
-                            .padding(10)
-                            .foregroundColor(Color.white)
-                            .background(Color.accentColor)
-                            .cornerRadius(8)
 
-                            Button(action: self.handleRestorePurchase) {
-                                Text("Restore purchase")
+                            NavigationLink(destination: AppIconPicker()) {
+                                Text("Change app icon")
+                            }
+                        } else {
+                            Text(XKCDY_PRO_DESCRIPTION).fixedSize(horizontal: false, vertical: true)
+                                .padding(.bottom, 10)
+
+                            HStack {
+                                Button(action: self.handlePurchase) {
+                                    Image(systemName: "bag.fill")
+
+                                    Text("$2.99 / year")
+                                }
+                                .padding(10)
+                                .foregroundColor(Color.white)
+                                .background(Color.accentColor)
+                                .cornerRadius(8)
+
+                                Button(action: self.handleRestorePurchase) {
+                                    Text("Restore purchase")
+                                }
                             }
                         }
                     }
+
+                    SettingsGroup(label: "Options") {
+                        Button(action: {
+                            self.alertItem = AlertItem(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
+                                self.markAsRead()
+                            }))
+                        }) {
+                            Text("Mark all as read")
+                        }
+                    }
+
+                    SettingsGroup(label: "Feedback") {
+                        Button(action: {
+                            UIApplication.shared.open(URL(string: "mailto:app@xkcdy.com")!)
+                        }) {
+                            Text("Send an email")
+                        }
+
+                        Button(action: {
+                            UIApplication.shared.open(URL(string: "https://github.com/XKCDY/app/issues")!)
+                        }) {
+                            Text("Open an issue")
+                        }
+
+                        Button(action: {
+                            SKStoreReviewController.requestReview()
+                        }) {
+                            Text("Rate on the App Store")
+                        }
+                    }
+
+                    Spacer()
                 }
-
-                SettingsGroup(label: "Options") {
-                    Button(action: {
-                        self.alertItem = AlertItem(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
-                            self.markAsRead()
-                        }))
-                    }) {
-                        Text("Mark all as read")
+                .padding()
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+                .navigationBarTitle(Text("Settings"), displayMode: .inline)
+                .navigationBarItems(trailing: HStack {
+                    Button(action: onDismiss) {
+                        Text("Done")
                     }
+                })
+                    .alert(item: $alertItem) { alertItem in
+                        if let primaryButton = alertItem.primaryButton {
+                            return Alert(title: alertItem.title, message: alertItem.message, primaryButton: primaryButton, secondaryButton: alertItem.dismissButton)
+                        }
+
+                        return Alert(title: alertItem.title, message: alertItem.message)
                 }
-
-                SettingsGroup(label: "Feedback") {
-                    Button(action: {
-                        UIApplication.shared.open(URL(string: "mailto:app@xkcdy.com")!)
-                    }) {
-                        Text("Send an email")
-                    }
-
-                    Button(action: {
-                        UIApplication.shared.open(URL(string: "https://github.com/XKCDY/app/issues")!)
-                    }) {
-                        Text("Open an issue")
-                    }
-
-                    Button(action: {
-                        SKStoreReviewController.requestReview()
-                    }) {
-                        Text("Rate on the App Store")
-                    }
-                }
-
-                Spacer()
-            }
-                .animation(.easeInOut)
-            .padding()
-            .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
-            .navigationBarTitle(Text("Settings"), displayMode: .inline)
-            .navigationBarItems(trailing: HStack {
-                Button(action: onDismiss) {
-                    Text("Done")
-                }
-            })
-                .alert(item: $alertItem) { alertItem in
-                    if let primaryButton = alertItem.primaryButton {
-                        return Alert(title: alertItem.title, message: alertItem.message, primaryButton: primaryButton, secondaryButton: alertItem.dismissButton)
-                    }
-
-                    return Alert(title: alertItem.title, message: alertItem.message)
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
