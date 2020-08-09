@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/realm/realm-cocoa",
         "state": {
           "branch": null,
-          "revision": "5d296d8a3750ac86e731263b44e2ba0c3c85f2cb",
-          "version": "5.3.2"
+          "revision": "381de6c8eea4cee147d2b79d28cfc64a408d18b4",
+          "version": "5.3.3"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/realm/realm-core",
         "state": {
           "branch": null,
-          "revision": "55a0d32516c0f3a5fd3ab8c0224ee22efcc7cd58",
-          "version": "6.0.12"
+          "revision": "60c12a79b86a2a5278364fbf8c76d6062289e79e",
+          "version": "6.0.14"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
         "state": {
           "branch": null,
-          "revision": "d99fd8fbaa91dc5622f33a8e99a2e094179ee861",
-          "version": "1.9.2"
+          "revision": "7380b8011b884997a57d24f1c88c91570798c66e",
+          "version": "1.10.1"
         }
       },
       {
