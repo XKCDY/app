@@ -95,9 +95,6 @@ struct ComicPager: View {
     }
 
     func handleShuffle() {
-        let realm = try! Realm()
-        let comics = realm.objects(Comic.self)
-
         if comics.count > 0 {
             let randomComic = comics[Int(arc4random_uniform(UInt32(comics.count) - 1))]
 
