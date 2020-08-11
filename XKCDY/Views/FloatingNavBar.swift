@@ -39,11 +39,17 @@ struct FloatingNavBarView: View {
             VStack {
                 Spacer()
 
-                ZStack(alignment: .bottom) {
-                    SegmentedPicker().frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
+                HStack {
+                    ZStack(alignment: .bottom) {
+                        SegmentedPicker().frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
+                    }
+                    .padding()
+                    .shadow(radius: 2)
+
+                    if self.isLargeScreen() {
+                        Spacer()
+                    }
                 }
-                .padding()
-                .shadow(radius: 2)
             }
         }
     }
