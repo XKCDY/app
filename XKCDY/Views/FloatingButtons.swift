@@ -63,6 +63,8 @@ struct FloatingButtons: View {
     @Binding var isSearching: Bool
     @Binding var searchText: String
     var onOpenSettings: () -> Void
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
 
     init(isSearching: Binding<Bool>, searchText: Binding<String>, onOpenSettings: @escaping () -> Void) {
         self._isSearching = isSearching
@@ -71,54 +73,68 @@ struct FloatingButtons: View {
         UITextField.appearance().clearButtonMode = .always
     }
 
+    func isLargeScreen() -> Bool {
+        self.verticalSizeClass == .some(.regular) && self.horizontalSizeClass == .some(.regular)
+    }
+
     var body: some View {
-        HStack {
-            if !self.isSearching {
-                Button(action: {
-                    self.onOpenSettings()
-                }) {
-                    Image(systemName: "gear")
-                        .modifier(RoundButtonIcon())
-                }
-                .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
-            }
-
-            Spacer()
-
+        GeometryReader { geom in
             HStack {
-                Button(action: {
-                    withAnimation(.spring()) {
-                        if self.isSearching {
-                            self.searchText = ""
-                        }
-
-                        self.isSearching.toggle()
-                    }
-                }) {
-                    Image(systemName: self.isSearching ? "arrow.left" : "magnifyingglass")
-                        .transition(.opacity)
-                        .id("FloatingButton" + String(self.isSearching))
-                        .modifier(RoundButtonIcon())
+                if self.isLargeScreen() {
+                    Spacer()
                 }
-                .transition(.move(edge: .trailing))
 
-                if self.isSearching {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-
-                        // Hack to size text field correctly
-                        Text("")
-                            .font(.title)
-                            .padding(6)
-                            .frame(maxWidth: .infinity)
-                            .overlay(
-                                CustomTextField(placeholder: "Start typing...", text: $searchText, isFirstResponder: true)
-                            )
+                if !self.isSearching {
+                    Button(action: {
+                        self.onOpenSettings()
+                    }) {
+                        Image(systemName: "gear")
+                            .modifier(RoundButtonIcon())
                     }
-                    .padding(12)
-                    .background(Blur())
-                    .cornerRadius(8)
-                    .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
+                    .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
+                }
+
+                if self.isLargeScreen() {
+                    Spacer().frame(width: 25)
+                } else {
+                    Spacer()
+                }
+
+                HStack {
+                    Button(action: {
+                        withAnimation(.spring()) {
+                            if self.isSearching {
+                                self.searchText = ""
+                            }
+
+                            self.isSearching.toggle()
+                        }
+                    }) {
+                        Image(systemName: self.isSearching ? "arrow.left" : "magnifyingglass")
+                            .transition(.opacity)
+                            .id("FloatingButton" + String(self.isSearching))
+                            .modifier(RoundButtonIcon())
+                    }
+                    .transition(.move(edge: .trailing))
+
+                    if self.isSearching {
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+
+                            // Hack to size text field correctly
+                            Text("")
+                                .font(.title)
+                                .padding(6)
+                                .frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
+                                .overlay(
+                                    CustomTextField(placeholder: "Start typing...", text: $searchText, isFirstResponder: true)
+                                )
+                        }
+                        .padding(12)
+                        .background(Blur())
+                        .cornerRadius(8)
+                        .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
+                    }
                 }
             }
         }

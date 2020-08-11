@@ -93,13 +93,13 @@ struct ContentView: View {
                 FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
                     self.showSettings = true
                 })
-                    .padding()
-                    .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
-                    .animation(.default)
-                    .sheet(isPresented: self.$showSettings) {
-                        SettingsSheet(onDismiss: {
-                            self.showSettings = false
-                        })
+                .padding()
+                .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
+                .animation(.default)
+                .sheet(isPresented: self.$showSettings) {
+                    SettingsSheet(onDismiss: {
+                        self.showSettings = false
+                    })
                 }
 
                 Spacer()
