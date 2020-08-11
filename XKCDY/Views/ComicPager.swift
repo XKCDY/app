@@ -95,12 +95,9 @@ struct ComicPager: View {
     }
 
     func handleShuffle() {
-        if comics.count > 0 {
-            let randomComic = comics[Int(arc4random_uniform(UInt32(comics.count) - 1))]
-
-            self.store.currentComicId = randomComic.id
-            self.setPage()
-        }
+        let randomComic = comics[Int.random(in: 0 ..< comics.count)]
+        self.store.currentComicId = randomComic.id
+        self.setPage()
     }
 
     func handleImageScale(_ scale: CGFloat) {
