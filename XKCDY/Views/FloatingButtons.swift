@@ -127,7 +127,7 @@ struct FloatingButtons: View {
                                 .padding(6)
                                 .frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
                                 .overlay(
-                                    CustomTextField(placeholder: "Start typing...", text: $searchText, isFirstResponder: true)
+                                    CustomTextField(placeholder: "Start typing...", text: self.$searchText, isFirstResponder: true)
                                 )
                         }
                         .padding(12)
