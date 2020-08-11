@@ -1,5 +1,5 @@
 //
-//  UncontrolledWebView.swift
+//  ControlledWebView.swift
 //  XKCDY
 //
 //  Created by Max Isom on 7/8/20.

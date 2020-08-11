@@ -20,7 +20,7 @@ public let XKCDYPro = "com.maxisom.XKCDY.pro"
 public let SKErrorCodeMapping: [SKError.Code: String] = [
     .unknown: "Unknown error. Please contact support.",
     .clientInvalid: "Not allowed to make the payment.",
-    .paymentCancelled: "Unknown error. Please contact support.",
+    .paymentCancelled: "No payment was made.",
     .paymentInvalid: "The purchase identifier was invalid.",
     .paymentNotAllowed: "The device is not allowed to make the payment.",
     .storeProductNotAvailable: "The product is not available in the current storefront.",
