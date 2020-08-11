@@ -27,11 +27,24 @@ extension UIApplication {
 }
 
 struct FloatingNavBarView: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
+
+    func isLargeScreen() -> Bool {
+        self.verticalSizeClass == .some(.regular) && self.horizontalSizeClass == .some(.regular)
+    }
+
     var body: some View {
-        ZStack(alignment: .bottom) {
-            SegmentedPicker()
+        GeometryReader { geom in
+            VStack {
+                Spacer()
+
+                ZStack(alignment: .bottom) {
+                    SegmentedPicker().frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
+                }
+                .padding()
+                .shadow(radius: 2)
+            }
         }
-        .padding()
-        .shadow(radius: 2)
     }
 }
