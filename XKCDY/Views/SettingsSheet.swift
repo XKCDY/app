@@ -91,6 +91,7 @@ struct SettingsSheet: View {
     @State private var alertItem: AlertItem?
     @ObservedObject private var userSettings = UserSettings()
     @State private var loading = false
+    @State private var localizedPrice = ""
 
     func openAlert(title: String, message: String) {
         self.alertItem = AlertItem(title: Text(title), message: Text(message))
@@ -182,7 +183,9 @@ struct SettingsSheet: View {
                                 Button(action: self.handlePurchase) {
                                     Image(systemName: "bag.fill")
 
-                                    Text("$2.99 / year")
+                                    if self.localizedPrice != "" {
+                                        Text("\(self.localizedPrice) / year")
+                                    }
                                 }
                                 .padding(10)
                                 .foregroundColor(Color.white)
@@ -251,6 +254,13 @@ struct SettingsSheet: View {
                 Alert(title: Text(self.notificationPreference.alertTitle), message: Text(self.notificationPreference.alertMessage), primaryButton: Alert.Button.default(Text("OK"), action: {
                     self.notificationPreference.alertClosed()
                 }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
+        }
+        .onAppear {
+            SwiftyStoreKit.retrieveProductsInfo([XKCDYPro]) { result in
+                if let product = result.retrievedProducts.first {
+                    self.localizedPrice = product.localizedPrice!
+                }
+            }
         }
     }
 }
