@@ -21,6 +21,44 @@ struct RoundButtonIcon: ViewModifier {
     }
 }
 
+struct CustomTextField: UIViewRepresentable {
+    class Coordinator: NSObject, UITextFieldDelegate {
+        @Binding var text: String
+        var didBecomeFirstResponder = false
+
+        init(text: Binding<String>) {
+            _text = text
+        }
+
+        func textFieldDidChangeSelection(_ textField: UITextField) {
+            text = textField.text ?? ""
+        }
+    }
+
+    var placeholder: String
+    @Binding var text: String
+    var isFirstResponder: Bool = false
+
+    func makeUIView(context: UIViewRepresentableContext<CustomTextField>) -> UITextField {
+        let textField = UITextField(frame: .zero)
+        textField.delegate = context.coordinator
+        textField.placeholder = placeholder
+        return textField
+    }
+
+    func makeCoordinator() -> CustomTextField.Coordinator {
+        return Coordinator(text: $text)
+    }
+
+    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<CustomTextField>) {
+        uiView.text = text
+        if isFirstResponder && !context.coordinator.didBecomeFirstResponder {
+            uiView.becomeFirstResponder()
+            context.coordinator.didBecomeFirstResponder = true
+        }
+    }
+}
+
 struct FloatingButtons: View {
     @Binding var isSearching: Bool
     @Binding var searchText: String
@@ -68,7 +106,14 @@ struct FloatingButtons: View {
                     HStack {
                         Image(systemName: "magnifyingglass")
 
-                        TextField("Start typing...", text: $searchText)
+                        // Hack to size text field correctly
+                        Text("")
+                            .font(.title)
+                            .padding(6)
+                            .frame(maxWidth: .infinity)
+                            .overlay(
+                                CustomTextField(placeholder: "Start typing...", text: $searchText, isFirstResponder: true)
+                            )
                     }
                     .padding(12)
                     .background(Blur())
