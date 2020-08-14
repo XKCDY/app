@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftUIPager
 import RealmSwift
 import KingfisherSwiftUI
+import class Kingfisher.ImagePrefetcher
 
 func CGPointToDegree(_ point: CGPoint) -> Double {
     // Provides a directional bearing from (0,0) to the given point.
@@ -42,11 +43,19 @@ struct ComicPager: View {
     @State private var showSheet = false
     @State private var activeSheet: ActiveSheet = .details
     @State private var isZoomed = false
+    @State private var nextShuffleResultId: Int?
     var comics: Results<Comic>
 
     init(onHide: @escaping () -> Void, comics: Results<Comic>) {
         self.onHide = onHide
         self.comics = comics
+    }
+
+    func cacheNextShuffleResult() {
+        let randomComic = comics[Int.random(in: 0 ..< comics.count)]
+
+        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        self.nextShuffleResultId = randomComic.id
     }
 
     func handleDragChange(_ value: DragGesture.Value) {
@@ -95,9 +104,11 @@ struct ComicPager: View {
     }
 
     func handleShuffle() {
-        let randomComic = comics[Int.random(in: 0 ..< comics.count)]
-        self.store.currentComicId = randomComic.id
-        self.setPage()
+        if let id = self.nextShuffleResultId {
+            self.store.currentComicId = id
+            self.setPage()
+            self.cacheNextShuffleResult()
+        }
     }
 
     func handleImageScale(_ scale: CGFloat) {
@@ -113,36 +124,36 @@ struct ComicPager: View {
             ZStack {
                 Rectangle()
                     .fill(Color(.systemBackground)
-                        .opacity(self.hidden ? 0 : 1 - Double(abs(self.offset.height) / 200)))
+                            .opacity(self.hidden ? 0 : 1 - Double(abs(self.offset.height) / 200)))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .edgesIgnoringSafeArea(.all)
 
                 ZStack {
                     Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics), id: \.id, content: { item in
                         AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
-                            .frame(from: CGRect(origin: .zero, size: geometry.size))
+                                    .frame(from: CGRect(origin: .zero, size: geometry.size))
                         )
                     })
-                        .allowsDragging(!self.isZoomed)
-                        .itemSpacing(self.offset == .zero ? 30 : 1000)
-                        .onPageChanged({ newIndex in
-                            let currentTimestamp = Date().currentTimeMillis()
+                    .allowsDragging(!self.isZoomed)
+                    .itemSpacing(self.offset == .zero ? 30 : 1000)
+                    .onPageChanged({ newIndex in
+                        let currentTimestamp = Date().currentTimeMillis()
 
-                            if currentTimestamp > self.startedViewingAt + TIME_TO_MARK_AS_READ_MS {
-                                let realm = try! Realm()
-                                try! realm.write {
-                                    self.getCurrentComic().isRead = true
-                                }
+                        if currentTimestamp > self.startedViewingAt + TIME_TO_MARK_AS_READ_MS {
+                            let realm = try! Realm()
+                            try! realm.write {
+                                self.getCurrentComic().isRead = true
                             }
+                        }
 
-                            self.startedViewingAt = Date().currentTimeMillis()
+                        self.startedViewingAt = Date().currentTimeMillis()
 
-                            DispatchQueue.main.async {
-                                self.store.currentComicId = self.comics[newIndex].id
-                            }
-                        })
-                        .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
-                        .edgesIgnoringSafeArea(.all)
+                        DispatchQueue.main.async {
+                            self.store.currentComicId = self.comics[newIndex].id
+                        }
+                    })
+                    .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
+                    .edgesIgnoringSafeArea(.all)
 
                     Group<AnyView> {
                         let image = KFImage(self.getCurrentComic().getBestImageURL()).resizable().aspectRatio(contentMode: .fit)
@@ -172,8 +183,8 @@ struct ComicPager: View {
                     .opacity(self.offset == .zero && !self.isLoading ? 0 : 1)
                 }
                 .simultaneousGesture(DragGesture(minimumDistance: 60)
-                .onChanged(self.handleDragChange)
-                .onEnded(self.handleDragEnd))
+                                        .onChanged(self.handleDragChange)
+                                        .onEnded(self.handleDragEnd))
 
                 ComicPagerOverlay(comic: self.getCurrentComic(), showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle)
                     .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
@@ -192,6 +203,8 @@ struct ComicPager: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
                 self.isLoading = false
             }
+
+            self.cacheNextShuffleResult()
         }
         .onReceive(self.store.$debouncedCurrentComicId) { _ in
             self.setPage()
