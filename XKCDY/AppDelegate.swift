@@ -27,6 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 try IAPHelper.checkForPurchaseAndUpdate()
             } catch {}
         }
+        
+        // Cache product
+        SwiftyStoreKit.retrieveProductsInfo([XKCDYPro], completion: {_ in })
 
         // Look for receipt and update server state
         do {

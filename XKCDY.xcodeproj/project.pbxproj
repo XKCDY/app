@@ -129,6 +129,7 @@
 		6A2E64AD24DCE01C00B767C3 /* Fortunes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fortunes.swift; sourceTree = "<group>"; };
 		6A2E64AF24DCE18000B767C3 /* FortuneLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FortuneLoader.swift; sourceTree = "<group>"; };
 		6A2E9AC624D38F110036A7DC /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
+		6A3AF3C024E73AAA002232D7 /* Subscription.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Subscription.storekit; sourceTree = "<group>"; };
 		6A40086424C14F6B009AE2D9 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicGridItem.swift; sourceTree = "<group>"; };
 		6A53239324C50D8A003D0D12 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
@@ -245,6 +246,7 @@
 		6A60FB6D244535A70070A76B = {
 			isa = PBXGroup;
 			children = (
+				6A3AF3C024E73AAA002232D7 /* Subscription.storekit */,
 				6A60FB78244535A70070A76B /* XKCDY */,
 				6A60FB8F244535A90070A76B /* XKCDYTests */,
 				6A60FB9A244535A90070A76B /* XKCDYUITests */,
