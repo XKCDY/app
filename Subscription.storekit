@@ -1,0 +1,45 @@
+{
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "E75502DE",
+      "localizations" : [
+
+      ],
+      "name" : "com.maxisom.XKCDY.subgroup",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "C675357C",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.maxisom.XKCDY.pro",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "XKCDY Pro",
+          "subscriptionGroupID" : "E75502DE",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 0
+  }
+}
