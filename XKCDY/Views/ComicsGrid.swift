@@ -27,6 +27,18 @@ class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayout
     }
 }
 
+extension ASWaterfallLayout.ColumnCount: Equatable {
+    public static func ==(lhs: ASWaterfallLayout.ColumnCount, rhs: ASWaterfallLayout.ColumnCount) -> Bool {
+        switch (lhs, rhs) {
+        case (.fixed(let a), .fixed(let b)):
+            return a == b
+        default:
+            return false
+        }
+
+    }
+}
+
 struct ComicsGridView: View {
     @State var columnMinSize: CGFloat = 150
     @State var inViewUrls: [String] = []
@@ -106,19 +118,32 @@ struct ComicsGridView: View {
                 }
             }
             .scrollPositionSetter(self.$scrollPosition)
-            .layout(self.layout)
-            .customDelegate(WaterfallScreenLayoutDelegate.init)
-            .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
-            .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
-                if self.store.currentComicId == nil {
-                    return
+            .layout(createCustomLayout: ASWaterfallLayout.init) { layout in
+                let columns = min(Int(UIScreen.main.bounds.width / self.columnMinSize), 4)
+
+                if layout.columnSpacing != 10 {
+                    layout.columnSpacing = 10
+                }
+                if layout.itemSpacing != 10 {
+                    layout.itemSpacing = 10
                 }
 
-                if let comicIndex = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) {
-                    self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
+                if layout.numberOfColumns != .fixed(columns) {
+                    layout.numberOfColumns = .fixed(columns)
                 }
-            })
+            }
+            .customDelegate(WaterfallScreenLayoutDelegate.init)
+            .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
             )
+                .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
+                    if self.store.currentComicId == nil {
+                        return
+                    }
+
+                    if let comicIndex = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) {
+                        self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
+                    }
+                })
                 .alert(isPresented: self.$showErrorAlert) {
                     Alert(title: Text("Error Refreshing"), message: Text("There was an error refreshing. Try again later."), dismissButton: .default(Text("Ok")))
             }
@@ -129,19 +154,6 @@ struct ComicsGridView: View {
                 .position(x: geom.size.width / 2, y: -geom.safeAreaInsets.top / 2)
                 .opacity(self.shouldBlurStatusBar && !self.store.showPager ? 1 : 0)
                 .animation(.default)
-        }
-    }
-}
-
-extension ComicsGridView {
-    var layout: ASCollectionLayout<Int> {
-        ASCollectionLayout {
-            let layout = ASWaterfallLayout()
-
-            layout.columnSpacing = 10
-            layout.itemSpacing = 10
-
-            return layout
         }
     }
 }
