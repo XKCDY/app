@@ -32,6 +32,7 @@ struct ComicPagerOverlay: View {
     @State private var imageToShare: UIImage?
     @EnvironmentObject var store: Store
     var onShuffle: () -> Void
+    @ObservedObject private var userSettings = UserSettings()
 
     init(comic: Comic, showSheet: Binding<Bool>, activeSheet: Binding<ActiveSheet>, onShuffle: @escaping () -> Void) {
         self.comic = comic
@@ -74,63 +75,69 @@ struct ComicPagerOverlay: View {
 
                 Spacer()
 
-                HStack {
-                    Button(action: self.openShareSheet) {
-                        Image(systemName: "square.and.arrow.up").modifier(ButtonBarItem())
-                    }
-
-                    Button(action: {
-                        self.activeSheet = .details
-                        self.showSheet = true
-                    }) {
-                        Image(systemName: "info.circle.fill").modifier(ButtonBarItem())
+                VStack {
+                    if self.userSettings.showAltInPager {
+                        Text(self.comic.alt).multilineTextAlignment(.center)
                     }
 
                     HStack {
-                        Spacer()
-
-                        ZStack {
-                            Image(systemName: "heart.fill")
-                                .opacity(self.comic.isFavorite ? 1 : 0)
-                                .animation(.none)
-                                .scaleEffect(self.comic.isFavorite ? 1 : 0)
-                                .foregroundColor(.red)
-
-                            Image(systemName: "heart")
-                                .opacity(self.comic.isFavorite ? 0 : 1)
-                                .animation(.none)
-                                .scaleEffect(self.comic.isFavorite ? 0 : 1)
-                                .foregroundColor(.accentColor)
-                        }
-                        .modifier(ButtonBarItem())
-                        .scaleEffect(self.comic.isFavorite ? 1.1 : 1)
-                        .animation(.interpolatingSpring(stiffness: 180, damping: 15))
-
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        self.generator.impactOccurred()
-
-                        let realm = try! Realm()
-
-                        try! realm.write {
-                            self.comic.isFavorite = !self.comic.isFavorite
+                        Button(action: self.openShareSheet) {
+                            Image(systemName: "square.and.arrow.up").modifier(ButtonBarItem())
                         }
 
-                        // Request review if appropriate
-                        let numberOfFavoritedComics = realm.objects(Comic.self).filter {$0.isFavorite}.count
-
-                        if numberOfFavoritedComics == 2 {
-                            SKStoreReviewController.requestReview()
+                        Button(action: {
+                            self.activeSheet = .details
+                            self.showSheet = true
+                        }) {
+                            Image(systemName: "info.circle.fill").modifier(ButtonBarItem())
                         }
-                    }
 
-                    // Invisible icon for padding
-                    Image(systemName: "info.circle.fill").modifier(ButtonBarItem()).hidden()
+                        HStack {
+                            Spacer()
 
-                    Button(action: self.onShuffle) {
-                        Image(systemName: "shuffle").modifier(ButtonBarItem())
+                            ZStack {
+                                Image(systemName: "heart.fill")
+                                    .opacity(self.comic.isFavorite ? 1 : 0)
+                                    .animation(.none)
+                                    .scaleEffect(self.comic.isFavorite ? 1 : 0)
+                                    .foregroundColor(.red)
+
+                                Image(systemName: "heart")
+                                    .opacity(self.comic.isFavorite ? 0 : 1)
+                                    .animation(.none)
+                                    .scaleEffect(self.comic.isFavorite ? 0 : 1)
+                                    .foregroundColor(.accentColor)
+                            }
+                            .modifier(ButtonBarItem())
+                            .scaleEffect(self.comic.isFavorite ? 1.1 : 1)
+                            .animation(.interpolatingSpring(stiffness: 180, damping: 15))
+
+                            Spacer()
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            self.generator.impactOccurred()
+
+                            let realm = try! Realm()
+
+                            try! realm.write {
+                                self.comic.isFavorite = !self.comic.isFavorite
+                            }
+
+                            // Request review if appropriate
+                            let numberOfFavoritedComics = realm.objects(Comic.self).filter {$0.isFavorite}.count
+
+                            if numberOfFavoritedComics == 2 {
+                                SKStoreReviewController.requestReview()
+                            }
+                        }
+
+                        // Invisible icon for padding
+                        Image(systemName: "info.circle.fill").modifier(ButtonBarItem()).hidden()
+
+                        Button(action: self.onShuffle) {
+                            Image(systemName: "shuffle").modifier(ButtonBarItem())
+                        }
                     }
                 }
                 .padding()

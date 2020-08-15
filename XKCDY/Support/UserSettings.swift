@@ -33,6 +33,7 @@ final class UserSettings: ObservableObject {
     @UserDefault(key: "isSubscribedToPro", defaultValue: false) var isSubscribedToPro: Bool
     @UserDefault(key: "timeSpentInApp", defaultValue: 0) var timeSpentInApp: Int64
     @UserDefault(key: "showedProAlert", defaultValue: false) var showedProAlert: Bool
+    @UserDefault(key: "showAltInPager", defaultValue: false) var showAltInPager: Bool
     var tintColor: UIColor {
         get {
             if let colorData = UserDefaults.standard.data(forKey: "tintColor") {
