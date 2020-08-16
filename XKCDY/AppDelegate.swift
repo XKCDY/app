@@ -10,15 +10,22 @@ import UIKit
 import BackgroundTasks
 import RealmSwift
 import SwiftyStoreKit
+import IceCream
 import class Kingfisher.ImagePrefetcher
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    var syncEngine: SyncEngine?
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.maxisom.XKCDY.comicFetcher", using: nil) { task in
             // swiftlint:disable:next force_cast
             self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.syncEngine?.pushAll()
         }
 
         // Add transaction observer
@@ -50,6 +57,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Disable file protection for this directory
         try! FileManager.default.setAttributes([FileAttributeKey(rawValue: FileAttributeKey.protectionKey.rawValue): FileProtectionType.none], ofItemAtPath: folderPath)
+        
+        // Start Realm sync engine
+        syncEngine = SyncEngine(objects: [
+            SyncObject<Comic>(),
+            SyncObject<ComicImage>(),
+            SyncObject<Comics>(),
+        ])
+        
+        application.registerForRemoteNotifications()
 
         // Register for push notifications if enabled
         Notifications.registerIfEnabled()

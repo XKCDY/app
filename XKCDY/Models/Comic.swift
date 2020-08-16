@@ -1,7 +1,9 @@
 import Foundation
 import RealmSwift
+import IceCream
 
 class ComicImage: Object {
+    @objc dynamic var id = NSUUID().uuidString
     @objc dynamic var u = ""
 
     var url: URL? {
@@ -12,7 +14,14 @@ class ComicImage: Object {
     @objc dynamic var width = 0
     @objc dynamic var height = 0
     @objc dynamic var ratio: Float = 0.0
+    @objc dynamic var isDeleted = false
+    
+    override class func primaryKey() -> String? {
+        return "id"
+    }
 }
+
+extension ComicImage: CKRecordConvertible, CKRecordRecoverable {}
 
 class ComicImages: Object {
     @objc dynamic var x1: ComicImage?
@@ -33,6 +42,7 @@ class Comic: Object, Identifiable {
     @objc dynamic var imgs: ComicImages?
     @objc dynamic var isFavorite = false
     @objc dynamic var isRead = false
+    @objc dynamic var isDeleted = false
 
     var sourceURL: URL? {
         get { URL(string: sURL) }
@@ -86,8 +96,11 @@ class Comic: Object, Identifiable {
     }
 }
 
+extension Comic: CKRecordConvertible, CKRecordRecoverable {}
+
 final class Comics: Object {
     @objc dynamic var id = 0
+    @objc dynamic var isDeleted = false
 
     let comics = List<Comic>()
 
@@ -95,3 +108,5 @@ final class Comics: Object {
         "id"
     }
 }
+
+extension Comics: CKRecordConvertible, CKRecordRecoverable {}

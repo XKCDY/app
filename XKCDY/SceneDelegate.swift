@@ -86,7 +86,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.tintColor = userSettings.tintColor
 
             notificationSubscriptions.append(userSettings.objectWillChange.sink {
-                window.tintColor = userSettings.tintColor
+                DispatchQueue.main.async {
+                    window.tintColor = userSettings.tintColor
+                }
             })
 
             // Check for initial URL
