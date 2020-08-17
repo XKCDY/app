@@ -72,11 +72,22 @@ class Comic: Object, Identifiable {
         comic.id = 100
         comic.publishedAt = Date()
         comic.safeTitle = "Sample Comic"
-        comic.title = "Sample Comic"
+        comic.title = "Sample Comic with long long long title"
         comic.transcript = "A very short transcript."
         comic.alt = "Some alt text."
         comic.eURL = "https://www.explainxkcd.com/wiki/index.php/2328:_Space_Basketball"
         comic.iURL = "https://victorz.ca/xkcd_map/#10/1.1000/0.2000"
+
+        let image = ComicImage()
+        image.height = 510
+        image.width = 1480
+        image.ratio = 2.90196078431373
+        image.url = URL(string: "https://imgs.xkcd.com/comics/acceptable_risk_2x.png")
+
+        let images = ComicImages()
+        images.x2 = image
+
+        comic.imgs = images
 
         return comic
     }
