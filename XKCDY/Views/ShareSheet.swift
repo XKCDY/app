@@ -26,7 +26,7 @@ class ImageInfoSource: UIViewController, UIActivityItemSource {
     }
 }
 
-struct SwiftUIActivityViewController: UIViewControllerRepresentable {
+struct UIImageActivityViewController: UIViewControllerRepresentable {
     let uiImage: UIImage
     let title: String
     let url: URL
@@ -42,6 +42,18 @@ struct SwiftUIActivityViewController: UIViewControllerRepresentable {
 
         return activityViewController
     }
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
+struct URLActivityViewController: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+
+        return activityViewController
     }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

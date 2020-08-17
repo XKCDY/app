@@ -34,6 +34,7 @@
 		6A7D1C9624B8E502005F2F9A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A20865D248415A7002C98E5 /* Store.swift */; };
 		6A7D1C9724B8E562005F2F9A /* XKCDYClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */; };
 		6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7D1C9824B8E57F005F2F9A /* Alamofire */; };
+		6A83F89A24E9A756002F1F96 /* SharableComicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A83F89924E9A756002F1F96 /* SharableComicView.swift */; };
 		6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */; };
 		6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123324B62C7000F51ABF /* Kingfisher */; };
 		6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */; };
@@ -151,6 +152,7 @@
 		6A64932F24CE08C3004BC488 /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		6A64933424D09FC2004BC488 /* TintColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintColorPicker.swift; sourceTree = "<group>"; };
 		6A7D1C9424B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLatestComicIntentHandler.swift; sourceTree = "<group>"; };
+		6A83F89924E9A756002F1F96 /* SharableComicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharableComicView.swift; sourceTree = "<group>"; };
 		6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicDetailsSheet.swift; sourceTree = "<group>"; };
 		6AA0123C24B6643000F51ABF /* ControlledWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlledWebView.swift; sourceTree = "<group>"; };
@@ -334,6 +336,7 @@
 				6AF2A49B24D0CC5400DE016A /* AppIconPicker.swift */,
 				6A2E9AC624D38F110036A7DC /* ActivityIndicator.swift */,
 				6A2E64AF24DCE18000B767C3 /* FortuneLoader.swift */,
+				6A83F89924E9A756002F1F96 /* SharableComicView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -663,6 +666,7 @@
 				6A64933024CE08C3004BC488 /* IAPHelper.swift in Sources */,
 				6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */,
 				6A53239424C50D8A003D0D12 /* Notifications.swift in Sources */,
+				6A83F89A24E9A756002F1F96 /* SharableComicView.swift in Sources */,
 				6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */,
 				6A64933524D09FC2004BC488 /* TintColorPicker.swift in Sources */,
 				6A2E9AC724D38F110036A7DC /* ActivityIndicator.swift in Sources */,
@@ -861,6 +865,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XKCDY/Preview Content\"";
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				ENABLE_PREVIEWS = YES;
@@ -887,6 +892,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XKCDY/Preview Content\"";
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				ENABLE_PREVIEWS = YES;

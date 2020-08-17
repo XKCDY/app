@@ -28,7 +28,7 @@ class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayout
 }
 
 extension ASWaterfallLayout.ColumnCount: Equatable {
-    public static func ==(lhs: ASWaterfallLayout.ColumnCount, rhs: ASWaterfallLayout.ColumnCount) -> Bool {
+    public static func == (lhs: ASWaterfallLayout.ColumnCount, rhs: ASWaterfallLayout.ColumnCount) -> Bool {
         switch (lhs, rhs) {
         case (.fixed(let a), .fixed(let b)):
             return a == b

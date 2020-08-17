@@ -30,6 +30,7 @@ struct ComicPagerOverlay: View {
     @Binding var activeSheet: ActiveSheet
     private var generator = UIImpactFeedbackGenerator()
     @State private var imageToShare: UIImage?
+    @State private var showingShareOptionsSheet = false
     @EnvironmentObject var store: Store
     var onShuffle: () -> Void
     @ObservedObject private var userSettings = UserSettings()
@@ -42,21 +43,34 @@ struct ComicPagerOverlay: View {
         self.generator.prepare()
     }
 
-    private func openShareSheet() {
-        let cache = ImageCache.default
+    private func shareImage(withDetails: Bool) {
+        if withDetails {
+            SharableComicView(comic: self.comic).asImage { image in
+                self.imageToShare = image
 
-        cache.retrieveImage(forKey: comic.getBestImageURL()!.absoluteString) { result in
-            switch result {
-            case .success(let value):
-                self.imageToShare = value.image
-
-            case .failure:
-                return
+                self.activeSheet = .share
+                self.showSheet = true
             }
+        } else {
+            ImageCache.default.retrieveImage(forKey: comic.getBestImageURL()!.absoluteString) { result in
+                switch result {
+                case .success(let value):
+                    self.imageToShare = value.image
 
-            self.activeSheet = .share
-            self.showSheet = true
+                    self.activeSheet = .share
+                    self.showSheet = true
+
+                case .failure:
+                    return
+                }
+            }
         }
+    }
+
+    private func shareURL() {
+        self.imageToShare = nil
+        self.activeSheet = .share
+        self.showSheet = true
     }
 
     var body: some View {
@@ -81,8 +95,22 @@ struct ComicPagerOverlay: View {
                     }
 
                     HStack {
-                        Button(action: self.openShareSheet) {
+                        Button(action: {
+                            self.showingShareOptionsSheet = true
+                        }) {
                             Image(systemName: "square.and.arrow.up").modifier(ButtonBarItem())
+                        }
+                        .actionSheet(isPresented: self.$showingShareOptionsSheet) {
+                            ActionSheet(title: Text("What do you want to share?"), buttons: [
+                                .default(Text("Share image"), action: {
+                                    self.shareImage(withDetails: false)
+                                }),
+                                .default(Text("Share image with details"), action: {
+                                    self.shareImage(withDetails: true)
+                                }),
+                                .default(Text("Share link to comic"), action: self.shareURL),
+                                .cancel()
+                            ])
                         }
 
                         Button(action: {
@@ -148,8 +176,10 @@ struct ComicPagerOverlay: View {
         }
         .sheet(isPresented: self.$showSheet) {
             if self.activeSheet == .share {
-                if self.imageToShare != nil {
-                    SwiftUIActivityViewController(uiImage: self.imageToShare!, title: self.comic.title, url: self.comic.sourceURL!)
+                if self.imageToShare == nil {
+                    URLActivityViewController(url: self.comic.sourceURL!)
+                } else {
+                    UIImageActivityViewController(uiImage: self.imageToShare!, title: self.comic.title, url: self.comic.sourceURL!)
                 }
             } else if self.activeSheet == .details {
                 ComicDetailsSheet(comic: self.comic, onDismiss: {
