@@ -54,4 +54,41 @@ platform :ios do
       name: keychain_name
     )
   end
+
+  desc "Push new release build to the App Store"
+  lane :release do
+    keychain_name = ENV["MATCH_KEYCHAIN_NAME"]
+    keychain_password = ENV["MATCH_KEYCHAIN_PASSWORD"]
+
+    # Create a temporary keychain to
+    # store the certificates.
+    create_keychain(
+      name: keychain_name,
+      password: keychain_password,
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      add_to_search_list: true
+    )
+
+    match(
+      type: "appstore",
+      app_identifier: ["com.maxisom.XKCDY", "com.maxisom.XKCDY.XKCDYIntents"],
+      readonly: true,
+      keychain_name: keychain_name,
+      keychain_password: keychain_password
+    )
+
+    increment_build_number(
+      build_number: app_store_build_number + 1,
+      xcodeproj: "Example.xcodeproj"
+    )
+
+    build_app(project: "XKCDY.xcodeproj", scheme: "XKCDY")
+
+    upload_to_app_store
+
+    delete_keychain(
+      name: keychain_name
+    )
 end
