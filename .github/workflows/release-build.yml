@@ -1,9 +1,8 @@
 name: Build and upload release
 on:
-  push:
-    branches:
-      - master
-    tags:
+  release:
+    types:
+      - created
 
 jobs:
   build_and_upload:
