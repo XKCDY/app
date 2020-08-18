@@ -1,9 +1,6 @@
 name: Build and upload release
 on:
   push:
-    paths:
-      - 'XKCDY/**'
-      - 'XKCDYIntents/**'
     branches:
       - master
     tags:
