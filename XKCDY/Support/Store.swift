@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import RealmSwift
+import Combine
 
 extension Binding {
     func onChange(_ handler: @escaping (Value) -> Void) -> Binding<Value> {
@@ -41,55 +42,155 @@ class BindableResults<Element>: ObservableObject where Element: RealmSwift.Realm
     }
 }
 
+enum StoreError: Error {
+    case other
+    case api
+}
+
+enum Page: String, CaseIterable, Hashable, Identifiable {
+    case all
+    case favorites
+
+    var name: String {
+        "\(self)".map { $0.isUppercase ? " \($0)" : "\($0)" }.joined().capitalized
+    }
+
+    var id: Page {self}
+}
+
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
-    @Published var currentComicId = 100
-    @Published var shouldBlurHeader = true
-    @Published var filteredComics: Results<ComicObject>
-    
-    init() {
-        let realm = try! Realm()
-        filteredComics = realm.objects(ComicObject.self)
+    @Published var currentComicId: Int?
+    @Published var debouncedCurrentComicId: Int?
+    @Published var showPager = false
+    @Published var selectedPage: Page = .all {
+        willSet {
+            self.handlePageChange(newValue)
+        }
     }
-    
+    @Published var currentFavoriteIds: [Int] = []
+
+    private var disposables = Set<AnyCancellable>()
+
+    init() {
+        DispatchQueue.main.async {
+            self.$currentComicId
+                .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+                .assign(to: \.debouncedCurrentComicId, on: self)
+                .store(in: &self.disposables)
+        }
+    }
+
+    func handlePageChange(_ page: Page) {
+        if page == .favorites {
+            let realm = try! Realm()
+            let comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+            self.currentFavoriteIds = comics!.comics.filter { $0.isFavorite }.map { $0.id }
+        } else {
+            self.currentFavoriteIds = []
+        }
+    }
+
     func updatePosition(for id: Int, at: CGRect) {
         positions[id] = at
     }
-    
-    func refetchComics(callback: (() -> ())? = nil) {
+
+    func updateDatabaseFrom(results: [ComicResponse], callback: () -> Void) {
         let realm = try! Realm()
-        let comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
-        
-        xkcd.getAllComics { c in
-            guard let c = c else {
-                return
-            }
-            
-            let realm = try! Realm()
-            
-            try! realm.write {
-                for comic in c {
-                    let updatedComic = comic.toObject()
-                    
-                    if let currentlySavedComic = realm.object(ofType: ComicObject.self, forPrimaryKey: updatedComic.id) {
-                        updatedComic.isFavorite = currentlySavedComic.isFavorite
-                        updatedComic.isRead = currentlySavedComic.isRead
-                    }
-                    
-                    realm.add(updatedComic, update: .modified)
-                    
-                    // TODO: make more efficient
-                    if comics!.comics.firstIndex(where: {$0.id == updatedComic.id}) == nil {
-                        comics!.comics.append(updatedComic)
-                    }
+        let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+
+        try! realm.write {
+            for comic in results {
+                let updatedComic = comic.toObject()
+
+                if let currentlySavedComic = realm.object(ofType: Comic.self, forPrimaryKey: updatedComic.id) {
+                    updatedComic.isFavorite = currentlySavedComic.isFavorite
+                    updatedComic.isRead = currentlySavedComic.isRead
                 }
-                
-                callback?()
+
+                realm.add(updatedComic, update: .modified)
+
+                if storedComics!.comics.filter("id == %@", updatedComic.id).count == 0 {
+                    storedComics!.comics.append(updatedComic)
+                }
+            }
+
+            callback()
+        }
+    }
+
+    func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
+        API.getComics { result in
+            switch result {
+            case .success(let comics): do {
+                self.updateDatabaseFrom(results: comics) {
+                    callback?(.success(comics.map { $0.id }))
+                }
+                }
+            case .failure: do {
+                callback?(.failure(.api))
+                }
             }
         }
     }
-    
-    func partialRefetchComics() {
-        
+
+    // Falls through to a full refetch if no comics are stored locally
+    func partialRefetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
+        let realm = try! Realm()
+
+        guard let latestComic = realm.objects(Comic.self).sorted(byKeyPath: "id", ascending: false).first else {
+            return self.refetchComics(callback: callback)
+        }
+
+        API.getComics(since: latestComic.id) { result in
+            switch result {
+            case .success(let comics): do {
+                self.updateDatabaseFrom(results: comics) {
+                    callback?(.success(comics.map { $0.id }))
+                }
+                }
+            case .failure: do {
+                callback?(.failure(.api))
+                }
+            }
+
+        }
+    }
+}
+
+extension ComicResponse {
+    func toObject() -> Comic {
+        let obj = Comic()
+
+        obj.id = id
+        obj.publishedAt = publishedAt
+        obj.news = news
+        obj.title = title
+        obj.transcript = transcript
+        obj.alt = alt
+        obj.sourceURL = URL(string: sourceUrl)
+        obj.explainURL = URL(string: explainUrl)
+        obj.interactiveUrl = interactiveUrl != nil && interactiveUrl != "" ? URL(string: interactiveUrl!) : nil
+
+        let images = ComicImages()
+
+        for img in imgs {
+            let saved = ComicImage()
+
+            saved.height = img.height
+            saved.width = img.width
+            saved.ratio = img.ratio
+            saved.url = URL(string: img.sourceUrl)!
+
+            if img.size == "x1" {
+                images.x1 = saved
+            } else {
+                images.x2 = saved
+            }
+        }
+
+        obj.imgs = images
+
+        return obj
     }
 }

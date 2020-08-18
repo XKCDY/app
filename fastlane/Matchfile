@@ -1,4 +1,4 @@
-git_url("git@github.com:XKCDY/keys.git")
+git_url("https://github.com/XKCDY/keys.git")
 
 storage_mode("git")
 

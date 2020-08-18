@@ -1,8 +1,9 @@
-name: Build and upload beta
+name: Build and upload release
 on:
   push:
     branches:
-      - dev
+      - master
+    tags:
 
 jobs:
   build_and_upload:
@@ -15,7 +16,7 @@ jobs:
       - uses: maierj/fastlane-action@master
         name: Fastlane
         with:
-          lane: 'beta'
+          lane: 'release'
         env:
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}

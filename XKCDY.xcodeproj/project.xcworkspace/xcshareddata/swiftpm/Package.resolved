@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
         "state": {
           "branch": null,
-          "revision": "2777659076fda38bd4e487739ee331c7a65b5924",
-          "version": "5.2.1"
+          "revision": "becd9a729a37bdbef5bc39dc3c702b99f9e3d046",
+          "version": "5.2.2"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/apptekstudios/ASCollectionView",
         "state": {
           "branch": null,
-          "revision": "e71eda854855629123cfb5f6d59562ea39b8f2a8",
-          "version": "1.7.0"
+          "revision": "4550cd5b5cfc3f437f8ff838939c6be21edfe992",
+          "version": "1.7.1"
         }
       },
       {
@@ -29,6 +29,33 @@
         }
       },
       {
+        "package": "Kingfisher",
+        "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
+        "state": {
+          "branch": null,
+          "revision": "1339ebea9498ef6c3fc75cc195d7163d7c7167f9",
+          "version": "5.14.1"
+        }
+      },
+      {
+        "package": "Realm",
+        "repositoryURL": "https://github.com/realm/realm-cocoa",
+        "state": {
+          "branch": null,
+          "revision": "381de6c8eea4cee147d2b79d28cfc64a408d18b4",
+          "version": "5.3.3"
+        }
+      },
+      {
+        "package": "RealmCore",
+        "repositoryURL": "https://github.com/realm/realm-core",
+        "state": {
+          "branch": null,
+          "revision": "60c12a79b86a2a5278364fbf8c76d6062289e79e",
+          "version": "6.0.14"
+        }
+      },
+      {
         "package": "Introspect",
         "repositoryURL": "https://github.com/timbersoftware/SwiftUI-Introspect.git",
         "state": {
@@ -38,12 +65,12 @@
         }
       },
       {
-        "package": "SwiftUIFlux",
-        "repositoryURL": "https://github.com/Dimillian/SwiftUIFlux",
+        "package": "WebView",
+        "repositoryURL": "https://github.com/kylehickinson/SwiftUI-WebView.git",
         "state": {
           "branch": null,
-          "revision": "a48dd509702797028fa103844008239dded85063",
-          "version": "0.5.1"
+          "revision": "ec4352095428a06423868b3b2a92fdaa3c6281f7",
+          "version": "0.2.0"
         }
       },
       {
@@ -51,8 +78,26 @@
         "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
         "state": {
           "branch": null,
-          "revision": "d0ed8fd7bbd24e97f93216b2f809a3ec71a32db2",
-          "version": "1.5.1"
+          "revision": "7380b8011b884997a57d24f1c88c91570798c66e",
+          "version": "1.10.1"
+        }
+      },
+      {
+        "package": "SwiftyStoreKit",
+        "repositoryURL": "https://github.com/bizz84/SwiftyStoreKit.git",
+        "state": {
+          "branch": null,
+          "revision": "9974acf07b31b6f5bf363d5118dc1bd4fcac6122",
+          "version": "0.16.1"
+        }
+      },
+      {
+        "package": "TPInAppReceipt",
+        "repositoryURL": "https://github.com/tikhop/TPInAppReceipt.git",
+        "state": {
+          "branch": null,
+          "revision": "61591a73792280d73baade63f2429b87e0659125",
+          "version": "2.6.2"
         }
       }
     ]

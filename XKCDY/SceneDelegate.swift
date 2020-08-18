@@ -9,6 +9,7 @@
 import UIKit
 import SwiftUI
 import RealmSwift
+import Combine
 
 class AnyGestureRecognizer: UIGestureRecognizer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -21,7 +22,7 @@ class AnyGestureRecognizer: UIGestureRecognizer {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-       state = .ended
+        state = .ended
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -35,10 +36,13 @@ extension SceneDelegate: UIGestureRecognizerDelegate {
     }
 }
 
+let timeTracker = TimeTracker()
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     var store = Store()
+    var notificationSubscriptions: [AnyCancellable] = []
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -46,19 +50,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Create the SwiftUI view that provides the window contents.
-//        let contentView = ContentView()
-//
-//        // Use a UIHostingController as window root view controller.
-//        if let windowScene = scene as? UIWindowScene {
-//            let window = UIWindow(windowScene: windowScene)
-//            window.rootViewController = UIHostingController(rootView: contentView)
-//            self.window = window
-//            window.makeKeyAndVisible()
-//        }
+        //        let contentView = ContentView()
+        //
+        //        // Use a UIHostingController as window root view controller.
+        //        if let windowScene = scene as? UIWindowScene {
+        //            let window = UIWindow(windowScene: windowScene)
+        //            window.rootViewController = UIHostingController(rootView: contentView)
+        //            self.window = window
+        //            window.makeKeyAndVisible()
+        //        }
 
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            
+
             let realm = try! Realm()
             var comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
             if comics == nil {
@@ -70,12 +74,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController = controller
             self.window = window
             window.makeKeyAndVisible()
-            
-            let tapGesture = AnyGestureRecognizer(target: window, action:#selector(UIView.endEditing))
+
+            let tapGesture = AnyGestureRecognizer(target: window, action: #selector(UIView.endEditing))
             tapGesture.requiresExclusiveTouchType = false
             tapGesture.cancelsTouchesInView = false
             tapGesture.delegate = self //I don't use window as delegate to minimize possible side effects
             window.addGestureRecognizer(tapGesture)
+
+            // Set and update tint color
+            let userSettings = UserSettings()
+            window.tintColor = userSettings.tintColor
+
+            notificationSubscriptions.append(userSettings.objectWillChange.sink {
+                window.tintColor = userSettings.tintColor
+            })
+
+            // Check for initial URL
+            self.navigate(connectionOptions.urlContexts)
+        }
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        self.navigate(URLContexts)
+    }
+
+    func navigate(_ URLContexts: Set<UIOpenURLContext>?) {
+        if let urlContext = URLContexts?.first {
+            if urlContext.url.host == "comics" {
+                if let id = Int(urlContext.url.path.replacingOccurrences(of: "/", with: "")) {
+                    let realm = try! Realm()
+
+                    if realm.object(ofType: Comic.self, forPrimaryKey: id) != nil {
+                        self.store.currentComicId = id
+                        self.store.showPager = true
+                    }
+                }
+            }
         }
     }
 
@@ -89,6 +123,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        timeTracker.startTracker()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -105,6 +140,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        // swiftlint:disable:next force_cast
+        (UIApplication.shared.delegate as! AppDelegate).scheduleBackgroundRefresh()
+        timeTracker.stopTracker()
     }
 
 }

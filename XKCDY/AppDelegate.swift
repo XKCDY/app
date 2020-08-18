@@ -7,12 +7,53 @@
 //
 
 import UIKit
+import BackgroundTasks
+import RealmSwift
+import SwiftyStoreKit
+import class Kingfisher.ImagePrefetcher
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.maxisom.XKCDY.comicFetcher", using: nil) { task in
+            // swiftlint:disable:next force_cast
+            self.handleAppRefreshTask(task: task as! BGAppRefreshTask)
+        }
+
+        // Add transaction observer
+        SwiftyStoreKit.completeTransactions(atomically: true) { _ in
+            do {
+                try IAPHelper.checkForPurchaseAndUpdate()
+            } catch {}
+        }
+
+        // Cache product
+        SwiftyStoreKit.retrieveProductsInfo([XKCDYPro], completion: {_ in })
+
+        // Look for receipt and update server state
+        do {
+            try IAPHelper.checkForPurchaseAndUpdate()
+        } catch {}
+
+        // Set Realm file location
+        let realmFileURL = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: "group.com.maxisom.XKCDY")!
+            .appendingPathComponent("default.realm")
+        Realm.Configuration.defaultConfiguration.fileURL = realmFileURL
+
+        // Disable at-rest encryption so background refresh works
+        let realm = try! Realm()
+
+        // Get our Realm file's parent directory
+        let folderPath = realm.configuration.fileURL!.deletingLastPathComponent().path
+
+        // Disable file protection for this directory
+        try! FileManager.default.setAttributes([FileAttributeKey(rawValue: FileAttributeKey.protectionKey.rawValue): FileProtectionType.none], ofItemAtPath: folderPath)
+
+        // Register for push notifications if enabled
+        Notifications.registerIfEnabled()
+
         return true
     }
 
@@ -30,4 +71,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
+    func scheduleBackgroundRefresh() {
+        let task = BGAppRefreshTaskRequest(identifier: "com.maxisom.XKCDY.comicFetcher")
+        task.earliestBeginDate = Date(timeIntervalSinceNow: 60)
+
+        do {
+            try BGTaskScheduler.shared.submit(task)
+        } catch {
+            print("Unable to sumit task: \(error.localizedDescription)")
+        }
+    }
+
+    func handleAppRefreshTask(task: BGAppRefreshTask) {
+        task.expirationHandler = {
+            task.setTaskCompleted(success: false)
+        }
+
+        let store = Store()
+
+        store.partialRefetchComics { result in
+            switch result {
+            case .success(let comicIds):
+                // Cache images
+                let realm = try! Realm()
+                var urls: [URL] = []
+
+                for id in comicIds {
+                    if let comic = realm.object(ofType: Comic.self, forPrimaryKey: id) {
+                        if let url = comic.getBestImageURL() {
+                            urls.append(url)
+                        }
+                    }
+
+                }
+
+                ImagePrefetcher(urls: urls).start()
+
+                task.setTaskCompleted(success: true)
+            case .failure:
+                task.setTaskCompleted(success: false)
+            }
+        }
+
+        scheduleBackgroundRefresh()
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Notifications.didRegisterForRemoteNotificationsWithDeviceToken(deviceToken)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register for notifications: \(error.localizedDescription)")
+    }
 }
