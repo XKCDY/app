@@ -1,6 +1,9 @@
 name: Build and upload beta
 on:
   push:
+    paths:
+      - 'XKCDY/**'
+      - 'XKCDYIntents/**'
     branches:
       - dev
 
