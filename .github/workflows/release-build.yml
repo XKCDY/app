@@ -1,0 +1,27 @@
+name: Build and upload release
+on:
+  push:
+    branches:
+      - master
+    tags:
+
+jobs:
+  build_and_upload:
+    name: Build & upload
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: maierj/fastlane-action@master
+        name: Fastlane
+        with:
+          lane: 'release'
+        env:
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
+          MATCH_KEYCHAIN_NAME: ci-keychain
+          MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
