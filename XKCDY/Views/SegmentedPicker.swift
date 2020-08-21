@@ -88,7 +88,7 @@ struct SegmentedPicker: View {
     }
 
     private func handleDragChange(gesture: DragGesture.Value) {
-        if (0 <= gesture.translation.width + self.computeActiveSegmentHorizontalOffset()) && gesture.translation.width <= self.getMaxOffset() {
+        if (0 <= gesture.translation.width + self.computeActiveSegmentHorizontalOffset()) && (gesture.translation.width + self.computeActiveSegmentHorizontalOffset() <= self.getMaxOffset()) {
             self.offset = gesture.translation
         }
     }
@@ -98,7 +98,7 @@ struct SegmentedPicker: View {
         i.round()
 
         self.offset = .zero
-        self.store.selectedPage = Page.allCases[Int(i).clamped(to: 0...Page.allCases.count)]
+        self.store.selectedPage = Page.allCases[Int(i).clamped(to: 0...(Page.allCases.count - 1))]
     }
 
     var body: some View {
