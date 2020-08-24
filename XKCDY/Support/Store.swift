@@ -11,8 +11,6 @@ import SwiftUI
 import RealmSwift
 import Combine
 
-let HIDDEN_COMICS = [2275, 2276, 2277, 2278, 2279, 2280, 2281, 2282, 2283, 2284, 2285, 2286, 2287, 2289, 2290, 2291, 2292, 2293, 2294, 2296, 2298, 2299, 2300, 2302, 2305, 2306, 2330, 2331, 2332, 2333, 2338, 2339, 2342, 2346]
-
 extension Binding {
     func onChange(_ handler: @escaping (Value) -> Void) -> Binding<Value> {
         return Binding(
@@ -104,10 +102,6 @@ final class Store: ObservableObject {
         try! realm.write {
             for comic in results {
                 let updatedComic = comic.toObject()
-
-                if HIDDEN_COMICS.contains(updatedComic.id) {
-                    continue
-                }
 
                 if let currentlySavedComic = realm.object(ofType: Comic.self, forPrimaryKey: updatedComic.id) {
                     updatedComic.isFavorite = currentlySavedComic.isFavorite
