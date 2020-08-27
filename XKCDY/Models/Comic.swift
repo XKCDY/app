@@ -92,6 +92,31 @@ class Comic: Object, Identifiable {
         return comic
     }
 
+    static func getTallSample() -> Comic {
+        let comic = self.init()
+
+        comic.id = 2329
+        comic.publishedAt = Date()
+        comic.safeTitle = "Universal Rating Scale"
+        comic.title = "Universal Rating Scale"
+        comic.transcript = "No transcript"
+        comic.alt = "There are plenty of finer gradations. I got 'critically endangered/extinct in the wild' on my exam, although the curve bumped it all the way up to 'venti.'"
+        comic.eURL = "https://www.explainxkcd.com/wiki/index.php/2329:_Universal_Rating_Scale"
+
+        let image = ComicImage()
+        image.height = 1945
+        image.width = 443
+        image.ratio = 0.227763496143959
+        image.url = URL(string: "https://imgs.xkcd.com/comics/universal_rating_scale_2x.png")
+
+        let images = ComicImages()
+        images.x2 = image
+
+        comic.imgs = images
+
+        return comic
+    }
+
     override static func primaryKey() -> String? {
         return "id"
     }

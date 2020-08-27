@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
         "state": {
           "branch": null,
-          "revision": "1339ebea9498ef6c3fc75cc195d7163d7c7167f9",
-          "version": "5.14.1"
+          "revision": "175eeb4618b0a6ef4d69a7409b6a74ddd235a093",
+          "version": "5.15.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/realm/realm-cocoa",
         "state": {
           "branch": null,
-          "revision": "381de6c8eea4cee147d2b79d28cfc64a408d18b4",
-          "version": "5.3.3"
+          "revision": "99c7d89791dfe8730c145461d59969eb4c56c557",
+          "version": "5.3.5"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/realm/realm-core",
         "state": {
           "branch": null,
-          "revision": "60c12a79b86a2a5278364fbf8c76d6062289e79e",
-          "version": "6.0.14"
+          "revision": "b7c49bb107cfc933016792e78fc5daa2aca71a14",
+          "version": "6.0.19"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
         "state": {
           "branch": null,
-          "revision": "7380b8011b884997a57d24f1c88c91570798c66e",
-          "version": "1.10.1"
+          "revision": "a81dd730104e15af3a1776afe1d15e1f88661cf0",
+          "version": "1.10.4"
         }
       },
       {
