@@ -52,8 +52,10 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
     }
 
     func setupScrollView() {
-        let initialDisplayedWidth = bounds.size.height * (imageView.image!.size.width / imageView.image!.size.height)
-        let initialDisplayedHeight = bounds.size.width * (imageView.image!.size.height / imageView.image!.size.width)
+        let imageSize = imageView.image?.size ?? .zero
+
+        let initialDisplayedWidth = bounds.size.height * (imageSize.width / imageSize.height)
+        let initialDisplayedHeight = bounds.size.width * (imageSize.height / imageSize.width)
 
         delegate = self
         minimumZoomScale = 1.0
