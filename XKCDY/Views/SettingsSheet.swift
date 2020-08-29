@@ -231,6 +231,20 @@ struct SettingsSheet: View {
                         }
                     }
 
+                    SettingsGroup(label: "Legal") {
+                        Button(action: {
+                            UIApplication.shared.open(URL(string: "https://xkcdy.com/privacy")!)
+                        }) {
+                            Text("Privacy Policy")
+                        }
+
+                        Button(action: {
+                            UIApplication.shared.open(URL(string: "https://xkcdy.com/terms")!)
+                        }) {
+                            Text("Terms of Use")
+                        }
+                    }
+
                     Spacer()
                 }
                 .padding()

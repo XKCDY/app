@@ -91,7 +91,11 @@ struct ComicPagerOverlay: View {
 
                 VStack {
                     if self.userSettings.showAltInPager {
-                        Text(self.comic.alt).multilineTextAlignment(.center)
+                        Text(self.comic.alt)
+                            .multilineTextAlignment(.center)
+                            // Prevent from overlapping with notch
+                            .padding(.trailing, geom.safeAreaInsets.trailing)
+                            .padding(.leading, geom.safeAreaInsets.leading)
                     }
 
                     HStack {

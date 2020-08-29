@@ -23,26 +23,37 @@ struct SharableComicView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Text("#\(comic.id):").font(Font.system(size: self.getFontSize()).bold())
+            HStack(alignment: .center) {
+                Text("#\(comic.id):")
+                    .font(Font.system(size: self.getFontSize()).bold())
+                    .foregroundColor(Color.white)
 
-                Text(comic.title).lineLimit(1)
+                Text(comic.title)
+                    .lineLimit(1)
+                    .foregroundColor(Color.white)
 
                 Spacer()
 
                 Text(getDateFormatter().string(from: comic.publishedAt))
+                    .foregroundColor(Color.white)
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.vertical, self.getFontSize() / 2)
 
             KFImage(comic.getBestImageURL(), isLoaded: self.$isLoaded)
 
             HStack {
                 Text(comic.alt)
                     .fixedSize(horizontal: false, vertical: true)
+                    .foregroundColor(Color.white)
                 Spacer()
             }
-            .padding()
-        }.font(Font.system(size: self.getFontSize()))
+            .padding(.horizontal)
+            .padding(.vertical, self.getFontSize() / 2)
+        }
+        .padding(.vertical)
+        .background(Color.black)
+        .font(Font.system(size: self.getFontSize()))
     }
 
     func getDateFormatter() -> DateFormatter {
