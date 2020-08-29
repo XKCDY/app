@@ -43,7 +43,10 @@ final class IAPHelper {
         UserDefaults().removeObject(forKey: "tintColor")
 
         if UIApplication.shared.alternateIconName != nil {
-            UIApplication.shared.setAlternateIconName(nil)
+            // Only works if we wait a few seconds after launch
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                UIApplication.shared.setAlternateIconName(nil)
+            }
         }
     }
 
