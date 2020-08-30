@@ -55,13 +55,9 @@ struct ComicsGridView: View {
     func onCellEvent(_ event: CellEvent<Comic>) {
         switch event {
         case let .prefetchForData(data):
-            var urls: [URL] = []
-
-            for comic in data {
-                urls.append(comic.getBestImageURL()!)
-            }
-
-            ImagePrefetcher(urls: urls).start()
+            ImagePrefetcher(urls: data.map {$0.getBestImageURL()!}).start()
+        case let .cancelPrefetchForData(data):
+            ImagePrefetcher(urls: data.map {$0.getBestImageURL()!}).stop()
         default:
             return
         }
