@@ -52,7 +52,9 @@ struct ComicPager: View {
     }
 
     func cacheNextShuffleResult() {
-        let randomComic = comics[Int.random(in: 0 ..< comics.count)]
+        guard let randomComic = comics.randomElement() else {
+            return
+        }
 
         ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
         self.nextShuffleResultId = randomComic.id
