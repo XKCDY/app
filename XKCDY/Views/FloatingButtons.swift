@@ -63,13 +63,15 @@ struct FloatingButtons: View {
     @Binding var isSearching: Bool
     @Binding var searchText: String
     var onOpenSettings: () -> Void
+    var onShuffle: () -> Void
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
 
-    init(isSearching: Binding<Bool>, searchText: Binding<String>, onOpenSettings: @escaping () -> Void) {
+    init(isSearching: Binding<Bool>, searchText: Binding<String>, onOpenSettings: @escaping () -> Void, onShuffle: @escaping () -> Void) {
         self._isSearching = isSearching
         self._searchText = searchText
         self.onOpenSettings = onOpenSettings
+        self.onShuffle = onShuffle
         UITextField.appearance().clearButtonMode = .always
     }
 
@@ -89,6 +91,20 @@ struct FloatingButtons: View {
                         self.onOpenSettings()
                     }) {
                         Image(systemName: "gear")
+                            .modifier(RoundButtonIcon())
+                    }
+                    .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
+                    
+                    if self.isLargeScreen() {
+                        Spacer().frame(width: 25)
+                    } else {
+                        Spacer()
+                    }
+                    
+                    Button(action: {
+                        self.onShuffle()
+                    }) {
+                        Image(systemName: "shuffle")
                             .modifier(RoundButtonIcon())
                     }
                     .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
@@ -147,6 +163,8 @@ struct FloatingButtons_Previews: PreviewProvider {
     static var previews: some View {
         FloatingButtons(isSearching: .constant(true), searchText: .constant(""), onOpenSettings: {
             print("Settings button clicked.")
+        }, onShuffle: {
+            print("Shuffle button clicked.")
         })
     }
 }

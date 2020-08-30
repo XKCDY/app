@@ -80,6 +80,10 @@ struct ContentView: View {
     func handleProDetailsOpen() {
         self.showSettings = true
     }
+    
+    func handleShuffleButtonPress() {
+        // TODO: Load random comic ID
+    }
 
     var body: some View {
         ZStack {
@@ -92,7 +96,7 @@ struct ContentView: View {
             VStack {
                 FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
                     self.showSettings = true
-                })
+                }, onShuffle: self.handleShuffleButtonPress)
                 .padding()
                 .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
                 .animation(.default)
