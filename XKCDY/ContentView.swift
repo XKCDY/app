@@ -117,7 +117,7 @@ struct ContentView: View {
 
             if self.store.showPager {
                 ComicPager(onHide: self.hidePager, comics: self.filteredCollection(),
-                           shuffleOnStart: shuffleButtonPressed)
+                           shuffleOnStart: self.$shuffleButtonPressed)
                     .onAppear(perform: handleShowProAlert)
             }
 

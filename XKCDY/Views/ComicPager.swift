@@ -45,12 +45,12 @@ struct ComicPager: View {
     @State private var isZoomed = false
     @State private var nextShuffleResultId: Int?
     var comics: Results<Comic>
-    var shuffleOnStart = false
+    @Binding var shuffleOnStart: Bool
 
-    init(onHide: @escaping () -> Void, comics: Results<Comic>, shuffleOnStart: Bool) {
+    init(onHide: @escaping () -> Void, comics: Results<Comic>, shuffleOnStart: Binding<Bool>) {
         self.onHide = onHide
         self.comics = comics
-        self.shuffleOnStart = shuffleOnStart
+        self._shuffleOnStart = shuffleOnStart
     }
 
     func cacheNextShuffleResult() {
@@ -209,6 +209,7 @@ struct ComicPager: View {
             self.cacheNextShuffleResult()
             if self.shuffleOnStart {
                 self.handleShuffle()
+                self.shuffleOnStart = false
             }
         }
         .onReceive(self.store.$debouncedCurrentComicId) { _ in
