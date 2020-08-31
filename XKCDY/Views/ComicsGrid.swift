@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 import RealmSwift
 import ASCollectionView
 import class Kingfisher.ImagePrefetcher
@@ -39,6 +40,57 @@ extension ASWaterfallLayout.ColumnCount: Equatable {
     }
 }
 
+@propertyWrapper struct PublishedWithoutViewUpdate<Value> {
+    let publisher: PassthroughSubject<Void, Never>
+    private var _wrappedValue: Value
+
+    init(wrappedValue: Value) {
+        self.publisher = PassthroughSubject()
+        self._wrappedValue = wrappedValue
+    }
+
+    var wrappedValue: Value {
+        get {
+            _wrappedValue
+        }
+
+        set {
+            _wrappedValue = newValue
+            publisher.send()
+        }
+    }
+
+    var projectedValue: PassthroughSubject<Void, Never> {
+        //        get {
+        self.publisher
+        //        }
+    }
+}
+
+class ScrollStateModel: ObservableObject {
+    @Published var isScrolling = false
+    @PublishedWithoutViewUpdate var scrollPosition: CGFloat = 0 {
+        willSet {
+            if !self.isScrolling {
+                self.isScrolling = true
+            }
+        }
+    }
+
+    private var cancellables = Set<AnyCancellable>()
+
+    init() {
+        $scrollPosition
+            .debounce(for: .milliseconds(50), scheduler: DispatchQueue.global())
+            .sink { _ in
+                DispatchQueue.main.async {
+                    self.isScrolling = false
+                }
+        }
+        .store(in: &cancellables)
+    }
+}
+
 struct ComicsGridView: View {
     @State var columnMinSize: CGFloat = 150
     @State var inViewUrls: [String] = []
@@ -51,6 +103,7 @@ struct ComicsGridView: View {
     var comics: Results<Comic>
     @State private var lastScrollPositions: [CGFloat] = []
     @State private var shouldBlurStatusBar = false
+    @ObservedObject private var scrollState = ScrollStateModel()
 
     func onCellEvent(_ event: CellEvent<Comic>) {
         switch event {
@@ -77,7 +130,7 @@ struct ComicsGridView: View {
                     dataID: \.self,
                     onCellEvent: self.onCellEvent) { comic, _ -> AnyView in
                         AnyView(
-                            ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId)
+                            ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId, isScrolling: self.scrollState.isScrolling)
                                 // Isn't SwiftUI fun?
                                 .environmentObject(self.store)
                                 .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
@@ -98,6 +151,8 @@ struct ComicsGridView: View {
                     }
             }
             .onScroll { (point, _) in
+                self.scrollState.scrollPosition = point.y
+
                 DispatchQueue.main.async {
                     self.shouldBlurStatusBar = point.y > 80
 
