@@ -78,6 +78,8 @@ struct ComicsGridView: View {
                     onCellEvent: self.onCellEvent) { comic, _ -> AnyView in
                         AnyView(
                             ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId)
+                                // Isn't SwiftUI fun?
+                                .environmentObject(self.store)
                                 .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
                         )
             })
