@@ -27,7 +27,7 @@ func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
 
 let TIME_TO_MARK_AS_READ_MS: Int64 = 2 * 1000
 // https://www.objc.io/blog/2019/09/26/swiftui-animation-timing-curves/
-let SPRING_ANIMATION_TIME_SECONDS = 0.59
+let SPRING_ANIMATION_TIME_SECONDS = 0.60
 
 struct ComicPager: View {
     @State var page: Int = 0
@@ -52,7 +52,9 @@ struct ComicPager: View {
     }
 
     func cacheNextShuffleResult() {
-        let randomComic = comics[Int.random(in: 0 ..< comics.count)]
+        guard let randomComic = comics.randomElement() else {
+            return
+        }
 
         ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
         self.nextShuffleResultId = randomComic.id
@@ -137,6 +139,10 @@ struct ComicPager: View {
                     .allowsDragging(!self.isZoomed)
                     .itemSpacing(self.offset == .zero ? 30 : 1000)
                     .onPageChanged({ newIndex in
+                        if newIndex == -1 {
+                            return
+                        }
+
                         let currentTimestamp = Date().currentTimeMillis()
 
                         if currentTimestamp > self.startedViewingAt + TIME_TO_MARK_AS_READ_MS {

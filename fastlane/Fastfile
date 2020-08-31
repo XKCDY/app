@@ -83,15 +83,9 @@ platform :ios do
         version_number: last_git_tag
     )
 
-    # Fails if no version exists
-    # increment_build_number(
-    #  build_number: app_store_build_number + 1,
-    #  xcodeproj: "Example.xcodeproj"
-    # )
-
     build_app(project: "XKCDY.xcodeproj", scheme: "XKCDY")
 
-    upload_to_app_store
+    upload_to_app_store(force: true)
 
     delete_keychain(
       name: keychain_name

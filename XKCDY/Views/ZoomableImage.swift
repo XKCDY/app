@@ -51,10 +51,15 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
         }
     }
 
-    private func setupScrollView() {
+    func setupScrollView() {
+        let imageSize = imageView.image?.size ?? .zero
+
+        let initialDisplayedWidth = bounds.size.height * (imageSize.width / imageSize.height)
+        let initialDisplayedHeight = bounds.size.width * (imageSize.height / imageSize.width)
+
         delegate = self
         minimumZoomScale = 1.0
-        maximumZoomScale = 3.0
+        maximumZoomScale = max(3.0, bounds.size.width / initialDisplayedWidth, bounds.size.height / initialDisplayedHeight)
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
     }
@@ -137,6 +142,7 @@ struct ZoomableImageView: UIViewRepresentable {
             uiView.isScrollEnabled = false
             uiView.imageView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
             uiView.contentSize = frame.size
+            uiView.setupScrollView()
 
             uiView.orientation = UIDevice.current.orientation
 
