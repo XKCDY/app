@@ -89,6 +89,8 @@ final class Store: ObservableObject {
         } else {
             self.currentFavoriteIds = []
         }
+
+        self.showPager = false
     }
 
     func updatePosition(for id: Int, at: CGRect) {
