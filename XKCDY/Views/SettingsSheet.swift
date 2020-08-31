@@ -200,6 +200,8 @@ struct SettingsSheet: View {
                     }
 
                     SettingsGroup(label: "Options") {
+                        Toggle("Show all comics", isOn: self.$userSettings.showCOVIDComics)
+
                         Toggle("Show alt text in detail overlay", isOn: self.$userSettings.showAltInPager)
 
                         Button(action: {

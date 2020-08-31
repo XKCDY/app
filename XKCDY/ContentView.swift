@@ -24,6 +24,7 @@ struct ContentView: View {
     @State private var showProAlert = false
     @State private var isLoadingFromScratch = false
     @Environment(\.colorScheme) private var colorScheme
+    @ObservedObject private var userSettings = UserSettings()
 
     func hidePager() {
         store.showPager = false
@@ -35,6 +36,10 @@ struct ContentView: View {
 
     func filteredCollection() -> Results<Comic> {
         var results = AnyRealmCollection(self.comics)
+
+        if !self.userSettings.showCOVIDComics {
+            results = AnyRealmCollection(results.filter("NOT (id IN %@)", COVID_COMICS))
+        }
 
         if searchText != "" {
             if let searchId = Int(searchText) {
