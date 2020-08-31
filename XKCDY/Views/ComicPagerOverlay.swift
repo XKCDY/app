@@ -77,14 +77,20 @@ struct ComicPagerOverlay: View {
         GeometryReader { geom in
             VStack {
                 ZStack {
-                    Text(self.comic.title)
-                        .font(.title)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .padding(.top, geom.safeAreaInsets.top)
-                        .frame(minWidth: 0, maxWidth: .infinity)
-                        .background(Blur())
-                        .animation(.none)
+                    VStack {
+                        Text(self.comic.title)
+                            .font(.title)
+                            .multilineTextAlignment(.center)
+
+                        if self.userSettings.showComicIdInPager {
+                            Text("#\(self.comic.id)").font(.headline)
+                        }
+                    }
+                    .padding()
+                    .padding(.top, geom.safeAreaInsets.top)
+                    .frame(minWidth: 0, maxWidth: .infinity)
+                    .background(Blur())
+                    .animation(.none)
                 }
 
                 Spacer()
