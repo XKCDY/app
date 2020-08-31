@@ -8,7 +8,6 @@
 
 import Foundation
 import SwiftUI
-import Introspect
 
 struct Blur: UIViewRepresentable {
     var style: UIBlurEffect.Style = .systemMaterial
