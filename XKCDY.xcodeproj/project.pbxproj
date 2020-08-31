@@ -61,7 +61,6 @@
 		6AECCFD024B0DBD1006BC9D9 /* XKCDYClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */; };
 		6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFD224B28CEA006BC9D9 /* Comic.swift */; };
 		6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEFE7AD244644A7003057F8 /* ComicsGrid.swift */; };
-		6AF016A2246239CD00A51375 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 6AF016A1246239CD00A51375 /* Introspect */; };
 		6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF1386424BF8F64005579D2 /* FloatingButtons.swift */; };
 		6AF2A49A24D0BEF900DE016A /* ColorPickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF2A49924D0BEF900DE016A /* ColorPickerRow.swift */; };
 		6AF2A49C24D0CC5400DE016A /* AppIconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF2A49B24D0CC5400DE016A /* AppIconPicker.swift */; };
@@ -212,7 +211,6 @@
 				6AEB62B4246373E7001FAF67 /* SwiftUIPager in Frameworks */,
 				6AA0123B24B6538700F51ABF /* WebView in Frameworks */,
 				6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */,
-				6AF016A2246239CD00A51375 /* Introspect in Frameworks */,
 				6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */,
 				6A06FAC82445517B002202DC /* ASCollectionView in Frameworks */,
 			);
@@ -433,7 +431,6 @@
 			packageProductDependencies = (
 				6A06FAC72445517B002202DC /* ASCollectionView */,
 				6ADBCBD32447B65100594DBD /* Alamofire */,
-				6AF016A1246239CD00A51375 /* Introspect */,
 				6AEB62B3246373E7001FAF67 /* SwiftUIPager */,
 				6A5430E624994A6500C92B78 /* RealmSwift */,
 				6AA0123324B62C7000F51ABF /* Kingfisher */,
@@ -542,7 +539,6 @@
 			packageReferences = (
 				6A06FAC62445517B002202DC /* XCRemoteSwiftPackageReference "ASCollectionView" */,
 				6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */,
-				6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				6AEB62B2246373E7001FAF67 /* XCRemoteSwiftPackageReference "SwiftUIPager" */,
 				6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */,
@@ -866,7 +862,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XKCDY/Preview Content\"";
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
@@ -895,7 +891,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XKCDY/Preview Content\"";
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
@@ -1006,7 +1002,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDYIntents/XKCDYIntentsDebug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = XKCDYIntents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
@@ -1031,7 +1027,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDYIntents/XKCDYIntentsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = XKCDYIntents/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
@@ -1165,14 +1161,6 @@
 				minimumVersion = 1.9.2;
 			};
 		};
-		6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/timbersoftware/SwiftUI-Introspect.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1235,11 +1223,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AEB62B2246373E7001FAF67 /* XCRemoteSwiftPackageReference "SwiftUIPager" */;
 			productName = SwiftUIPager;
-		};
-		6AF016A1246239CD00A51375 /* Introspect */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = Introspect;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

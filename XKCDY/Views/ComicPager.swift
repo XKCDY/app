@@ -139,6 +139,10 @@ struct ComicPager: View {
                     .allowsDragging(!self.isZoomed)
                     .itemSpacing(self.offset == .zero ? 30 : 1000)
                     .onPageChanged({ newIndex in
+                        if newIndex == -1 {
+                            return
+                        }
+
                         let currentTimestamp = Date().currentTimeMillis()
 
                         if currentTimestamp > self.startedViewingAt + TIME_TO_MARK_AS_READ_MS {
