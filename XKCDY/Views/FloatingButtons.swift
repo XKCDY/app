@@ -94,13 +94,13 @@ struct FloatingButtons: View {
                             .modifier(RoundButtonIcon())
                     }
                     .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
-                    
+
                     if self.isLargeScreen() {
                         Spacer().frame(width: 25)
                     } else {
                         Spacer()
                     }
-                    
+
                     Button(action: {
                         self.onShuffle()
                     }) {

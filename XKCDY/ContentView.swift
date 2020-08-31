@@ -23,7 +23,6 @@ struct ContentView: View {
     @State private var showSettings = false
     @State private var showProAlert = false
     @State private var isLoadingFromScratch = false
-    @State private var shuffleButtonPressed = false
     @Environment(\.colorScheme) private var colorScheme
 
     func hidePager() {
@@ -81,11 +80,10 @@ struct ContentView: View {
     func handleProDetailsOpen() {
         self.showSettings = true
     }
-    
+
     func handleShuffleButtonPress() {
-        self.store.currentComicId = 1   // Temp ID to load pager
-        self.shuffleButtonPressed = true
-        store.showPager = true
+        self.store.currentComicId = self.filteredCollection().randomElement()?.id
+        handleComicOpen()
     }
 
     var body: some View {
@@ -116,8 +114,7 @@ struct ContentView: View {
             }
 
             if self.store.showPager {
-                ComicPager(onHide: self.hidePager, comics: self.filteredCollection(),
-                           shuffleOnStart: self.$shuffleButtonPressed)
+                ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
                     .onAppear(perform: handleShowProAlert)
             }
 
