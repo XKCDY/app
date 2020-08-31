@@ -82,7 +82,11 @@ struct ContentView: View {
     }
 
     func handleShuffleButtonPress() {
-        self.store.currentComicId = self.filteredCollection().randomElement()?.id
+        guard let randomId = self.filteredCollection().randomElement()?.id else {
+            return
+        }
+
+        self.store.currentComicId = randomId
         handleComicOpen()
     }
 
