@@ -34,6 +34,7 @@ final class UserSettings: ObservableObject {
     @UserDefault(key: "timeSpentInApp", defaultValue: 0) var timeSpentInApp: Int64
     @UserDefault(key: "showedProAlert", defaultValue: false) var showedProAlert: Bool
     @UserDefault(key: "showAltInPager", defaultValue: false) var showAltInPager: Bool
+    @UserDefault(key: "showComicIdInPager", defaultValue: false) var showComicIdInPager: Bool
     @UserDefault(key: "showCOVIDComics", defaultValue: false) var showCOVIDComics: Bool
     var tintColor: UIColor {
         get {

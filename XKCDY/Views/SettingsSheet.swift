@@ -204,6 +204,8 @@ struct SettingsSheet: View {
 
                         Toggle("Show alt text in detail overlay", isOn: self.$userSettings.showAltInPager)
 
+                        Toggle("Show comic number in detail overlay", isOn: self.$userSettings.showComicIdInPager)
+
                         Button(action: {
                             self.alertItem = AlertItem(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
                                 self.markAsRead()
