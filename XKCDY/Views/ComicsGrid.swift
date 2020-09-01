@@ -100,7 +100,6 @@ struct ComicsGridView: View {
     @EnvironmentObject var store: Store
     @State private var scrollPosition: ASCollectionViewScrollPosition?
     @State private var showErrorAlert = false
-    var comics: Results<Comic>
     @State private var lastScrollPositions: [CGFloat] = []
     @State private var shouldBlurStatusBar = false
     @ObservedObject private var scrollState = ScrollStateModel()
@@ -126,7 +125,11 @@ struct ComicsGridView: View {
             AnyView(ASCollectionView(
                 section: ASSection(
                     id: 0,
-                    data: self.comics,
+                    // Wrapping with Array() results in significantly better performance
+                    // (even though it shouldn't) because Realm has its own extremely slow
+                    // implementation of .firstIndex(), which ASCollectionView calls when rendering.
+                    // Don't believe me? Try unwrapping it and scrolling to the bottom.
+                    data: Array(self.store.frozenFilteredComics),
                     dataID: \.self,
                     onCellEvent: self.onCellEvent) { comic, _ -> AnyView in
                         AnyView(
@@ -193,7 +196,7 @@ struct ComicsGridView: View {
                         return
                     }
 
-                    if let comicIndex = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) {
+                    if let comicIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) {
                         self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
                     }
                 })

@@ -53,6 +53,7 @@
 		6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */; };
 		6ACD2C6024C298D000D6EFE1 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6ADBCBD42447B65100594DBD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADBCBD32447B65100594DBD /* Alamofire */; };
+		6ADBE43624FDB1DA004C9785 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6AE0D7B6244FF1A700AE982C /* FloatingNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */; };
 		6AE116F02465F82B00194F57 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE116EF2465F82B00194F57 /* ShareSheet.swift */; };
 		6AE116F4246653CE00194F57 /* ComicPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE116F3246653CE00194F57 /* ComicPager.swift */; };
@@ -696,6 +697,7 @@
 				6AAE177F24B79CD700181C4B /* IntentHandler.swift in Sources */,
 				6A7D1C9624B8E502005F2F9A /* Store.swift in Sources */,
 				6A7D1C9524B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift in Sources */,
+				6ADBE43624FDB1DA004C9785 /* UserSettings.swift in Sources */,
 				6AAE178924B7A1B700181C4B /* GetComicIntentHandler.swift in Sources */,
 				6A7D1C9724B8E562005F2F9A /* XKCDYClient.swift in Sources */,
 			);

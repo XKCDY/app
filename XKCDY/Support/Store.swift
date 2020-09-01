@@ -11,37 +11,6 @@ import SwiftUI
 import RealmSwift
 import Combine
 
-extension Binding {
-    func onChange(_ handler: @escaping (Value) -> Void) -> Binding<Value> {
-        return Binding(
-            get: { self.wrappedValue },
-            set: { selection in
-                self.wrappedValue = selection
-                handler(selection)
-        })
-    }
-}
-
-class BindableResults<Element>: ObservableObject where Element: RealmSwift.RealmCollectionValue {
-    var results: Results<Element>
-    private var token: NotificationToken!
-
-    init(results: Results<Element>) {
-        self.results = results
-        lateInit()
-    }
-
-    func lateInit() {
-        token = results.observe { [weak self] _ in
-            self?.objectWillChange.send()
-        }
-    }
-
-    deinit {
-        token.invalidate()
-    }
-}
-
 enum StoreError: Error {
     case other
     case api
@@ -60,25 +29,105 @@ enum Page: String, CaseIterable, Hashable, Identifiable {
 
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
-    @Published var currentComicId: Int?
+    @Published var currentComicId: Int? {
+        didSet {
+            comicToken = self.comic.observe { _ in
+                self.objectWillChange.send()
+            }
+        }
+    }
+    var comic: Comic {
+        try! Realm().object(ofType: Comic.self, forPrimaryKey: self.currentComicId)!
+    }
     @Published var debouncedCurrentComicId: Int?
     @Published var showPager = false
+    @Published var showSettings = false
     @Published var selectedPage: Page = .all {
         willSet {
             self.handlePageChange(newValue)
         }
+        didSet {
+            self.updateFilteredComics()
+        }
+    }
+    @Published var searchText = "" {
+        didSet {
+            self.updateFilteredComics()
+        }
     }
     @Published var currentFavoriteIds: [Int] = []
+    @Published var filteredComics: Results<Comic> {
+        didSet {
+            self.addFrozenObserver()
+        }
+    }
+    @Published var frozenFilteredComics: Results<Comic>
+    @Published var isLoadingFromScratch = false
 
+    @ObservedObject private var userSettings = UserSettings()
+    @ObservedObject private var comics: RealmSwift.List<Comic>
+
+    private var comicToken: NotificationToken?
+    private var comicsToken: NotificationToken?
     private var disposables = Set<AnyCancellable>()
 
     init() {
+        let realm = try! Realm()
+        var comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+
+        if comics == nil {
+            comics = try! realm.write { realm.create(Comics.self, value: []) }
+        }
+
+        self.comics = comics!.comics
+
+        let initialComics = comics!.comics.sorted(byKeyPath: "id", ascending: false)
+        self.filteredComics = initialComics
+
+        self.frozenFilteredComics = initialComics.freeze().sorted(byKeyPath: "id", ascending: false)
+
+        self.updateFilteredComics()
+        self.addFrozenObserver()
+
         DispatchQueue.main.async {
             self.$currentComicId
                 .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
                 .assign(to: \.debouncedCurrentComicId, on: self)
                 .store(in: &self.disposables)
         }
+
+        self.userSettings.objectWillChange.sink { _ in
+            self.updateFilteredComics()
+        }
+        .store(in: &self.disposables)
+    }
+
+    private func addFrozenObserver() {
+        self.comicsToken = self.filteredComics.observe { _ in
+            self.frozenFilteredComics = self.filteredComics.freeze().sorted(byKeyPath: "id", ascending: false)
+        }
+    }
+
+    private func updateFilteredComics() {
+        var results = self.comics.filter("TRUEPREDICATE")
+
+        if !self.userSettings.showCOVIDComics {
+            results = results.filter("NOT (id IN %@)", COVID_COMICS)
+        }
+
+        if searchText != "" {
+            if let searchId = Int(searchText) {
+                results = results.filter("id == %@", searchId)
+            } else {
+                results = results.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", searchText, searchText, searchText)
+            }
+        }
+
+        if selectedPage == .favorites {
+            results = results.filter("isFavorite == true OR id IN %@", currentFavoriteIds)
+        }
+
+        self.filteredComics = results.sorted(byKeyPath: "id", ascending: false)
     }
 
     func handlePageChange(_ page: Page) {
@@ -116,12 +165,20 @@ final class Store: ObservableObject {
                     storedComics!.comics.append(updatedComic)
                 }
             }
-
-            callback()
         }
+
+        if results.count > 0 {
+            self.updateFilteredComics()
+        }
+
+        callback()
     }
 
     func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
+        if self.comics.count == 0 {
+            self.isLoadingFromScratch = true
+        }
+
         API.getComics { result in
             switch result {
             case .success(let comics): do {
@@ -133,6 +190,8 @@ final class Store: ObservableObject {
                 callback?(.failure(.api))
                 }
             }
+
+            self.isLoadingFromScratch = false
         }
     }
 

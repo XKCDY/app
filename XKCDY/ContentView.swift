@@ -12,19 +12,12 @@ import ASCollectionView
 
 struct ContentView: View {
     @State private var isSearching = false
-    @State private var searchText = ""
-    private var oldFavorites: [Int] = []
     @EnvironmentObject private var store: Store
-    @State private var pagerOffset: CGPoint = .zero
-    @State private var isPagerHidden = false
-    @EnvironmentObject var comics: RealmSwift.List<Comic>
-    let foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
     @State private var scrollDirection: ScrollDirection = .up
-    @State private var showSettings = false
     @State private var showProAlert = false
-    @State private var isLoadingFromScratch = false
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var userSettings = UserSettings()
+    private var foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
 
     func hidePager() {
         store.showPager = false
@@ -34,38 +27,8 @@ struct ContentView: View {
         store.showPager = true
     }
 
-    func filteredCollection() -> Results<Comic> {
-        var results = AnyRealmCollection(self.comics)
-
-        if !self.userSettings.showCOVIDComics {
-            results = AnyRealmCollection(results.filter("NOT (id IN %@)", COVID_COMICS))
-        }
-
-        if searchText != "" {
-            if let searchId = Int(searchText) {
-                results = AnyRealmCollection(results.filter("id == %@", searchId))
-            } else {
-                results = AnyRealmCollection(results.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", searchText, searchText, searchText))
-            }
-        }
-
-        if self.store.selectedPage == .favorites {
-            results = AnyRealmCollection(results.filter("isFavorite == true OR id IN %@", self.store.currentFavoriteIds))
-        }
-
-        return results.freeze().sorted(byKeyPath: "id", ascending: false)
-    }
-
     func refetchComics() {
-        if self.comics.count == 0 {
-            self.isLoadingFromScratch = true
-        }
-
-        DispatchQueue.global(qos: .background).async {
-            self.store.partialRefetchComics { _ in
-                self.isLoadingFromScratch = false
-            }
-        }
+        self.store.partialRefetchComics()
     }
 
     func handleAppear() {
@@ -74,20 +37,19 @@ struct ContentView: View {
 
     func handleShowProAlert() {
         let FIVE_MINUTES_IN_MS = 5 * 60 * 1000
-        let settings = UserSettings()
 
-        if !settings.showedProAlert && !settings.isSubscribedToPro && settings.timeSpentInApp > FIVE_MINUTES_IN_MS {
+        if !userSettings.showedProAlert && !userSettings.isSubscribedToPro && userSettings.timeSpentInApp > FIVE_MINUTES_IN_MS {
             self.showProAlert = true
-            settings.showedProAlert = true
+            userSettings.showedProAlert = true
         }
     }
 
     func handleProDetailsOpen() {
-        self.showSettings = true
+        self.store.showSettings = true
     }
 
     func handleShuffleButtonPress() {
-        guard let randomId = self.filteredCollection().randomElement()?.id else {
+        guard let randomId = self.store.filteredComics.randomElement()?.id else {
             return
         }
 
@@ -97,24 +59,22 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            if self.filteredCollection().count > 0 {
-                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, comics: self.filteredCollection()).edgesIgnoringSafeArea(.bottom)
+            if self.store.filteredComics.count > 0 {
+                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection).edgesIgnoringSafeArea(.bottom)
             } else if self.store.selectedPage == .favorites {
                 Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
             }
 
             VStack {
-                FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
-                    self.showSettings = true
-                }, onShuffle: self.handleShuffleButtonPress)
-                .padding()
-                .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
-                .animation(.default)
-                .sheet(isPresented: self.$showSettings) {
-                    SettingsSheet(onDismiss: {
-                        self.showSettings = false
-                    })
-                }
+                FloatingButtons(isSearching: self.$isSearching, onShuffle: self.handleShuffleButtonPress)
+                    .padding()
+                    .opacity(self.scrollDirection == .up || self.store.searchText != "" ? 1 : 0)
+                    .animation(.default)
+                    .sheet(isPresented: self.$store.showSettings) {
+                        SettingsSheet(onDismiss: {
+                            self.store.showSettings = false
+                        })
+                    }
 
                 Spacer()
 
@@ -123,11 +83,10 @@ struct ContentView: View {
             }
 
             if self.store.showPager {
-                ComicPager(onHide: self.hidePager, comics: self.filteredCollection())
-                    .onAppear(perform: handleShowProAlert)
+                ComicPager(onHide: self.hidePager).onAppear(perform: handleShowProAlert)
             }
 
-            if self.isLoadingFromScratch {
+            if self.store.isLoadingFromScratch {
                 FortuneLoader()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(self.colorScheme == .dark ? Color.black : Color.white)

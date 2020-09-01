@@ -61,16 +61,13 @@ struct CustomTextField: UIViewRepresentable {
 
 struct FloatingButtons: View {
     @Binding var isSearching: Bool
-    @Binding var searchText: String
-    var onOpenSettings: () -> Void
     var onShuffle: () -> Void
-    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.verticalSizeClass) private var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass: UserInterfaceSizeClass?
+    @EnvironmentObject private var store: Store
 
-    init(isSearching: Binding<Bool>, searchText: Binding<String>, onOpenSettings: @escaping () -> Void, onShuffle: @escaping () -> Void) {
+    init(isSearching: Binding<Bool>, onShuffle: @escaping () -> Void) {
         self._isSearching = isSearching
-        self._searchText = searchText
-        self.onOpenSettings = onOpenSettings
         self.onShuffle = onShuffle
         UITextField.appearance().clearButtonMode = .always
     }
@@ -88,7 +85,7 @@ struct FloatingButtons: View {
 
                 if !self.isSearching {
                     Button(action: {
-                        self.onOpenSettings()
+                        self.store.showSettings = true
                     }) {
                         Image(systemName: "gear")
                             .modifier(RoundButtonIcon())
@@ -120,7 +117,7 @@ struct FloatingButtons: View {
                     Button(action: {
                         withAnimation(.spring()) {
                             if self.isSearching {
-                                self.searchText = ""
+                                self.store.searchText = ""
                             }
 
                             self.isSearching.toggle()
@@ -143,8 +140,8 @@ struct FloatingButtons: View {
                                 .padding(6)
                                 .frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
                                 .overlay(
-                                    CustomTextField(placeholder: "Start typing...", text: self.$searchText, isFirstResponder: true)
-                            )
+                                    CustomTextField(placeholder: "Start typing...", text: self.$store.searchText, isFirstResponder: true)
+                                )
                         }
                         .padding(12)
                         .background(Blur())
@@ -161,9 +158,7 @@ struct FloatingButtons: View {
 
 struct FloatingButtons_Previews: PreviewProvider {
     static var previews: some View {
-        FloatingButtons(isSearching: .constant(true), searchText: .constant(""), onOpenSettings: {
-            print("Settings button clicked.")
-        }, onShuffle: {
+        FloatingButtons(isSearching: .constant(true), onShuffle: {
             print("Shuffle button clicked.")
         })
     }
