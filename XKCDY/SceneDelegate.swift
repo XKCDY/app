@@ -38,7 +38,11 @@ extension SceneDelegate: UIGestureRecognizerDelegate {
 
 let timeTracker = TimeTracker()
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+protocol NotificationResponseHandler: UIWindowSceneDelegate {
+    func handleNotificationResponse(response: UNNotificationResponse)
+}
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHandler {
 
     var window: UIWindow?
     var store = Store()
@@ -102,14 +106,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let urlContext = URLContexts?.first {
             if urlContext.url.host == "comics" {
                 if let id = Int(urlContext.url.path.replacingOccurrences(of: "/", with: "")) {
-                    let realm = try! Realm()
-
-                    if realm.object(ofType: Comic.self, forPrimaryKey: id) != nil {
-                        self.store.currentComicId = id
-                        self.store.showPager = true
-                    }
+                    self.showComicWith(id: id)
                 }
             }
+        }
+    }
+
+    private func showComicWith(id: Int) {
+        let realm = try! Realm()
+
+        if realm.object(ofType: Comic.self, forPrimaryKey: id) != nil {
+            self.store.currentComicId = id
+            self.store.showPager = true
         }
     }
 
@@ -145,4 +153,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         timeTracker.stopTracker()
     }
 
+    func handleNotificationResponse(response: UNNotificationResponse) {
+        store.partialRefetchComics { _ in
+            if let comicId = response.notification.request.content.userInfo["comicId"] as? Int {
+                self.showComicWith(id: comicId)
+            }
+        }
+    }
 }

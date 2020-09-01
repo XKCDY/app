@@ -34,6 +34,8 @@ final class UserSettings: ObservableObject {
     @UserDefault(key: "timeSpentInApp", defaultValue: 0) var timeSpentInApp: Int64
     @UserDefault(key: "showedProAlert", defaultValue: false) var showedProAlert: Bool
     @UserDefault(key: "showAltInPager", defaultValue: false) var showAltInPager: Bool
+    @UserDefault(key: "showComicIdInPager", defaultValue: false) var showComicIdInPager: Bool
+    @UserDefault(key: "showCOVIDComics", defaultValue: false) var showCOVIDComics: Bool
     var tintColor: UIColor {
         get {
             if let colorData = UserDefaults.standard.data(forKey: "tintColor") {
@@ -65,3 +67,5 @@ final class UserSettings: ObservableObject {
         }
     }
 }
+
+let COVID_COMICS = [2275, 2276, 2277, 2278, 2279, 2280, 2281, 2282, 2283, 2284, 2285, 2286, 2287, 2289, 2290, 2291, 2292, 2293, 2294, 2296, 2298, 2299, 2300, 2302, 2305, 2306, 2330, 2331, 2332, 2333, 2338, 2339, 2342, 2346]

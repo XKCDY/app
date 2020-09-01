@@ -24,6 +24,7 @@ struct ContentView: View {
     @State private var showProAlert = false
     @State private var isLoadingFromScratch = false
     @Environment(\.colorScheme) private var colorScheme
+    @ObservedObject private var userSettings = UserSettings()
 
     func hidePager() {
         store.showPager = false
@@ -35,6 +36,10 @@ struct ContentView: View {
 
     func filteredCollection() -> Results<Comic> {
         var results = AnyRealmCollection(self.comics)
+
+        if !self.userSettings.showCOVIDComics {
+            results = AnyRealmCollection(results.filter("NOT (id IN %@)", COVID_COMICS))
+        }
 
         if searchText != "" {
             if let searchId = Int(searchText) {
@@ -81,6 +86,15 @@ struct ContentView: View {
         self.showSettings = true
     }
 
+    func handleShuffleButtonPress() {
+        guard let randomId = self.filteredCollection().randomElement()?.id else {
+            return
+        }
+
+        self.store.currentComicId = randomId
+        handleComicOpen()
+    }
+
     var body: some View {
         ZStack {
             if self.filteredCollection().count > 0 {
@@ -92,7 +106,7 @@ struct ContentView: View {
             VStack {
                 FloatingButtons(isSearching: self.$isSearching, searchText: self.$searchText, onOpenSettings: {
                     self.showSettings = true
-                })
+                }, onShuffle: self.handleShuffleButtonPress)
                 .padding()
                 .opacity(self.scrollDirection == .up || self.searchText != "" ? 1 : 0)
                 .animation(.default)
