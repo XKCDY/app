@@ -154,8 +154,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
     }
 
     func handleNotificationResponse(response: UNNotificationResponse) {
-        if let comicId = response.notification.request.content.userInfo["comicId"] as? Int {
-            self.showComicWith(id: comicId)
+        store.partialRefetchComics { _ in
+            if let comicId = response.notification.request.content.userInfo["comicId"] as? Int {
+                self.showComicWith(id: comicId)
+            }
         }
     }
 }
