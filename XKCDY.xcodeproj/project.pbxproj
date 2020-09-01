@@ -36,6 +36,7 @@
 		6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7D1C9824B8E57F005F2F9A /* Alamofire */; };
 		6A83F89A24E9A756002F1F96 /* SharableComicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A83F89924E9A756002F1F96 /* SharableComicView.swift */; };
 		6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */; };
+		6A937A6D24FF0D60006383A9 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6A937A6C24FF0D60006383A9 /* Kingfisher */; };
 		6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123324B62C7000F51ABF /* Kingfisher */; };
 		6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */; };
 		6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */; };
@@ -53,6 +54,7 @@
 		6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */; };
 		6ACD2C6024C298D000D6EFE1 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6ADBCBD42447B65100594DBD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADBCBD32447B65100594DBD /* Alamofire */; };
+		6ADBE43624FDB1DA004C9785 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6AE0D7B6244FF1A700AE982C /* FloatingNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */; };
 		6AE116F02465F82B00194F57 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE116EF2465F82B00194F57 /* ShareSheet.swift */; };
 		6AE116F4246653CE00194F57 /* ComicPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE116F3246653CE00194F57 /* ComicPager.swift */; };
@@ -234,6 +236,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A937A6D24FF0D60006383A9 /* Kingfisher in Frameworks */,
 				6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */,
 				6AAE179224B7D03700181C4B /* RealmSwift in Frameworks */,
 				6AAE179024B7D03700181C4B /* Realm in Frameworks */,
@@ -496,6 +499,7 @@
 				6AAE178F24B7D03700181C4B /* Realm */,
 				6AAE179124B7D03700181C4B /* RealmSwift */,
 				6A7D1C9824B8E57F005F2F9A /* Alamofire */,
+				6A937A6C24FF0D60006383A9 /* Kingfisher */,
 			);
 			productName = XKCDYIntents;
 			productReference = 6AAE177C24B79CD700181C4B /* XKCDYIntents.appex */;
@@ -696,6 +700,7 @@
 				6AAE177F24B79CD700181C4B /* IntentHandler.swift in Sources */,
 				6A7D1C9624B8E502005F2F9A /* Store.swift in Sources */,
 				6A7D1C9524B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift in Sources */,
+				6ADBE43624FDB1DA004C9785 /* UserSettings.swift in Sources */,
 				6AAE178924B7A1B700181C4B /* GetComicIntentHandler.swift in Sources */,
 				6A7D1C9724B8E562005F2F9A /* XKCDYClient.swift in Sources */,
 			);
@@ -1188,6 +1193,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		6A937A6C24FF0D60006383A9 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		6AA0123324B62C7000F51ABF /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
