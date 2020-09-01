@@ -25,7 +25,6 @@ struct ButtonBarItem: ViewModifier {
 }
 
 struct ComicPagerOverlay: View {
-    var comic: Comic
     @Binding var showSheet: Bool
     @Binding var activeSheet: ActiveSheet
     private var generator = UIImpactFeedbackGenerator()
@@ -35,8 +34,7 @@ struct ComicPagerOverlay: View {
     var onShuffle: () -> Void
     @ObservedObject private var userSettings = UserSettings()
 
-    init(comic: Comic, showSheet: Binding<Bool>, activeSheet: Binding<ActiveSheet>, onShuffle: @escaping () -> Void) {
-        self.comic = comic
+    init(showSheet: Binding<Bool>, activeSheet: Binding<ActiveSheet>, onShuffle: @escaping () -> Void) {
         self._showSheet = showSheet
         self._activeSheet = activeSheet
         self.onShuffle = onShuffle
@@ -45,14 +43,14 @@ struct ComicPagerOverlay: View {
 
     private func shareImage(withDetails: Bool) {
         if withDetails {
-            SharableComicView(comic: self.comic).asImage { image in
+            SharableComicView(comic: self.store.comic).asImage { image in
                 self.imageToShare = image
 
                 self.activeSheet = .share
                 self.showSheet = true
             }
         } else {
-            ImageCache.default.retrieveImage(forKey: comic.getBestImageURL()!.absoluteString) { result in
+            ImageCache.default.retrieveImage(forKey: self.store.comic.getBestImageURL()!.absoluteString) { result in
                 switch result {
                 case .success(let value):
                     self.imageToShare = value.image
@@ -78,12 +76,12 @@ struct ComicPagerOverlay: View {
             VStack {
                 ZStack {
                     VStack {
-                        Text(self.comic.title)
+                        Text(self.store.comic.title)
                             .font(.title)
                             .multilineTextAlignment(.center)
 
                         if self.userSettings.showComicIdInPager {
-                            Text("#\(self.comic.id)").font(.headline)
+                            Text("#\(self.store.comic.id)").font(.headline)
                         }
                     }
                     .padding()
@@ -97,7 +95,7 @@ struct ComicPagerOverlay: View {
 
                 VStack {
                     if self.userSettings.showAltInPager {
-                        Text(self.comic.alt)
+                        Text(self.store.comic.alt)
                             .multilineTextAlignment(.center)
                             // Prevent from overlapping with notch
                             .padding(.trailing, geom.safeAreaInsets.trailing)
@@ -135,19 +133,19 @@ struct ComicPagerOverlay: View {
 
                             ZStack {
                                 Image(systemName: "heart.fill")
-                                    .opacity(self.comic.isFavorite ? 1 : 0)
+                                    .opacity(self.store.comic.isFavorite ? 1 : 0)
                                     .animation(.none)
-                                    .scaleEffect(self.comic.isFavorite ? 1 : 0)
+                                    .scaleEffect(self.store.comic.isFavorite ? 1 : 0)
                                     .foregroundColor(.red)
 
                                 Image(systemName: "heart")
-                                    .opacity(self.comic.isFavorite ? 0 : 1)
+                                    .opacity(self.store.comic.isFavorite ? 0 : 1)
                                     .animation(.none)
-                                    .scaleEffect(self.comic.isFavorite ? 0 : 1)
+                                    .scaleEffect(self.store.comic.isFavorite ? 0 : 1)
                                     .foregroundColor(.accentColor)
                             }
                             .modifier(ButtonBarItem())
-                            .scaleEffect(self.comic.isFavorite ? 1.1 : 1)
+                            .scaleEffect(self.store.comic.isFavorite ? 1.1 : 1)
                             .animation(.interpolatingSpring(stiffness: 180, damping: 15))
 
                             Spacer()
@@ -159,7 +157,7 @@ struct ComicPagerOverlay: View {
                             let realm = try! Realm()
 
                             try! realm.write {
-                                self.comic.isFavorite = !self.comic.isFavorite
+                                self.store.comic.isFavorite = !self.store.comic.isFavorite
                             }
 
                             // Request review if appropriate
@@ -187,12 +185,12 @@ struct ComicPagerOverlay: View {
         .sheet(isPresented: self.$showSheet) {
             if self.activeSheet == .share {
                 if self.imageToShare == nil {
-                    URLActivityViewController(url: self.comic.sourceURL!)
+                    URLActivityViewController(url: self.store.comic.sourceURL!)
                 } else {
-                    UIImageActivityViewController(uiImage: self.imageToShare!, title: self.comic.title, url: self.comic.sourceURL!)
+                    UIImageActivityViewController(uiImage: self.imageToShare!, title: self.store.comic.title, url: self.store.comic.sourceURL!)
                 }
             } else if self.activeSheet == .details {
-                ComicDetailsSheet(comic: self.comic, onDismiss: {
+                ComicDetailsSheet(comic: self.store.comic, onDismiss: {
                     self.showSheet = false
                 })
             }
@@ -202,7 +200,7 @@ struct ComicPagerOverlay: View {
 
 struct ComicPagerOverlay_Previews: PreviewProvider {
     static var previews: some View {
-        ComicPagerOverlay(comic: .getSample(), showSheet: .constant(false), activeSheet: .constant(.details), onShuffle: {
+        ComicPagerOverlay(showSheet: .constant(false), activeSheet: .constant(.details), onShuffle: {
             print("shuffling")
         }).colorScheme(.dark)
     }
