@@ -49,11 +49,7 @@ struct ContentView: View {
     }
 
     func handleShuffleButtonPress() {
-        guard let randomId = self.store.filteredComics.randomElement()?.id else {
-            return
-        }
-
-        self.store.currentComicId = randomId
+        self.store.shuffle()
         handleComicOpen()
     }
 

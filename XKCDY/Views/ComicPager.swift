@@ -10,7 +10,6 @@ import SwiftUI
 import SwiftUIPager
 import RealmSwift
 import KingfisherSwiftUI
-import class Kingfisher.ImagePrefetcher
 
 func CGPointToDegree(_ point: CGPoint) -> Double {
     // Provides a directional bearing from (0,0) to the given point.
@@ -43,19 +42,9 @@ struct ComicPager: View {
     @State private var showSheet = false
     @State private var activeSheet: ActiveSheet = .details
     @State private var isZoomed = false
-    @State private var nextShuffleResultId: Int?
 
     init(onHide: @escaping () -> Void) {
         self.onHide = onHide
-    }
-
-    func cacheNextShuffleResult() {
-        guard let randomComic = store.filteredComics.randomElement() else {
-            return
-        }
-
-        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
-        self.nextShuffleResultId = randomComic.id
     }
 
     func handleDragChange(_ value: DragGesture.Value) {
@@ -100,11 +89,8 @@ struct ComicPager: View {
     }
 
     func handleShuffle() {
-        if let id = self.nextShuffleResultId {
-            self.store.currentComicId = id
-            self.setPage()
-            self.cacheNextShuffleResult()
-        }
+        self.store.shuffle()
+        self.setPage()
     }
 
     func handleImageScale(_ scale: CGFloat) {
@@ -203,8 +189,6 @@ struct ComicPager: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
                 self.isLoading = false
             }
-
-            self.cacheNextShuffleResult()
         }
         .onReceive(self.store.$debouncedCurrentComicId) { _ in
             self.setPage()

@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import RealmSwift
 import Combine
+import class Kingfisher.ImagePrefetcher
 
 enum StoreError: Error {
     case other
@@ -59,6 +60,7 @@ final class Store: ObservableObject {
     @Published var filteredComics: Results<Comic> {
         didSet {
             self.addFrozenObserver()
+            self.cacheNextShuffleResult()
         }
     }
     @Published var frozenFilteredComics: Results<Comic>
@@ -66,6 +68,8 @@ final class Store: ObservableObject {
 
     @ObservedObject private var userSettings = UserSettings()
     @ObservedObject private var comics: RealmSwift.List<Comic>
+
+    private var nextShuffleResultId: Int?
 
     private var comicToken: NotificationToken?
     private var comicsToken: NotificationToken?
@@ -88,6 +92,7 @@ final class Store: ObservableObject {
 
         self.updateFilteredComics()
         self.addFrozenObserver()
+        self.cacheNextShuffleResult()
 
         DispatchQueue.main.async {
             self.$currentComicId
@@ -128,6 +133,23 @@ final class Store: ObservableObject {
         }
 
         self.filteredComics = results.sorted(byKeyPath: "id", ascending: false)
+    }
+
+    private func cacheNextShuffleResult() {
+        guard let randomComic = filteredComics.randomElement() else {
+            return
+        }
+
+        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        self.nextShuffleResultId = randomComic.id
+    }
+
+    func shuffle() {
+        if let id = self.nextShuffleResultId {
+            self.currentComicId = id
+        }
+
+        self.cacheNextShuffleResult()
     }
 
     func handlePageChange(_ page: Page) {
