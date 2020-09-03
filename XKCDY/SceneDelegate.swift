@@ -45,7 +45,7 @@ protocol NotificationResponseHandler: UIWindowSceneDelegate {
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHandler {
 
     var window: UIWindow?
-    var store = Store()
+    var store = Store(isLive: true)
     var notificationSubscriptions: [AnyCancellable] = []
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {

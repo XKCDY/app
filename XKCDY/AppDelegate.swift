@@ -91,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             task.setTaskCompleted(success: false)
         }
 
-        let store = Store()
+        let store = Store(isLive: false)
 
         store.partialRefetchComics { result in
             switch result {

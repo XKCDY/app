@@ -12,7 +12,7 @@ import RealmSwift
 class GetLatestComicIntentHandler: NSObject, GetLatestComicIntentHandling {
     func handle(intent: GetLatestComicIntent, completion: @escaping (GetLatestComicIntentResponse) -> Void) {
         // Update store
-        let store = Store()
+        let store = Store(isLive: false)
 
         store.partialRefetchComics { _ in
             let realm = try! Realm()

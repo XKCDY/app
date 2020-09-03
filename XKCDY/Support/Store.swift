@@ -30,10 +30,13 @@ enum Page: String, CaseIterable, Hashable, Identifiable {
 
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
+    var isLive: Bool
     @Published var currentComicId: Int? {
         didSet {
-            comicToken = self.comic.observe { _ in
-                self.objectWillChange.send()
+            if self.isLive {
+                comicToken = self.comic.observe { _ in
+                    self.objectWillChange.send()
+                }
             }
         }
     }
@@ -75,7 +78,9 @@ final class Store: ObservableObject {
     private var comicsToken: NotificationToken?
     private var disposables = Set<AnyCancellable>()
 
-    init() {
+    init(isLive: Bool) {
+        self.isLive = isLive
+
         let realm = try! Realm()
         var comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
 
@@ -108,8 +113,10 @@ final class Store: ObservableObject {
     }
 
     private func addFrozenObserver() {
-        self.comicsToken = self.filteredComics.observe { _ in
-            self.frozenFilteredComics = self.filteredComics.freeze().sorted(byKeyPath: "id", ascending: false)
+        if self.isLive {
+            self.comicsToken = self.filteredComics.observe { _ in
+                self.frozenFilteredComics = self.filteredComics.freeze().sorted(byKeyPath: "id", ascending: false)
+            }
         }
     }
 
