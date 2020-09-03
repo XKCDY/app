@@ -197,7 +197,10 @@ final class Store: ObservableObject {
     }
 
     func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
-        if self.comics.count == 0 {
+        let realm = try! Realm()
+        let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+
+        if storedComics!.comics.count == 0 {
             self.isLoadingFromScratch = true
         }
 
