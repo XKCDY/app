@@ -121,6 +121,10 @@ final class Store: ObservableObject {
     }
 
     private func updateFilteredComics() {
+        if !self.isLive {
+            return
+        }
+
         DispatchQueue.main.async {
             var results = self.comics.filter("TRUEPREDICATE")
 
