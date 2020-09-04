@@ -121,25 +121,27 @@ final class Store: ObservableObject {
     }
 
     private func updateFilteredComics() {
-        var results = self.comics.filter("TRUEPREDICATE")
+        DispatchQueue.main.async {
+            var results = self.comics.filter("TRUEPREDICATE")
 
-        if !self.userSettings.showCOVIDComics {
-            results = results.filter("NOT (id IN %@)", COVID_COMICS)
-        }
-
-        if searchText != "" {
-            if let searchId = Int(searchText) {
-                results = results.filter("id == %@", searchId)
-            } else {
-                results = results.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", searchText, searchText, searchText)
+            if !self.userSettings.showCOVIDComics {
+                results = results.filter("NOT (id IN %@)", COVID_COMICS)
             }
-        }
 
-        if selectedPage == .favorites {
-            results = results.filter("isFavorite == true OR id IN %@", currentFavoriteIds)
-        }
+            if self.searchText != "" {
+                if let searchId = Int(self.searchText) {
+                    results = results.filter("id == %@", searchId)
+                } else {
+                    results = results.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", self.searchText, self.searchText, self.searchText)
+                }
+            }
 
-        self.filteredComics = results.sorted(byKeyPath: "id", ascending: false)
+            if self.selectedPage == .favorites {
+                results = results.filter("isFavorite == true OR id IN %@", self.currentFavoriteIds)
+            }
+
+            self.filteredComics = results.sorted(byKeyPath: "id", ascending: false)
+        }
     }
 
     private func cacheNextShuffleResult() {
