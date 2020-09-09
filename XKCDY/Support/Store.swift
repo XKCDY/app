@@ -100,17 +100,19 @@ final class Store: ObservableObject {
         self.addFrozenObserver()
         self.cacheNextShuffleResult()
 
-        DispatchQueue.main.async {
-            self.$currentComicId
-                .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-                .assign(to: \.debouncedCurrentComicId, on: self)
-                .store(in: &self.disposables)
-        }
+        if self.isLive {
+            DispatchQueue.main.async {
+                self.$currentComicId
+                    .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+                    .assign(to: \.debouncedCurrentComicId, on: self)
+                    .store(in: &self.disposables)
+            }
 
-        self.userSettings.objectWillChange.sink { _ in
-            self.updateFilteredComics()
+            self.userSettings.objectWillChange.sink { _ in
+                self.updateFilteredComics()
+            }
+            .store(in: &self.disposables)
         }
-        .store(in: &self.disposables)
     }
 
     private func getOrCreateLastFilteredComicsInstance() -> LastFilteredComics {
