@@ -19,6 +19,7 @@ enum StoreError: Error {
 
 enum Page: String, CaseIterable, Hashable, Identifiable {
     case all
+    case unread
     case favorites
 
     var name: String {
@@ -114,6 +115,18 @@ final class Store: ObservableObject {
         }
     }
 
+    private func getOrCreateLastFilteredComicsInstance() -> LastFilteredComics {
+        let realm = try! Realm()
+
+        var filtered = realm.object(ofType: LastFilteredComics.self, forPrimaryKey: 0)
+
+        if filtered == nil {
+            filtered = try! realm.write { realm.create(LastFilteredComics.self, value: []) }
+        }
+
+        return filtered!
+    }
+
     private func addFrozenObserver() {
         if self.isLive {
             self.comicsToken = self.filteredComics.observe { _ in
@@ -143,10 +156,30 @@ final class Store: ObservableObject {
             }
 
             if self.selectedPage == .favorites {
-                results = results.filter("isFavorite == true OR id IN %@", self.currentFavoriteIds)
-            }
+                let lastFilteredComics = self.getOrCreateLastFilteredComicsInstance()
 
-            self.filteredComics = results.sorted(byKeyPath: "id", ascending: false)
+                let realm = try! Realm()
+
+                try! realm.write {
+                    lastFilteredComics.comics.removeAll()
+                    lastFilteredComics.comics.append(objectsIn: results.filter("isFavorite == true"))
+                }
+
+                self.filteredComics = lastFilteredComics.comics.sorted(byKeyPath: "id", ascending: false)
+            } else if self.selectedPage == .unread {
+                let lastFilteredComics = self.getOrCreateLastFilteredComicsInstance()
+
+                let realm = try! Realm()
+
+                try! realm.write {
+                    lastFilteredComics.comics.removeAll()
+                    lastFilteredComics.comics.append(objectsIn: results.filter("isRead == false"))
+                }
+
+                self.filteredComics = lastFilteredComics.comics.sorted(byKeyPath: "id", ascending: false)
+            } else {
+                self.filteredComics = results.sorted(byKeyPath: "id", ascending: false)
+            }
         }
     }
 
@@ -159,9 +192,14 @@ final class Store: ObservableObject {
         self.nextShuffleResultId = randomComic.id
     }
 
-    func shuffle() {
+    func shuffle(_ completion: () -> Void) {
         if let id = self.nextShuffleResultId {
-            self.currentComicId = id
+            // Make sure last cache result is still in current view
+            if self.filteredComics.filter({ $0.id == id }).count == 1 {
+                print("changing")
+                self.currentComicId = id
+                completion()
+            }
         }
 
         self.cacheNextShuffleResult()
