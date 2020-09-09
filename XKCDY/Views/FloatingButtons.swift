@@ -65,6 +65,7 @@ struct FloatingButtons: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass: UserInterfaceSizeClass?
     @EnvironmentObject private var store: Store
+    @State private var filteringDisabled = false
 
     init(isSearching: Binding<Bool>, onShuffle: @escaping () -> Void) {
         self._isSearching = isSearching
@@ -104,6 +105,7 @@ struct FloatingButtons: View {
                         Image(systemName: "shuffle")
                             .modifier(RoundButtonIcon())
                     }
+                    .disabled(self.filteringDisabled)
                     .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
                 }
 
@@ -129,6 +131,7 @@ struct FloatingButtons: View {
                             .modifier(RoundButtonIcon())
                     }
                     .transition(.move(edge: .trailing))
+                    .disabled(self.filteringDisabled)
 
                     if self.isSearching {
                         HStack {
@@ -152,6 +155,13 @@ struct FloatingButtons: View {
             }
 
             Spacer()
+        }
+        .onReceive(self.store.objectWillChange) { _ in
+            if self.store.filteredComics.count == 0 && self.store.searchText == "" {
+                self.filteringDisabled = true
+            } else {
+                self.filteringDisabled = false
+            }
         }
     }
 }
