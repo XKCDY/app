@@ -58,10 +58,16 @@ struct ContentView: View {
         ZStack {
             if self.store.filteredComics.count > 0 {
                 ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection).edgesIgnoringSafeArea(.bottom)
-            } else if self.store.selectedPage == .favorites {
-                Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
-            } else if self.store.selectedPage == .unread {
-                Text("You're all caught up!").font(Font.body.bold()).foregroundColor(.secondary)
+            } else if self.store.searchText == "" && self.store.filteredComics.count == 0 {
+                if self.store.selectedPage == .favorites {
+                    Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
+                } else if self.store.selectedPage == .unread {
+                    Text("You're all caught up!").font(Font.body.bold()).foregroundColor(.secondary)
+                }
+            }
+
+            if self.store.searchText != "" && self.store.filteredComics.count == 0 {
+                Text("No results were found.").font(Font.body.bold()).foregroundColor(.secondary)
             }
 
             VStack {

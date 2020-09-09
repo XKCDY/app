@@ -157,9 +157,7 @@ struct FloatingButtons: View {
             Spacer()
         }
         .onReceive(self.store.objectWillChange) { _ in
-            if self.store.filteredComics.count == 0 {
-                self.isSearching = false
-
+            if self.store.filteredComics.count == 0 && self.store.searchText == "" {
                 self.filteringDisabled = true
             } else {
                 self.filteringDisabled = false
