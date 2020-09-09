@@ -49,8 +49,9 @@ struct ContentView: View {
     }
 
     func handleShuffleButtonPress() {
-        self.store.shuffle()
-        handleComicOpen()
+        self.store.shuffle {
+            handleComicOpen()
+        }
     }
 
     var body: some View {
@@ -59,6 +60,8 @@ struct ContentView: View {
                 ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection).edgesIgnoringSafeArea(.bottom)
             } else if self.store.selectedPage == .favorites {
                 Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
+            } else if self.store.selectedPage == .unread {
+                Text("You're all caught up!").font(Font.body.bold()).foregroundColor(.secondary)
             }
 
             VStack {

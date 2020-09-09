@@ -89,8 +89,9 @@ struct ComicPager: View {
     }
 
     func handleShuffle() {
-        self.store.shuffle()
-        self.setPage()
+        self.store.shuffle {
+            self.setPage()
+        }
     }
 
     func handleImageScale(_ scale: CGFloat) {
