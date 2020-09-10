@@ -873,7 +873,7 @@
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = XKCDY/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -902,7 +902,7 @@
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = XKCDY/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1010,7 +1010,7 @@
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = XKCDYIntents/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1035,7 +1035,7 @@
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = XKCDYIntents/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1106,8 +1106,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apptekstudios/ASCollectionView";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.5.0;
+				branch = v1.8.0WIP;
+				kind = branch;
 			};
 		};
 		6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
