@@ -63,8 +63,8 @@ struct ComicGridItem: View {
                             .animation(Animation.easeInOut(duration: 0.75).repeatForever())
                             .onAppear {
                                 self.pulseEnded = true
-                        }
-                        .transition(.opacity)
+                            }
+                            .transition(.opacity)
                     }
                 }
             }
@@ -72,23 +72,13 @@ struct ComicGridItem: View {
             .onTapGesture {
                 self.onTap(self.comic.id)
             }
-            .gesture(LongPressGesture(minimumDuration: 0.2).onEnded { _ in
-                let realm = try! Realm()
-
-                // Get managed instance of Comic
-                let managedComic = realm.object(ofType: Comic.self, forPrimaryKey: self.comic.id)
-
-                try! realm.write {
-                    managedComic?.isFavorite = !self.comic.isFavorite
-                }
-            })
 
             return AnyView(
                 stack
                     .overlay(
                         ComicBadge(comic: self.comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)).opacity(self.hideBadge ? 0 : 1).animation(.easeInOut),
                         alignment: .bottomTrailing
-                )
+                    )
             )
         }
     }
