@@ -72,6 +72,16 @@ struct ComicGridItem: View {
             .onTapGesture {
                 self.onTap(self.comic.id)
             }
+            .gesture(LongPressGesture(minimumDuration: 0.2).onEnded { _ in
+                let realm = try! Realm()
+
+                // Get managed instance of Comic
+                let managedComic = realm.object(ofType: Comic.self, forPrimaryKey: self.comic.id)
+
+                try! realm.write {
+                    managedComic?.isFavorite = !self.comic.isFavorite
+                }
+            })
 
             return AnyView(
                 stack
