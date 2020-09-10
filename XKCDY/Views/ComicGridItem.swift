@@ -51,7 +51,7 @@ struct ComicGridItem: View {
                         .resizable()
                         .scaledToFill()
                         .opacity(self.isLoaded ? 1 : 0)
-                        .animation(.easeInOut)
+                        .animation(.none)
                 }
 
                 if !self.isLoaded {
@@ -63,8 +63,8 @@ struct ComicGridItem: View {
                             .animation(Animation.easeInOut(duration: 0.75).repeatForever())
                             .onAppear {
                                 self.pulseEnded = true
-                        }
-                        .transition(.opacity)
+                            }
+                            .transition(.opacity)
                     }
                 }
             }
@@ -76,9 +76,9 @@ struct ComicGridItem: View {
             return AnyView(
                 stack
                     .overlay(
-                        ComicBadge(comic: self.comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)).opacity(self.hideBadge ? 0 : 1).animation(.easeInOut),
+                        ComicBadge(comic: self.comic).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)).opacity(self.hideBadge ? 0 : 1).transition(.opacity).animation(.easeInOut),
                         alignment: .bottomTrailing
-                )
+                    )
             )
         }
     }
