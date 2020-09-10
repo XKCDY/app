@@ -174,6 +174,7 @@ struct ComicsGridView: View {
                                     // Isn't SwiftUI fun?
                                     .environmentObject(self.store)
                                     .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
+                                    .animation(.none)
                             )
                         })
                         .onPullToRefresh(self.onPullToRefresh)
