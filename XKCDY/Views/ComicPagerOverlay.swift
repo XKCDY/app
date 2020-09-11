@@ -32,12 +32,14 @@ struct ComicPagerOverlay: View {
     @State private var showingShareOptionsSheet = false
     @EnvironmentObject var store: Store
     var onShuffle: () -> Void
+    var onClose: () -> Void
     @ObservedObject private var userSettings = UserSettings()
 
-    init(showSheet: Binding<Bool>, activeSheet: Binding<ActiveSheet>, onShuffle: @escaping () -> Void) {
+    init(showSheet: Binding<Bool>, activeSheet: Binding<ActiveSheet>, onShuffle: @escaping () -> Void, onClose: @escaping () -> Void) {
         self._showSheet = showSheet
         self._activeSheet = activeSheet
         self.onShuffle = onShuffle
+        self.onClose = onClose
         self.generator.prepare()
     }
 
@@ -75,14 +77,22 @@ struct ComicPagerOverlay: View {
         GeometryReader { geom in
             VStack {
                 ZStack {
-                    VStack {
-                        Text(self.store.comic.title)
-                            .font(.title)
-                            .multilineTextAlignment(.center)
-
-                        if self.userSettings.showComicIdInPager {
-                            Text("#\(self.store.comic.id)").font(.headline)
+                    HStack {
+                        Button(action: self.onClose) {
+                            Image(systemName: "chevron.left").font(.system(size: 24)).padding(.leading)
                         }
+
+                        VStack {
+                            Text(self.store.comic.title)
+                                .font(.title)
+                                .multilineTextAlignment(.center)
+
+                            if self.userSettings.showComicIdInPager {
+                                Text("#\(self.store.comic.id)").font(.headline)
+                            }
+                        }.frame(maxWidth: .infinity)
+
+                        Image(systemName: "chevron.left").font(.system(size: 24)).padding(.trailing).hidden()
                     }
                     .padding()
                     .padding(.top, geom.safeAreaInsets.top)
@@ -202,6 +212,8 @@ struct ComicPagerOverlay_Previews: PreviewProvider {
     static var previews: some View {
         ComicPagerOverlay(showSheet: .constant(false), activeSheet: .constant(.details), onShuffle: {
             print("shuffling")
+        }, onClose: {
+            print("closing")
         }).colorScheme(.dark)
     }
 }
