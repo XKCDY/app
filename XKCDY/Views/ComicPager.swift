@@ -47,6 +47,16 @@ struct ComicPager: View {
         self.onHide = onHide
     }
 
+    func closePager() {
+        withAnimation(.spring()) {
+            hidden = true
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
+            self.onHide()
+        }
+    }
+
     func handleDragChange(_ value: DragGesture.Value) {
         let translation = value.translation
         let angle = CGPointToDegree(value.startLocation - value.location)
@@ -60,13 +70,7 @@ struct ComicPager: View {
 
     func handleDragEnd(_: DragGesture.Value) {
         if abs(self.offset.height) > 100 {
-            withAnimation(.spring()) {
-                hidden = true
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
-                self.onHide()
-            }
+            self.closePager()
         } else {
             self.offset = .zero
         }
@@ -173,7 +177,12 @@ struct ComicPager: View {
                                         .onChanged(self.handleDragChange)
                                         .onEnded(self.handleDragEnd))
 
-                ComicPagerOverlay(showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle)
+                ComicPagerOverlay(showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle, onClose: {
+                    // Make sure closing animation applies
+                    self.offset = CGSize(width: 0.1, height: 0.1)
+
+                    self.closePager()
+                })
                     .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
                     .opacity(self.showOverlay && !self.hidden ? 1 : 0)
             }
