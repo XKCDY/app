@@ -63,9 +63,7 @@ extension ASWaterfallLayout.ColumnCount: Equatable {
     }
 
     var projectedValue: PassthroughSubject<Void, Never> {
-        //        get {
         self.publisher
-        //        }
     }
 }
 
@@ -88,8 +86,8 @@ class ScrollStateModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isScrolling = false
                 }
-            }
-            .store(in: &cancellables)
+        }
+        .store(in: &cancellables)
     }
 }
 
@@ -140,93 +138,93 @@ struct ComicsGridView: View {
     var body: some View {
         GeometryReader {geom in
             AnyView(ASCollectionView(
-                        section: ASSection(
-                            id: 0,
-                            // Wrapping with Array() results in significantly better performance
-                            // (even though it shouldn't) because Realm has its own extremely slow
-                            // implementation of .firstIndex(), which ASCollectionView calls when rendering.
-                            // Don't believe me? Try unwrapping it and scrolling to the bottom.
-                            data: Array(self.store.frozenFilteredComics),
-                            dataID: \.self,
-                            onCellEvent: self.onCellEvent,
-                            dragDropConfig: ASDragDropConfig<Comic>(dataBinding: .constant([]), dragEnabled: true, dropEnabled: false, reorderingEnabled: false)
-                                .dragItemProvider { item in
-                                    let provider = NSItemProvider()
+                section: ASSection(
+                    id: 0,
+                    // Wrapping with Array() results in significantly better performance
+                    // (even though it shouldn't) because Realm has its own extremely slow
+                    // implementation of .firstIndex(), which ASCollectionView calls when rendering.
+                    // Don't believe me? Try unwrapping it and scrolling to the bottom.
+                    data: Array(self.store.frozenFilteredComics),
+                    dataID: \.self,
+                    onCellEvent: self.onCellEvent,
+                    dragDropConfig: ASDragDropConfig<Comic>(dataBinding: .constant([])).dragItemProvider { item in
+                        let provider = NSItemProvider()
 
-                                    provider.registerObject(ofClass: UIImage.self, visibility: .all) { completion in
-                                        ImageCache.default.retrieveImage(forKey: item.getBestImageURL()!.absoluteString) { result in
-                                            switch result {
-                                            case .success(let value):
-                                                completion(value.image, nil)
-                                            case .failure(let error):
-                                                completion(nil, error)
-                                            }
-                                        }
-
-                                        return Progress.discreteProgress(totalUnitCount: 0)
-                                    }
-
-                                    return provider
-                                }
-                        ) { comic, _ -> AnyView in
-                            AnyView(
-                                ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId, isScrolling: self.scrollState.isScrolling)
-                                    // Isn't SwiftUI fun?
-                                    .environmentObject(self.store)
-                                    .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
-                                    .animation(.none)
-                            )
-                        })
-                        .onPullToRefresh(self.onPullToRefresh)
-                        .onScroll { (point, _) in
-                            self.scrollState.scrollPosition = point.y
-
-                            DispatchQueue.main.async {
-                                self.shouldBlurStatusBar = point.y > 80
-
-                                if point.y < 5 {
-                                    self.scrollDirection = .up
-                                    return
-                                }
-
-                                self.lastScrollPositions.append(point.y)
-
-                                self.lastScrollPositions = self.lastScrollPositions.suffix(2)
-
-                                if self.lastScrollPositions.count == 2 {
-                                    self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
+                        provider.registerObject(ofClass: UIImage.self, visibility: .all) { completion in
+                            ImageCache.default.retrieveImage(forKey: item.getBestImageURL()!.absoluteString) { result in
+                                switch result {
+                                case .success(let value):
+                                    completion(value.image, nil)
+                                case .failure(let error):
+                                    completion(nil, error)
                                 }
                             }
+
+                            return Progress.discreteProgress(totalUnitCount: 0)
                         }
-                        .scrollPositionSetter(self.$scrollPosition)
-                        .layout(createCustomLayout: ASWaterfallLayout.init) { layout in
-                            let columns = min(Int(UIScreen.main.bounds.width / self.columnMinSize), 4)
 
-                            if layout.columnSpacing != 10 {
-                                layout.columnSpacing = 10
-                            }
-                            if layout.itemSpacing != 10 {
-                                layout.itemSpacing = 10
-                            }
+                        return provider
 
-                            if layout.numberOfColumns != .fixed(columns) {
-                                layout.numberOfColumns = .fixed(columns)
-                            }
-                        }
-                        .customDelegate(WaterfallScreenLayoutDelegate.init)
-                        .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
-            )
-            .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
-                if self.store.currentComicId == nil {
-                    return
-                }
-
-                if let comicIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) {
-                    self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
-                }
+                    }
+                ) { comic, _ -> AnyView in
+                    AnyView(
+                        ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId, isScrolling: self.scrollState.isScrolling)
+                            // Isn't SwiftUI fun?
+                            .environmentObject(self.store)
+                            .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
+                            .animation(.none)
+                    )
             })
-            .alert(isPresented: self.$showErrorAlert) {
-                Alert(title: Text("Error Refreshing"), message: Text("There was an error refreshing. Try again later."), dismissButton: .default(Text("Ok")))
+                .onPullToRefresh(self.onPullToRefresh)
+                .onScroll { (point, _) in
+                    self.scrollState.scrollPosition = point.y
+
+                    DispatchQueue.main.async {
+                        self.shouldBlurStatusBar = point.y > 80
+
+                        if point.y < 5 {
+                            self.scrollDirection = .up
+                            return
+                        }
+
+                        self.lastScrollPositions.append(point.y)
+
+                        self.lastScrollPositions = self.lastScrollPositions.suffix(2)
+
+                        if self.lastScrollPositions.count == 2 {
+                            self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
+                        }
+                    }
+            }
+            .scrollPositionSetter(self.$scrollPosition)
+            .layout(createCustomLayout: ASWaterfallLayout.init) { layout in
+                let columns = min(Int(UIScreen.main.bounds.width / self.columnMinSize), 4)
+
+                if layout.columnSpacing != 10 {
+                    layout.columnSpacing = 10
+                }
+                if layout.itemSpacing != 10 {
+                    layout.itemSpacing = 10
+                }
+
+                if layout.numberOfColumns != .fixed(columns) {
+                    layout.numberOfColumns = .fixed(columns)
+                }
+            }
+            .customDelegate(WaterfallScreenLayoutDelegate.init)
+            .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
+            )
+                .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
+                    if self.store.currentComicId == nil {
+                        return
+                    }
+
+                    if let comicIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) {
+                        self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
+                    }
+                })
+                .alert(isPresented: self.$showErrorAlert) {
+                    Alert(title: Text("Error Refreshing"), message: Text("There was an error refreshing. Try again later."), dismissButton: .default(Text("Ok")))
             }
 
             Rectangle().fill(Color.clear)
