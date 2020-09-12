@@ -56,15 +56,6 @@
         }
       },
       {
-        "package": "WebView",
-        "repositoryURL": "https://github.com/kylehickinson/SwiftUI-WebView.git",
-        "state": {
-          "branch": null,
-          "revision": "ec4352095428a06423868b3b2a92fdaa3c6281f7",
-          "version": "0.2.0"
-        }
-      },
-      {
         "package": "SwiftUIPager",
         "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
         "state": {
