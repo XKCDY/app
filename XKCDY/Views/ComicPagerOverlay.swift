@@ -79,7 +79,7 @@ struct ComicPagerOverlay: View {
                 ZStack {
                     HStack {
                         Button(action: self.onClose) {
-                            Image(systemName: "chevron.left").font(.system(size: 24)).padding(.leading)
+                            Image(systemName: "chevron.left").font(.system(size: 24)).frame(width: 40, height: 40).padding(.leading)
                         }
 
                         VStack {
@@ -92,7 +92,7 @@ struct ComicPagerOverlay: View {
                             }
                         }.frame(maxWidth: .infinity)
 
-                        Image(systemName: "chevron.left").font(.system(size: 24)).padding(.trailing).hidden()
+                        Image(systemName: "chevron.left").font(.system(size: 24)).frame(width: 40, height: 40).padding(.trailing).hidden()
                     }
                     .padding()
                     .padding(.top, geom.safeAreaInsets.top)
