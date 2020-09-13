@@ -12,7 +12,7 @@ struct ComicDetailsSheet: View {
     var comic: Comic
     var onDismiss: () -> Void
     @State private var showSheet = false
-    @State private var webViewUrl: URL?
+    @State private var webViewUrl = URL(string: "https://xkcdy.com")!
 
     func getDateFormatter() -> DateFormatter {
         let formatter = DateFormatter()
@@ -45,6 +45,11 @@ struct ComicDetailsSheet: View {
                 Spacer()
 
                 HStack {
+                    // TODO: remove this hack for iOS 14 once it's out of beta
+                    if self.webViewUrl.absoluteString != "" {
+                        Spacer()
+                    }
+
                     Spacer()
 
                     Button(action: {
