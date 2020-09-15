@@ -63,7 +63,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         self.configureRealm()
 
-        Store().partialRefetchComics { _ in
+        Store(isLive: false).partialRefetchComics { _ in
             getEntry(family: context.family) { entry in
                 let refreshDate = Calendar.current.date(byAdding: .minute, value: 5, to: Date())!
 

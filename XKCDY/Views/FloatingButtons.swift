@@ -61,15 +61,15 @@ struct CustomTextField: UIViewRepresentable {
 
 struct FloatingButtons: View {
     @Binding var isSearching: Bool
-    @Binding var searchText: String
-    var onOpenSettings: () -> Void
-    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
+    var onShuffle: () -> Void
+    @Environment(\.verticalSizeClass) private var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass: UserInterfaceSizeClass?
+    @EnvironmentObject private var store: Store
+    @State private var filteringDisabled = false
 
-    init(isSearching: Binding<Bool>, searchText: Binding<String>, onOpenSettings: @escaping () -> Void) {
+    init(isSearching: Binding<Bool>, onShuffle: @escaping () -> Void) {
         self._isSearching = isSearching
-        self._searchText = searchText
-        self.onOpenSettings = onOpenSettings
+        self.onShuffle = onShuffle
         UITextField.appearance().clearButtonMode = .always
     }
 
@@ -86,11 +86,26 @@ struct FloatingButtons: View {
 
                 if !self.isSearching {
                     Button(action: {
-                        self.onOpenSettings()
+                        self.store.showSettings = true
                     }) {
                         Image(systemName: "gear")
                             .modifier(RoundButtonIcon())
                     }
+                    .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
+
+                    if self.isLargeScreen() {
+                        Spacer().frame(width: 25)
+                    } else {
+                        Spacer()
+                    }
+
+                    Button(action: {
+                        self.onShuffle()
+                    }) {
+                        Image(systemName: "shuffle")
+                            .modifier(RoundButtonIcon())
+                    }
+                    .disabled(self.filteringDisabled)
                     .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
                 }
 
@@ -104,7 +119,7 @@ struct FloatingButtons: View {
                     Button(action: {
                         withAnimation(.spring()) {
                             if self.isSearching {
-                                self.searchText = ""
+                                self.store.searchText = ""
                             }
 
                             self.isSearching.toggle()
@@ -116,6 +131,7 @@ struct FloatingButtons: View {
                             .modifier(RoundButtonIcon())
                     }
                     .transition(.move(edge: .trailing))
+                    .disabled(self.filteringDisabled)
 
                     if self.isSearching {
                         HStack {
@@ -127,8 +143,8 @@ struct FloatingButtons: View {
                                 .padding(6)
                                 .frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
                                 .overlay(
-                                    CustomTextField(placeholder: "Start typing...", text: self.$searchText, isFirstResponder: true)
-                            )
+                                    CustomTextField(placeholder: "Start typing...", text: self.$store.searchText, isFirstResponder: true)
+                                )
                         }
                         .padding(12)
                         .background(Blur())
@@ -140,13 +156,20 @@ struct FloatingButtons: View {
 
             Spacer()
         }
+        .onReceive(self.store.objectWillChange) { _ in
+            if self.store.filteredComics.count == 0 && self.store.searchText == "" {
+                self.filteringDisabled = true
+            } else {
+                self.filteringDisabled = false
+            }
+        }
     }
 }
 
 struct FloatingButtons_Previews: PreviewProvider {
     static var previews: some View {
-        FloatingButtons(isSearching: .constant(true), searchText: .constant(""), onOpenSettings: {
-            print("Settings button clicked.")
+        FloatingButtons(isSearching: .constant(true), onShuffle: {
+            print("Shuffle button clicked.")
         })
     }
 }

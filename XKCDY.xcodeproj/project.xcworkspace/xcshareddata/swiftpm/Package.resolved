@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/realm/realm-cocoa",
         "state": {
           "branch": null,
-          "revision": "99c7d89791dfe8730c145461d59969eb4c56c557",
-          "version": "5.3.5"
+          "revision": "6310911a38d55003f0b8acca96635aa2bfc3e2c0",
+          "version": "5.4.0"
         }
       },
       {
@@ -51,26 +51,8 @@
         "repositoryURL": "https://github.com/realm/realm-core",
         "state": {
           "branch": null,
-          "revision": "b7c49bb107cfc933016792e78fc5daa2aca71a14",
-          "version": "6.0.19"
-        }
-      },
-      {
-        "package": "Introspect",
-        "repositoryURL": "https://github.com/timbersoftware/SwiftUI-Introspect.git",
-        "state": {
-          "branch": null,
-          "revision": "de5c32c15ae169cfcb27397ffb2734dcd0e1e6d5",
-          "version": "0.1.0"
-        }
-      },
-      {
-        "package": "WebView",
-        "repositoryURL": "https://github.com/kylehickinson/SwiftUI-WebView.git",
-        "state": {
-          "branch": null,
-          "revision": "ec4352095428a06423868b3b2a92fdaa3c6281f7",
-          "version": "0.2.0"
+          "revision": "34d7fbcbab2a94bcad081bddf9d172961cd84659",
+          "version": "6.0.25"
         }
       },
       {
@@ -78,8 +60,8 @@
         "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
         "state": {
           "branch": null,
-          "revision": "a81dd730104e15af3a1776afe1d15e1f88661cf0",
-          "version": "1.10.4"
+          "revision": "c70dd348ee4bbdfc5af3b26c85309d4198db4f87",
+          "version": "1.11.0"
         }
       },
       {

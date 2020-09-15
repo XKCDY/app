@@ -10,37 +10,7 @@ import Foundation
 import SwiftUI
 import RealmSwift
 import Combine
-
-extension Binding {
-    func onChange(_ handler: @escaping (Value) -> Void) -> Binding<Value> {
-        return Binding(
-            get: { self.wrappedValue },
-            set: { selection in
-                self.wrappedValue = selection
-                handler(selection)
-        })
-    }
-}
-
-class BindableResults<Element>: ObservableObject where Element: RealmSwift.RealmCollectionValue {
-    var results: Results<Element>
-    private var token: NotificationToken!
-
-    init(results: Results<Element>) {
-        self.results = results
-        lateInit()
-    }
-
-    func lateInit() {
-        token = results.observe { [weak self] _ in
-            self?.objectWillChange.send()
-        }
-    }
-
-    deinit {
-        token.invalidate()
-    }
-}
+import class Kingfisher.ImagePrefetcher
 
 enum StoreError: Error {
     case other
@@ -49,6 +19,7 @@ enum StoreError: Error {
 
 enum Page: String, CaseIterable, Hashable, Identifiable {
     case all
+    case unread
     case favorites
 
     var name: String {
@@ -60,25 +31,178 @@ enum Page: String, CaseIterable, Hashable, Identifiable {
 
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
-    @Published var currentComicId: Int?
+    var isLive: Bool
+    @Published var currentComicId: Int? {
+        didSet {
+            if self.isLive {
+                comicToken = self.comic.observe { _ in
+                    self.objectWillChange.send()
+                }
+            }
+        }
+    }
+    var comic: Comic {
+        try! Realm().object(ofType: Comic.self, forPrimaryKey: self.currentComicId)!
+    }
     @Published var debouncedCurrentComicId: Int?
     @Published var showPager = false
+    @Published var showSettings = false
     @Published var selectedPage: Page = .all {
         willSet {
             self.handlePageChange(newValue)
         }
+        didSet {
+            self.updateFilteredComics()
+        }
+    }
+    @Published var searchText = "" {
+        didSet {
+            self.updateFilteredComics()
+        }
     }
     @Published var currentFavoriteIds: [Int] = []
+    @Published var filteredComics: Results<Comic> {
+        didSet {
+            self.addFrozenObserver()
+            self.cacheNextShuffleResult()
+        }
+    }
+    @Published var frozenFilteredComics: Results<Comic>
+    @Published var isLoadingFromScratch = false
 
+    @ObservedObject private var userSettings = UserSettings()
+    @ObservedObject private var comics: RealmSwift.List<Comic>
+
+    private var nextShuffleResultId: Int?
+
+    private var comicToken: NotificationToken?
+    private var comicsToken: NotificationToken?
     private var disposables = Set<AnyCancellable>()
 
-    init() {
-        DispatchQueue.main.async {
-            self.$currentComicId
-                .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-                .assign(to: \.debouncedCurrentComicId, on: self)
-                .store(in: &self.disposables)
+    init(isLive: Bool) {
+        self.isLive = isLive
+
+        let realm = try! Realm()
+        var comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+
+        if comics == nil {
+            comics = try! realm.write { realm.create(Comics.self, value: []) }
         }
+
+        self.comics = comics!.comics
+
+        let initialComics = comics!.comics.sorted(byKeyPath: "id", ascending: false)
+        self.filteredComics = initialComics
+
+        self.frozenFilteredComics = initialComics.freeze().sorted(byKeyPath: "id", ascending: false)
+
+        self.updateFilteredComics()
+        self.addFrozenObserver()
+        self.cacheNextShuffleResult()
+
+        if self.isLive {
+            DispatchQueue.main.async {
+                self.$currentComicId
+                    .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+                    .assign(to: \.debouncedCurrentComicId, on: self)
+                    .store(in: &self.disposables)
+            }
+
+            self.userSettings.objectWillChange.sink { _ in
+                self.updateFilteredComics()
+            }
+            .store(in: &self.disposables)
+        }
+    }
+
+    private func getOrCreateLastFilteredComicsInstance() -> LastFilteredComics {
+        let realm = try! Realm()
+
+        var filtered = realm.object(ofType: LastFilteredComics.self, forPrimaryKey: 0)
+
+        if filtered == nil {
+            filtered = try! realm.write { realm.create(LastFilteredComics.self, value: []) }
+        }
+
+        return filtered!
+    }
+
+    private func addFrozenObserver() {
+        if self.isLive {
+            self.comicsToken = self.filteredComics.observe { _ in
+                self.frozenFilteredComics = self.filteredComics.freeze().sorted(byKeyPath: "id", ascending: false)
+            }
+        }
+    }
+
+    private func updateFilteredComics() {
+        if !self.isLive {
+            return
+        }
+
+        DispatchQueue.main.async {
+            var results = self.comics.filter("TRUEPREDICATE")
+
+            if !self.userSettings.showCOVIDComics {
+                results = results.filter("NOT (id IN %@)", COVID_COMICS)
+            }
+
+            if self.searchText != "" {
+                if let searchId = Int(self.searchText) {
+                    results = results.filter("id == %@", searchId)
+                } else {
+                    results = results.filter("title CONTAINS[c] %@ OR alt CONTAINS[c] %@ OR transcript CONTAINS[c] %@", self.searchText, self.searchText, self.searchText)
+                }
+            }
+
+            if self.selectedPage == .favorites {
+                let lastFilteredComics = self.getOrCreateLastFilteredComicsInstance()
+
+                let realm = try! Realm()
+
+                try! realm.write {
+                    lastFilteredComics.comics.removeAll()
+                    lastFilteredComics.comics.append(objectsIn: results.filter("isFavorite == true"))
+                }
+
+                self.filteredComics = lastFilteredComics.comics.sorted(byKeyPath: "id", ascending: false)
+            } else if self.selectedPage == .unread {
+                let lastFilteredComics = self.getOrCreateLastFilteredComicsInstance()
+
+                let realm = try! Realm()
+
+                try! realm.write {
+                    lastFilteredComics.comics.removeAll()
+                    lastFilteredComics.comics.append(objectsIn: results.filter("isRead == false"))
+                }
+
+                self.filteredComics = lastFilteredComics.comics.sorted(byKeyPath: "id", ascending: false)
+            } else {
+                self.filteredComics = results.sorted(byKeyPath: "id", ascending: false)
+            }
+        }
+    }
+
+    private func cacheNextShuffleResult() {
+        guard let randomComic = filteredComics.randomElement() else {
+            return
+        }
+
+        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        self.nextShuffleResultId = randomComic.id
+    }
+
+    func shuffle(_ completion: () -> Void) {
+        if let id = self.nextShuffleResultId {
+            // Make sure last cache result is still in current view
+            if self.filteredComics.filter({ $0.id == id }).count == 1 {
+                print("changing")
+                self.currentComicId = id
+                completion()
+            }
+        }
+
+        self.cacheNextShuffleResult()
     }
 
     func handlePageChange(_ page: Page) {
@@ -89,6 +213,8 @@ final class Store: ObservableObject {
         } else {
             self.currentFavoriteIds = []
         }
+
+        self.showPager = false
     }
 
     func updatePosition(for id: Int, at: CGRect) {
@@ -114,12 +240,23 @@ final class Store: ObservableObject {
                     storedComics!.comics.append(updatedComic)
                 }
             }
-
-            callback()
         }
+
+        if results.count > 0 {
+            self.updateFilteredComics()
+        }
+
+        callback()
     }
 
     func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
+        let realm = try! Realm()
+        let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+
+        if storedComics!.comics.count == 0 {
+            self.isLoadingFromScratch = true
+        }
+
         API.getComics { result in
             switch result {
             case .success(let comics): do {
@@ -131,6 +268,8 @@ final class Store: ObservableObject {
                 callback?(.failure(.api))
                 }
             }
+
+            self.isLoadingFromScratch = false
         }
     }
 

@@ -12,7 +12,7 @@ import RealmSwift
 class GetComicIntentHandler: NSObject, GetComicIntentHandling {
     func handle(intent: GetComicIntent, completion: @escaping (GetComicIntentResponse) -> Void) {
         // Update store
-        let store = Store()
+        let store = Store(isLive: false)
 
         store.partialRefetchComics { _ in
             let comicId = intent.comicId!.intValue

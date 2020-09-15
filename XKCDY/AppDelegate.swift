@@ -13,7 +13,7 @@ import SwiftyStoreKit
 import class Kingfisher.ImagePrefetcher
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.maxisom.XKCDY.comicFetcher", using: nil) { task in
@@ -54,6 +54,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register for push notifications if enabled
         Notifications.registerIfEnabled()
 
+        // Set delegate for handling notification opens
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+
         return true
     }
 
@@ -87,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             task.setTaskCompleted(success: false)
         }
 
-        let store = Store()
+        let store = Store(isLive: false)
 
         store.partialRefetchComics { result in
             switch result {
@@ -122,5 +126,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("Failed to register for notifications: \(error.localizedDescription)")
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        if let scene = UIApplication.shared.connectedScenes.first {
+            if let sceneDelegate = scene.delegate {
+                (sceneDelegate as? NotificationResponseHandler)?.handleNotificationResponse(response: response)
+            }
+        }
+
+        completionHandler()
     }
 }

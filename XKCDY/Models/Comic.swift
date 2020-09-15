@@ -131,3 +131,13 @@ final class Comics: Object {
         "id"
     }
 }
+
+final class LastFilteredComics: Object {
+    @objc dynamic var id = 0
+
+    let comics = List<Comic>()
+
+    override class func primaryKey() -> String? {
+        "id"
+    }
+}

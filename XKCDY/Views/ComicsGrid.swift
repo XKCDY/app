@@ -7,9 +7,12 @@
 //
 
 import SwiftUI
+import UIKit
+import Combine
 import RealmSwift
 import ASCollectionView
 import class Kingfisher.ImagePrefetcher
+import class Kingfisher.ImageCache
 
 enum ScrollDirection {
     case up, down
@@ -39,6 +42,55 @@ extension ASWaterfallLayout.ColumnCount: Equatable {
     }
 }
 
+@propertyWrapper struct PublishedWithoutViewUpdate<Value> {
+    let publisher: PassthroughSubject<Void, Never>
+    private var _wrappedValue: Value
+
+    init(wrappedValue: Value) {
+        self.publisher = PassthroughSubject()
+        self._wrappedValue = wrappedValue
+    }
+
+    var wrappedValue: Value {
+        get {
+            _wrappedValue
+        }
+
+        set {
+            _wrappedValue = newValue
+            publisher.send()
+        }
+    }
+
+    var projectedValue: PassthroughSubject<Void, Never> {
+        self.publisher
+    }
+}
+
+class ScrollStateModel: ObservableObject {
+    @Published var isScrolling = false
+    @PublishedWithoutViewUpdate var scrollPosition: CGFloat = 0 {
+        willSet {
+            if !self.isScrolling {
+                self.isScrolling = true
+            }
+        }
+    }
+
+    private var cancellables = Set<AnyCancellable>()
+
+    init() {
+        $scrollPosition
+            .debounce(for: .milliseconds(50), scheduler: DispatchQueue.global())
+            .sink { _ in
+                DispatchQueue.main.async {
+                    self.isScrolling = false
+                }
+        }
+        .store(in: &cancellables)
+    }
+}
+
 struct ComicsGridView: View {
     @State var columnMinSize: CGFloat = 150
     @State var inViewUrls: [String] = []
@@ -48,20 +100,16 @@ struct ComicsGridView: View {
     @EnvironmentObject var store: Store
     @State private var scrollPosition: ASCollectionViewScrollPosition?
     @State private var showErrorAlert = false
-    var comics: Results<Comic>
     @State private var lastScrollPositions: [CGFloat] = []
     @State private var shouldBlurStatusBar = false
+    @ObservedObject private var scrollState = ScrollStateModel()
 
     func onCellEvent(_ event: CellEvent<Comic>) {
         switch event {
         case let .prefetchForData(data):
-            var urls: [URL] = []
-
-            for comic in data {
-                urls.append(comic.getBestImageURL()!)
-            }
-
-            ImagePrefetcher(urls: urls).start()
+            ImagePrefetcher(urls: data.map {$0.getBestImageURL()!}).start()
+        case let .cancelPrefetchForData(data):
+            ImagePrefetcher(urls: data.map {$0.getBestImageURL()!}).stop()
         default:
             return
         }
@@ -72,50 +120,81 @@ struct ComicsGridView: View {
         self.onComicOpen()
     }
 
+    func onPullToRefresh(_ endRefreshing: @escaping () -> Void) {
+        DispatchQueue.global(qos: .background).async {
+            self.store.refetchComics { result -> Void in
+                endRefreshing()
+
+                switch result {
+                case .success:
+                    self.showErrorAlert = false
+                case .failure:
+                    self.showErrorAlert = true
+                }
+            }
+        }
+    }
+
     var body: some View {
         GeometryReader {geom in
             AnyView(ASCollectionView(
                 section: ASSection(
                     id: 0,
-                    data: self.comics,
+                    // Wrapping with Array() results in significantly better performance
+                    // (even though it shouldn't) because Realm has its own extremely slow
+                    // implementation of .firstIndex(), which ASCollectionView calls when rendering.
+                    // Don't believe me? Try unwrapping it and scrolling to the bottom.
+                    data: Array(self.store.frozenFilteredComics),
                     dataID: \.self,
-                    onCellEvent: self.onCellEvent) { comic, _ -> AnyView in
-                        AnyView(
-                            ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId)
-                                .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
-                        )
-            })
-                .onPullToRefresh { endRefreshing in
-                    DispatchQueue.global(qos: .background).async {
-                        self.store.refetchComics { result -> Void in
-                            endRefreshing()
+                    onCellEvent: self.onCellEvent,
+                    dragDropConfig: ASDragDropConfig<Comic>(dataBinding: .constant([])).dragItemProvider { item in
+                        let provider = NSItemProvider()
 
-                            switch result {
-                            case .success:
-                                self.showErrorAlert = false
-                            case .failure:
-                                self.showErrorAlert = true
+                        provider.registerObject(ofClass: UIImage.self, visibility: .all) { completion in
+                            ImageCache.default.retrieveImage(forKey: item.getBestImageURL()!.absoluteString) { result in
+                                switch result {
+                                case .success(let value):
+                                    completion(value.image, nil)
+                                case .failure(let error):
+                                    completion(nil, error)
+                                }
                             }
+
+                            return Progress.discreteProgress(totalUnitCount: 0)
+                        }
+
+                        return provider
+
+                    }
+                ) { comic, _ -> AnyView in
+                    AnyView(
+                        ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId, isScrolling: self.scrollState.isScrolling)
+                            // Isn't SwiftUI fun?
+                            .environmentObject(self.store)
+                            .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
+                            .animation(.none)
+                    )
+            })
+                .onPullToRefresh(self.onPullToRefresh)
+                .onScroll { (point, _) in
+                    self.scrollState.scrollPosition = point.y
+
+                    DispatchQueue.main.async {
+                        self.shouldBlurStatusBar = point.y > 80
+
+                        if point.y < 5 {
+                            self.scrollDirection = .up
+                            return
+                        }
+
+                        self.lastScrollPositions.append(point.y)
+
+                        self.lastScrollPositions = self.lastScrollPositions.suffix(2)
+
+                        if self.lastScrollPositions.count == 2 {
+                            self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
                         }
                     }
-            }
-            .onScroll { (point, _) in
-                DispatchQueue.main.async {
-                    self.shouldBlurStatusBar = point.y > 80
-
-                    if point.y < 5 {
-                        self.scrollDirection = .up
-                        return
-                    }
-
-                    self.lastScrollPositions.append(point.y)
-
-                    self.lastScrollPositions = self.lastScrollPositions.suffix(2)
-
-                    if self.lastScrollPositions.count == 2 {
-                        self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
-                    }
-                }
             }
             .scrollPositionSetter(self.$scrollPosition)
             .layout(createCustomLayout: ASWaterfallLayout.init) { layout in
@@ -140,7 +219,7 @@ struct ComicsGridView: View {
                         return
                     }
 
-                    if let comicIndex = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) {
+                    if let comicIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) {
                         self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
                     }
                 })

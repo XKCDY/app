@@ -41,11 +41,10 @@
 		6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7D1C9824B8E57F005F2F9A /* Alamofire */; };
 		6A83F89A24E9A756002F1F96 /* SharableComicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A83F89924E9A756002F1F96 /* SharableComicView.swift */; };
 		6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */; };
+		6A937A6D24FF0D60006383A9 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6A937A6C24FF0D60006383A9 /* Kingfisher */; };
 		6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123324B62C7000F51ABF /* Kingfisher */; };
 		6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */; };
 		6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */; };
-		6AA0123B24B6538700F51ABF /* WebView in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123A24B6538700F51ABF /* WebView */; };
-		6AA0123D24B6643000F51ABF /* ControlledWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123C24B6643000F51ABF /* ControlledWebView.swift */; };
 		6AAE174E24B7968E00181C4B /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 6AAE174D24B7968E00181C4B /* Intents.intentdefinition */; };
 		6AAE177F24B79CD700181C4B /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AAE177E24B79CD700181C4B /* IntentHandler.swift */; };
 		6AAE178324B79CD700181C4B /* XKCDYIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6AAE177C24B79CD700181C4B /* XKCDYIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -55,9 +54,12 @@
 		6AAE179224B7D03700181C4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAE179124B7D03700181C4B /* RealmSwift */; };
 		6AAE179324B7E2F300181C4B /* Comic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFD224B28CEA006BC9D9 /* Comic.swift */; };
 		6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */; };
+		6AC1749B250D3E2000E46D21 /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC1749A250D3E2000E46D21 /* SafariView.swift */; };
+		6AC96CC425117EF500102031 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */; };
 		6ACD2C6024C298D000D6EFE1 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6ADBCBD42447B65100594DBD /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADBCBD32447B65100594DBD /* Alamofire */; };
+		6ADBE43624FDB1DA004C9785 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6ADEB77524F6D4B200D819C0 /* Comic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFD224B28CEA006BC9D9 /* Comic.swift */; };
 		6ADEB77724F6D4C400D819C0 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADEB77624F6D4C400D819C0 /* Alamofire */; };
 		6ADEB77924F6D4C400D819C0 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADEB77824F6D4C400D819C0 /* Realm */; };
@@ -72,7 +74,6 @@
 		6AECCFD024B0DBD1006BC9D9 /* XKCDYClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */; };
 		6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFD224B28CEA006BC9D9 /* Comic.swift */; };
 		6AEFE7AE244644A7003057F8 /* ComicsGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEFE7AD244644A7003057F8 /* ComicsGrid.swift */; };
-		6AF016A2246239CD00A51375 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 6AF016A1246239CD00A51375 /* Introspect */; };
 		6AF1386524BF8F64005579D2 /* FloatingButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF1386424BF8F64005579D2 /* FloatingButtons.swift */; };
 		6AF2A49A24D0BEF900DE016A /* ColorPickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF2A49924D0BEF900DE016A /* ColorPickerRow.swift */; };
 		6AF2A49C24D0CC5400DE016A /* AppIconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF2A49B24D0CC5400DE016A /* AppIconPicker.swift */; };
@@ -185,7 +186,6 @@
 		6A83F89924E9A756002F1F96 /* SharableComicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharableComicView.swift; sourceTree = "<group>"; };
 		6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicDetailsSheet.swift; sourceTree = "<group>"; };
-		6AA0123C24B6643000F51ABF /* ControlledWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlledWebView.swift; sourceTree = "<group>"; };
 		6AAE174D24B7968E00181C4B /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Intents.intentdefinition; path = XKCDY/Intents.intentdefinition; sourceTree = SOURCE_ROOT; };
 		6AAE175124B79B8B00181C4B /* XKCDY.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDY.entitlements; sourceTree = "<group>"; };
 		6AAE176124B79BCD00181C4B /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
@@ -196,6 +196,7 @@
 		6AAE179424B7EE2A00181C4B /* XKCDYIntentsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDYIntentsRelease.entitlements; sourceTree = "<group>"; };
 		6AAE179524B7EE3700181C4B /* XKCDYIntentsDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDYIntentsDebug.entitlements; sourceTree = "<group>"; };
 		6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicBadge.swift; sourceTree = "<group>"; };
+		6AC1749A250D3E2000E46D21 /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
 		6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicPagerOverlay.swift; sourceTree = "<group>"; };
 		6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingNavBar.swift; sourceTree = "<group>"; };
@@ -242,9 +243,7 @@
 				6A64932E24CDF2CF004BC488 /* SwiftyStoreKit in Frameworks */,
 				6A64933324CE6F87004BC488 /* TPInAppReceipt in Frameworks */,
 				6AEB62B4246373E7001FAF67 /* SwiftUIPager in Frameworks */,
-				6AA0123B24B6538700F51ABF /* WebView in Frameworks */,
 				6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */,
-				6AF016A2246239CD00A51375 /* Introspect in Frameworks */,
 				6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */,
 				6A06FAC82445517B002202DC /* ASCollectionView in Frameworks */,
 			);
@@ -282,6 +281,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A937A6D24FF0D60006383A9 /* Kingfisher in Frameworks */,
 				6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */,
 				6AAE179224B7D03700181C4B /* RealmSwift in Frameworks */,
 				6AAE179024B7D03700181C4B /* Realm in Frameworks */,
@@ -375,7 +375,6 @@
 				6AE116F3246653CE00194F57 /* ComicPager.swift */,
 				6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */,
 				6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */,
-				6AA0123C24B6643000F51ABF /* ControlledWebView.swift */,
 				6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */,
 				6AF1386424BF8F64005579D2 /* FloatingButtons.swift */,
 				6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */,
@@ -386,6 +385,7 @@
 				6A2E9AC624D38F110036A7DC /* ActivityIndicator.swift */,
 				6A2E64AF24DCE18000B767C3 /* FortuneLoader.swift */,
 				6A83F89924E9A756002F1F96 /* SharableComicView.swift */,
+				6AC1749A250D3E2000E46D21 /* SafariView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -504,12 +504,10 @@
 			packageProductDependencies = (
 				6A06FAC72445517B002202DC /* ASCollectionView */,
 				6ADBCBD32447B65100594DBD /* Alamofire */,
-				6AF016A1246239CD00A51375 /* Introspect */,
 				6AEB62B3246373E7001FAF67 /* SwiftUIPager */,
 				6A5430E624994A6500C92B78 /* RealmSwift */,
 				6AA0123324B62C7000F51ABF /* Kingfisher */,
 				6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */,
-				6AA0123A24B6538700F51ABF /* WebView */,
 				6A64932D24CDF2CF004BC488 /* SwiftyStoreKit */,
 				6A64933224CE6F87004BC488 /* TPInAppReceipt */,
 			);
@@ -594,6 +592,7 @@
 				6AAE178F24B7D03700181C4B /* Realm */,
 				6AAE179124B7D03700181C4B /* RealmSwift */,
 				6A7D1C9824B8E57F005F2F9A /* Alamofire */,
+				6A937A6C24FF0D60006383A9 /* Kingfisher */,
 			);
 			productName = XKCDYIntents;
 			productReference = 6AAE177C24B79CD700181C4B /* XKCDYIntents.appex */;
@@ -640,11 +639,9 @@
 			packageReferences = (
 				6A06FAC62445517B002202DC /* XCRemoteSwiftPackageReference "ASCollectionView" */,
 				6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */,
-				6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				6AEB62B2246373E7001FAF67 /* XCRemoteSwiftPackageReference "SwiftUIPager" */,
 				6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				6AA0123924B6538700F51ABF /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */,
 				6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				6A64933124CE6F87004BC488 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
 			);
@@ -749,6 +746,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AE0D7B6244FF1A700AE982C /* FloatingNavBar.swift in Sources */,
+				6AC1749B250D3E2000E46D21 /* SafariView.swift in Sources */,
 				6A60FB7A244535A70070A76B /* AppDelegate.swift in Sources */,
 				6A20865E248415A7002C98E5 /* Store.swift in Sources */,
 				6AF2A4C324D0F93800DE016A /* AlternateIcons.swift in Sources */,
@@ -766,7 +764,6 @@
 				6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */,
 				6AAE174E24B7968E00181C4B /* Intents.intentdefinition in Sources */,
 				6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */,
-				6AA0123D24B6643000F51ABF /* ControlledWebView.swift in Sources */,
 				6AECCFD024B0DBD1006BC9D9 /* XKCDYClient.swift in Sources */,
 				6AEB62B82463A333001FAF67 /* ZoomableImage.swift in Sources */,
 				6AECCFD324B28CEA006BC9D9 /* Comic.swift in Sources */,
@@ -807,6 +804,7 @@
 				6AF8D68924F7111600A518FA /* FloatingNavBar.swift in Sources */,
 				6A65E97E24F6C3660087A317 /* NewComicWidget.swift in Sources */,
 				6AF8D68A24F7112800A518FA /* SegmentedPicker.swift in Sources */,
+				6AC96CC425117EF500102031 /* UserSettings.swift in Sources */,
 				6AF8D68C24F7114100A518FA /* XKCDYClient.swift in Sources */,
 				6ADEB77524F6D4B200D819C0 /* Comic.swift in Sources */,
 			);
@@ -821,6 +819,7 @@
 				6AAE177F24B79CD700181C4B /* IntentHandler.swift in Sources */,
 				6A7D1C9624B8E502005F2F9A /* Store.swift in Sources */,
 				6A7D1C9524B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift in Sources */,
+				6ADBE43624FDB1DA004C9785 /* UserSettings.swift in Sources */,
 				6AAE178924B7A1B700181C4B /* GetComicIntentHandler.swift in Sources */,
 				6A7D1C9724B8E562005F2F9A /* XKCDYClient.swift in Sources */,
 			);
@@ -964,6 +963,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator14.0]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -991,6 +991,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 12;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XKCDY/Preview Content\"";
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
@@ -1003,7 +1004,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.maxisom.XKCDY";
@@ -1021,6 +1022,7 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 12;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XKCDY/Preview Content\"";
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
@@ -1032,7 +1034,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.maxisom.XKCDY";
@@ -1180,15 +1182,16 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDYIntents/XKCDYIntentsDebug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = XKCDYIntents/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.XKCDYIntents;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.maxisom.XKCDY.XKCDYIntents";
@@ -1204,15 +1207,16 @@
 				CODE_SIGN_ENTITLEMENTS = XKCDYIntents/XKCDYIntentsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
 				INFOPLIST_FILE = XKCDYIntents/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.XKCDYIntents;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.maxisom.XKCDY.XKCDYIntents";
@@ -1287,7 +1291,7 @@
 			repositoryURL = "https://github.com/apptekstudios/ASCollectionView";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.5.0;
+				minimumVersion = 1.7.1;
 			};
 		};
 		6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
@@ -1322,14 +1326,6 @@
 				minimumVersion = 5.14.1;
 			};
 		};
-		6AA0123924B6538700F51ABF /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kylehickinson/SwiftUI-WebView.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.0;
-			};
-		};
 		6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -1344,14 +1340,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.9.2;
-			};
-		};
-		6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/timbersoftware/SwiftUI-Introspect.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1382,6 +1370,11 @@
 			package = 6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
 		};
+		6A937A6C24FF0D60006383A9 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		6AA0123324B62C7000F51ABF /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
@@ -1391,11 +1384,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = KingfisherSwiftUI;
-		};
-		6AA0123A24B6538700F51ABF /* WebView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA0123924B6538700F51ABF /* XCRemoteSwiftPackageReference "SwiftUI-WebView" */;
-			productName = WebView;
 		};
 		6AAE178F24B7D03700181C4B /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1441,11 +1429,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AEB62B2246373E7001FAF67 /* XCRemoteSwiftPackageReference "SwiftUIPager" */;
 			productName = SwiftUIPager;
-		};
-		6AF016A1246239CD00A51375 /* Introspect */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AF016A0246239CD00A51375 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = Introspect;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

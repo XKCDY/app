@@ -10,7 +10,6 @@ import SwiftUI
 import SwiftUIPager
 import RealmSwift
 import KingfisherSwiftUI
-import class Kingfisher.ImagePrefetcher
 
 func CGPointToDegree(_ point: CGPoint) -> Double {
     // Provides a directional bearing from (0,0) to the given point.
@@ -27,7 +26,7 @@ func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
 
 let TIME_TO_MARK_AS_READ_MS: Int64 = 2 * 1000
 // https://www.objc.io/blog/2019/09/26/swiftui-animation-timing-curves/
-let SPRING_ANIMATION_TIME_SECONDS = 0.59
+let SPRING_ANIMATION_TIME_SECONDS = 0.60
 
 struct ComicPager: View {
     @State var page: Int = 0
@@ -43,19 +42,19 @@ struct ComicPager: View {
     @State private var showSheet = false
     @State private var activeSheet: ActiveSheet = .details
     @State private var isZoomed = false
-    @State private var nextShuffleResultId: Int?
-    var comics: Results<Comic>
 
-    init(onHide: @escaping () -> Void, comics: Results<Comic>) {
+    init(onHide: @escaping () -> Void) {
         self.onHide = onHide
-        self.comics = comics
     }
 
-    func cacheNextShuffleResult() {
-        let randomComic = comics[Int.random(in: 0 ..< comics.count)]
+    func closePager() {
+        withAnimation(.spring()) {
+            hidden = true
+        }
 
-        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
-        self.nextShuffleResultId = randomComic.id
+        DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
+            self.onHide()
+        }
     }
 
     func handleDragChange(_ value: DragGesture.Value) {
@@ -71,13 +70,7 @@ struct ComicPager: View {
 
     func handleDragEnd(_: DragGesture.Value) {
         if abs(self.offset.height) > 100 {
-            withAnimation(.spring()) {
-                hidden = true
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
-                self.onHide()
-            }
+            self.closePager()
         } else {
             self.offset = .zero
         }
@@ -95,19 +88,13 @@ struct ComicPager: View {
         self.showSheet = true
     }
 
-    func getCurrentComic() -> Comic {
-        return try! Realm().object(ofType: Comic.self, forPrimaryKey: self.store.currentComicId)!
-    }
-
     func setPage() {
-        self.page = self.comics.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
+        self.page = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
     }
 
     func handleShuffle() {
-        if let id = self.nextShuffleResultId {
-            self.store.currentComicId = id
+        self.store.shuffle {
             self.setPage()
-            self.cacheNextShuffleResult()
         }
     }
 
@@ -129,7 +116,7 @@ struct ComicPager: View {
                     .edgesIgnoringSafeArea(.all)
 
                 ZStack {
-                    Pager<Comic, Int, AnyView>(page: self.$page, data: Array(self.comics), id: \.id, content: { item in
+                    Pager<Comic, Int, AnyView>(page: self.$page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
                         AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
                                     .frame(from: CGRect(origin: .zero, size: geometry.size))
                         )
@@ -137,26 +124,30 @@ struct ComicPager: View {
                     .allowsDragging(!self.isZoomed)
                     .itemSpacing(self.offset == .zero ? 30 : 1000)
                     .onPageChanged({ newIndex in
+                        if newIndex == -1 {
+                            return
+                        }
+
                         let currentTimestamp = Date().currentTimeMillis()
 
                         if currentTimestamp > self.startedViewingAt + TIME_TO_MARK_AS_READ_MS {
                             let realm = try! Realm()
                             try! realm.write {
-                                self.getCurrentComic().isRead = true
+                                self.store.comic.isRead = true
                             }
                         }
 
                         self.startedViewingAt = Date().currentTimeMillis()
 
                         DispatchQueue.main.async {
-                            self.store.currentComicId = self.comics[newIndex].id
+                            self.store.currentComicId = self.store.filteredComics[newIndex].id
                         }
                     })
                     .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
                     .edgesIgnoringSafeArea(.all)
 
                     Group<AnyView> {
-                        let image = KFImage(self.getCurrentComic().getBestImageURL()).resizable().aspectRatio(contentMode: .fit)
+                        let image = KFImage(self.store.comic.getBestImageURL()).resizable().aspectRatio(contentMode: .fit)
 
                         guard let targetRect = self.store.positions[self.store.currentComicId ?? 100] else {
                             return AnyView(EmptyView())
@@ -186,7 +177,12 @@ struct ComicPager: View {
                                         .onChanged(self.handleDragChange)
                                         .onEnded(self.handleDragEnd))
 
-                ComicPagerOverlay(comic: self.getCurrentComic(), showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle)
+                ComicPagerOverlay(showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle, onClose: {
+                    // Make sure closing animation applies
+                    self.offset = CGSize(width: 0.1, height: 0.1)
+
+                    self.closePager()
+                })
                     .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
                     .opacity(self.showOverlay && !self.hidden ? 1 : 0)
             }
@@ -203,8 +199,6 @@ struct ComicPager: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
                 self.isLoading = false
             }
-
-            self.cacheNextShuffleResult()
         }
         .onReceive(self.store.$debouncedCurrentComicId) { _ in
             self.setPage()
