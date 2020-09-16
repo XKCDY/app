@@ -27,14 +27,6 @@ struct ContentView: View {
         store.showPager = true
     }
 
-    func refetchComics() {
-        self.store.partialRefetchComics()
-    }
-
-    func handleAppear() {
-        self.refetchComics()
-    }
-
     func handleShowProAlert() {
         let FIVE_MINUTES_IN_MS = 5 * 60 * 1000
 
@@ -99,10 +91,6 @@ struct ContentView: View {
         }
         .alert(isPresented: self.$showProAlert) {
             Alert(title: Text("Enjoying XKCDY?"), message: Text("Consider upgrading to XKCDY Pro for a few perks and to help support development!"), primaryButton: .default(Text("More Details"), action: self.handleProDetailsOpen), secondaryButton: .default(Text("Don't show this again")))
-        }
-        .onAppear(perform: handleAppear)
-        .onReceive(foregroundPublisher) { _ in
-            self.refetchComics()
         }
     }
 }

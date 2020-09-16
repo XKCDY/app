@@ -43,10 +43,10 @@ protocol NotificationResponseHandler: UIWindowSceneDelegate {
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHandler {
-
     var window: UIWindow?
     var store = Store(isLive: true)
     var notificationSubscriptions: [AnyCancellable] = []
+    var hasBecameActive = false
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -131,6 +131,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        DispatchQueue.global(qos: .background).async {
+            let store = Store(isLive: false)
+
+            // Only do a full refresh on first launch
+            if self.hasBecameActive {
+                store.partialRefetchComics()
+            } else {
+                store.refetchComics()
+            }
+
+            self.hasBecameActive = true
+        }
+
         timeTracker.startTracker()
     }
 

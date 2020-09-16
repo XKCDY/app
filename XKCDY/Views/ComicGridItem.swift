@@ -46,7 +46,7 @@ struct ComicGridItem: View {
 
             let stack = ZStack {
                 VStack {
-                    KFImage(self.comic.getBestImageURL()!, isLoaded: self.$isLoaded)
+                    KFImage(self.comic.getReasonableImageURL()!, isLoaded: self.$isLoaded)
                         .cancelOnDisappear(true)
                         .resizable()
                         .scaledToFill()
