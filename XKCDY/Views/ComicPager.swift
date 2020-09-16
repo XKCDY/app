@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftUIPager
 import RealmSwift
 import KingfisherSwiftUI
+import class Kingfisher.ImageCache
 
 func CGPointToDegree(_ point: CGPoint) -> Double {
     // Provides a directional bearing from (0,0) to the given point.
@@ -147,7 +148,15 @@ struct ComicPager: View {
                     .edgesIgnoringSafeArea(.all)
 
                     Group<AnyView> {
-                        let image = KFImage(self.store.comic.getBestImageURL()).resizable().aspectRatio(contentMode: .fit)
+                        var imageUrl = self.store.comic.getReasonableImageURL()
+
+                        if let bestUrl = self.store.comic.getBestImageURL() {
+                            if ImageCache.default.isCached(forKey: bestUrl.absoluteString) {
+                                imageUrl = bestUrl
+                            }
+                        }
+
+                        let image = KFImage(imageUrl).resizable().aspectRatio(contentMode: .fit)
 
                         guard let targetRect = self.store.positions[self.store.currentComicId ?? 100] else {
                             return AnyView(EmptyView())
