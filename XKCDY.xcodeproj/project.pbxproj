@@ -1310,8 +1310,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-cocoa";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.3;
+				kind = exactVersion;
+				version = 5.4.0;
 			};
 		};
 		6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
