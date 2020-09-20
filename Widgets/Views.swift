@@ -68,7 +68,10 @@ struct SmallComicWidgetView: View {
             Text(verbatim: entry.comic.title).font(.headline).lineLimit(1).padding(.bottom, 1)
 
             Text(verbatim: entry.comic.alt).font(.caption)
-        }.padding()
+
+            Spacer(minLength: 0)
+        }
+        .padding()
         .widgetURL(URL(string: "xkcdy://comics/\(entry.comic.id)"))
     }
 }

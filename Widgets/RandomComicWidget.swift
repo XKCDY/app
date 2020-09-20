@@ -86,7 +86,7 @@ struct RandomComicWidget: Widget {
                 } else {
                     LargeComicWidgetView(entry: entry)
                 }
-            }.frame(maxWidth: .infinity, maxHeight: .infinity).background(Color(red: 0.12, green: 0.12, blue: 0.12))
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .configurationDisplayName("Random Comic")
         .description("Displays a random XKCD comic.")

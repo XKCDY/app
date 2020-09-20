@@ -81,7 +81,7 @@ struct NewComicWidget: Widget {
                 } else {
                     LargeComicWidgetView(entry: entry)
                 }
-            }.frame(maxWidth: .infinity, maxHeight: .infinity).background(Color(red: 0.12, green: 0.12, blue: 0.12))
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .configurationDisplayName("Latest XKCD Comic")
         .description("Displays the latest XKCD comic.")
