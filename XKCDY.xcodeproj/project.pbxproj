@@ -34,7 +34,7 @@
 		6A65E97B24F6C3660087A317 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A65E97A24F6C3650087A317 /* SwiftUI.framework */; };
 		6A65E97E24F6C3660087A317 /* NewComicWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A65E97D24F6C3660087A317 /* NewComicWidget.swift */; };
 		6A65E98024F6C3670087A317 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A65E97F24F6C3670087A317 /* Assets.xcassets */; };
-		6A65E98424F6C3670087A317 /* NewComicWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6A65E97724F6C3650087A317 /* NewComicWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6A65E98424F6C3670087A317 /* Widgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6A65E97724F6C3650087A317 /* Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A7D1C9524B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7D1C9424B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift */; };
 		6A7D1C9624B8E502005F2F9A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A20865D248415A7002C98E5 /* Store.swift */; };
 		6A7D1C9724B8E562005F2F9A /* XKCDYClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFCF24B0DBD1006BC9D9 /* XKCDYClient.swift */; };
@@ -42,6 +42,10 @@
 		6A83F89A24E9A756002F1F96 /* SharableComicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A83F89924E9A756002F1F96 /* SharableComicView.swift */; };
 		6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */; };
 		6A937A6D24FF0D60006383A9 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6A937A6C24FF0D60006383A9 /* Kingfisher */; };
+		6A95D5EF2517E9120074273E /* RandomComicWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D5EE2517E9120074273E /* RandomComicWidget.swift */; };
+		6A95D5F62517E95A0074273E /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D5F52517E95A0074273E /* Common.swift */; };
+		6A95D5FD2517ECE30074273E /* XKCDYWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D5FC2517ECE30074273E /* XKCDYWidgetBundle.swift */; };
+		6A95D6042517EF2E0074273E /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D6032517EF2E0074273E /* Views.swift */; };
 		6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123324B62C7000F51ABF /* Kingfisher */; };
 		6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */; };
 		6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */; };
@@ -144,7 +148,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				6AAE178324B79CD700181C4B /* XKCDYIntents.appex in Embed App Extensions */,
-				6A65E98424F6C3670087A317 /* NewComicWidgetExtension.appex in Embed App Extensions */,
+				6A65E98424F6C3670087A317 /* Widgets.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -178,7 +182,7 @@
 		6A64932624CDF0A9004BC488 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		6A64932F24CE08C3004BC488 /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		6A64933424D09FC2004BC488 /* TintColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintColorPicker.swift; sourceTree = "<group>"; };
-		6A65E97724F6C3650087A317 /* NewComicWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NewComicWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A65E97724F6C3650087A317 /* Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A65E97824F6C3650087A317 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		6A65E97A24F6C3650087A317 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		6A65E97D24F6C3660087A317 /* NewComicWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewComicWidget.swift; sourceTree = "<group>"; };
@@ -187,6 +191,10 @@
 		6A7D1C9424B8D5E5005F2F9A /* GetLatestComicIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLatestComicIntentHandler.swift; sourceTree = "<group>"; };
 		6A83F89924E9A756002F1F96 /* SharableComicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharableComicView.swift; sourceTree = "<group>"; };
 		6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
+		6A95D5EE2517E9120074273E /* RandomComicWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomComicWidget.swift; sourceTree = "<group>"; };
+		6A95D5F52517E95A0074273E /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		6A95D5FC2517ECE30074273E /* XKCDYWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XKCDYWidgetBundle.swift; sourceTree = "<group>"; };
+		6A95D6032517EF2E0074273E /* Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicDetailsSheet.swift; sourceTree = "<group>"; };
 		6AAE174D24B7968E00181C4B /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Intents.intentdefinition; path = XKCDY/Intents.intentdefinition; sourceTree = SOURCE_ROOT; };
 		6AAE175124B79B8B00181C4B /* XKCDY.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDY.entitlements; sourceTree = "<group>"; };
@@ -232,7 +240,7 @@
 		6AF2A4AF24D0F73900DE016A /* beret@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beret@2x.png"; sourceTree = "<group>"; };
 		6AF2A4C224D0F93800DE016A /* AlternateIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlternateIcons.swift; path = XKCDY/AlternateIcons.swift; sourceTree = SOURCE_ROOT; };
 		6AF8D68E24F71FDB00A518FA /* 2329_2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2329_2x.png; sourceTree = "<group>"; };
-		6AF8D69024F72DE800A518FA /* NewComicWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NewComicWidgetExtension.entitlements; sourceTree = "<group>"; };
+		6AF8D69024F72DE800A518FA /* ComicWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ComicWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -297,13 +305,13 @@
 		6A60FB6D244535A70070A76B = {
 			isa = PBXGroup;
 			children = (
-				6AF8D69024F72DE800A518FA /* NewComicWidgetExtension.entitlements */,
+				6AF8D69024F72DE800A518FA /* ComicWidgetExtension.entitlements */,
 				6A3AF3C024E73AAA002232D7 /* Subscription.storekit */,
 				6A60FB78244535A70070A76B /* XKCDY */,
 				6A60FB8F244535A90070A76B /* XKCDYTests */,
 				6A60FB9A244535A90070A76B /* XKCDYUITests */,
 				6AAE177D24B79CD700181C4B /* XKCDYIntents */,
-				6A65E97C24F6C3660087A317 /* NewComicWidget */,
+				6A65E97C24F6C3660087A317 /* Widgets */,
 				6AAE176024B79BCD00181C4B /* Frameworks */,
 				6A60FB77244535A70070A76B /* Products */,
 			);
@@ -316,7 +324,7 @@
 				6A60FB8C244535A90070A76B /* XKCDYTests.xctest */,
 				6A60FB97244535A90070A76B /* XKCDYUITests.xctest */,
 				6AAE177C24B79CD700181C4B /* XKCDYIntents.appex */,
-				6A65E97724F6C3650087A317 /* NewComicWidgetExtension.appex */,
+				6A65E97724F6C3650087A317 /* Widgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -393,16 +401,20 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		6A65E97C24F6C3660087A317 /* NewComicWidget */ = {
+		6A65E97C24F6C3660087A317 /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
 				6AC3EDD72517B70400B03D77 /* WidgetOptionsIntent.intentdefinition */,
 				6AF8D68D24F71FA300A518FA /* Samples */,
 				6A65E97D24F6C3660087A317 /* NewComicWidget.swift */,
+				6A95D5F52517E95A0074273E /* Common.swift */,
+				6A95D5EE2517E9120074273E /* RandomComicWidget.swift */,
+				6A95D5FC2517ECE30074273E /* XKCDYWidgetBundle.swift */,
 				6A65E97F24F6C3670087A317 /* Assets.xcassets */,
 				6A65E98124F6C3670087A317 /* Info.plist */,
+				6A95D6032517EF2E0074273E /* Views.swift */,
 			);
-			path = NewComicWidget;
+			path = Widgets;
 			sourceTree = "<group>";
 		};
 		6AAE176024B79BCD00181C4B /* Frameworks */ = {
@@ -555,9 +567,9 @@
 			productReference = 6A60FB97244535A90070A76B /* XKCDYUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		6A65E97624F6C3650087A317 /* NewComicWidgetExtension */ = {
+		6A65E97624F6C3650087A317 /* Widgets */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6A65E98724F6C3670087A317 /* Build configuration list for PBXNativeTarget "NewComicWidgetExtension" */;
+			buildConfigurationList = 6A65E98724F6C3670087A317 /* Build configuration list for PBXNativeTarget "Widgets" */;
 			buildPhases = (
 				6A65E97324F6C3650087A317 /* Sources */,
 				6A65E97424F6C3650087A317 /* Frameworks */,
@@ -567,7 +579,7 @@
 			);
 			dependencies = (
 			);
-			name = NewComicWidgetExtension;
+			name = Widgets;
 			packageProductDependencies = (
 				6ADEB77624F6D4C400D819C0 /* Alamofire */,
 				6ADEB77824F6D4C400D819C0 /* Realm */,
@@ -576,7 +588,7 @@
 				6ADEB77E24F6D66700D819C0 /* KingfisherSwiftUI */,
 			);
 			productName = NewComicWidgetExtension;
-			productReference = 6A65E97724F6C3650087A317 /* NewComicWidgetExtension.appex */;
+			productReference = 6A65E97724F6C3650087A317 /* Widgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		6AAE177B24B79CD700181C4B /* XKCDYIntents */ = {
@@ -657,7 +669,7 @@
 				6A60FB8B244535A90070A76B /* XKCDYTests */,
 				6A60FB96244535A90070A76B /* XKCDYUITests */,
 				6AAE177B24B79CD700181C4B /* XKCDYIntents */,
-				6A65E97624F6C3650087A317 /* NewComicWidgetExtension */,
+				6A65E97624F6C3650087A317 /* Widgets */,
 			);
 		};
 /* End PBXProject section */
@@ -806,12 +818,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AF8D68B24F7113200A518FA /* Store.swift in Sources */,
+				6A95D5EF2517E9120074273E /* RandomComicWidget.swift in Sources */,
+				6A95D5FD2517ECE30074273E /* XKCDYWidgetBundle.swift in Sources */,
 				6AF8D68924F7111600A518FA /* FloatingNavBar.swift in Sources */,
 				6A65E97E24F6C3660087A317 /* NewComicWidget.swift in Sources */,
 				6AF8D68A24F7112800A518FA /* SegmentedPicker.swift in Sources */,
 				6AC96CC425117EF500102031 /* UserSettings.swift in Sources */,
 				6AF8D68C24F7114100A518FA /* XKCDYClient.swift in Sources */,
+				6A95D6042517EF2E0074273E /* Views.swift in Sources */,
 				6ADEB77524F6D4B200D819C0 /* Comic.swift in Sources */,
+				6A95D5F62517E95A0074273E /* Common.swift in Sources */,
 				6AC3EDD82517B70400B03D77 /* WidgetOptionsIntent.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -846,7 +862,7 @@
 		};
 		6A65E98324F6C3670087A317 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6A65E97624F6C3650087A317 /* NewComicWidgetExtension */;
+			target = 6A65E97624F6C3650087A317 /* Widgets */;
 			targetProxy = 6A65E98224F6C3670087A317 /* PBXContainerItemProxy */;
 		};
 		6AAE178224B79CD700181C4B /* PBXTargetDependency */ = {
@@ -1139,12 +1155,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = NewComicWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ComicWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
-				INFOPLIST_FILE = NewComicWidget/Info.plist;
+				INFOPLIST_FILE = Widgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1152,7 +1168,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0.12;
-				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.NewComicWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.Widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.maxisom.XKCDY.NewComicWidget";
 				SKIP_INSTALL = YES;
@@ -1166,12 +1182,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = NewComicWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ComicWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = RSMU2QR9ZN;
-				INFOPLIST_FILE = NewComicWidget/Info.plist;
+				INFOPLIST_FILE = Widgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1179,7 +1195,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0.12;
-				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.NewComicWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.Widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.maxisom.XKCDY.NewComicWidget";
 				SKIP_INSTALL = YES;
@@ -1277,7 +1293,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6A65E98724F6C3670087A317 /* Build configuration list for PBXNativeTarget "NewComicWidgetExtension" */ = {
+		6A65E98724F6C3670087A317 /* Build configuration list for PBXNativeTarget "Widgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6A65E98524F6C3670087A317 /* Debug */,

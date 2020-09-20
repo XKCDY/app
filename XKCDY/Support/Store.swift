@@ -188,7 +188,10 @@ final class Store: ObservableObject {
             return
         }
 
-        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        if self.isLive {
+            ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        }
+
         self.nextShuffleResultId = randomComic.id
     }
 
@@ -196,7 +199,6 @@ final class Store: ObservableObject {
         if let id = self.nextShuffleResultId {
             // Make sure last cache result is still in current view
             if self.filteredComics.filter({ $0.id == id }).count == 1 {
-                print("changing")
                 self.currentComicId = id
                 completion()
             }
