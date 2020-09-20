@@ -86,6 +86,21 @@ struct LastComicEntry: TimelineEntry {
     }
 }
 
+struct ComicBadgeHeader: View {
+    var comic: Comic
+
+    var body: some View {
+        Text("#\(String(comic.id))")
+            .font(.headline)
+            .foregroundColor(.white)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 5)
+            .background(comic.isRead ? Color.gray : Color.green)
+            .cornerRadius(8)
+            .fixedSize(horizontal: true, vertical: false)
+    }
+}
+
 struct NewComicWidgetEntryView: View {
     var entry: Provider.Entry
 
@@ -102,37 +117,35 @@ struct NewComicWidgetEntryView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("#\(String(entry.comic.id))")
-                .foregroundColor(.white)
-                .font(.headline)
-                .padding(.horizontal, 7)
-                .padding(.vertical, 5)
-                .background(entry.comic.isRead ? Color.gray : Color.green)
-                .cornerRadius(8)
+        ZStack {
+            GeometryReader { geom in
+                Image(uiImage: entry.uiImage).resizable().aspectRatio(contentMode: .fill) //.frame(width: geom.size.width, height: geom.size.height)
 
-            Text(entry.comic.title).lineLimit(1)
+                Rectangle().fill(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.8), Color.black.opacity(0.3), Color.white.opacity(0)]), startPoint: .top, endPoint: .bottom)).frame(width: geom.size.width, height: geom.size.height / 2)
 
-            if entry.family == .systemSmall {
-                Text(entry.comic.alt).font(.caption)
-            }
+                HStack {
+                    ComicBadgeHeader(comic: entry.comic)
 
-            Spacer(minLength: 0)
-
-            if entry.family != .systemSmall {
-                Spacer()
-
-                GeometryReader { geom in
-                    if getRatioOfComic() < 1.5 {
-                        Image(uiImage: entry.uiImage).resizable().frame(width: geom.size.width, height: geom.size.width / CGFloat(getRatioOfComic()))
-                    } else {
-                        Image(uiImage: entry.uiImage).resizable().frame(width: CGFloat(getRatioOfComic()) * geom.size.height, height: geom.size.height)
-                    }
+                    Text(entry.comic.title).font(.headline).lineLimit(1).foregroundColor(.white)
                 }
+                .padding()
             }
         }
-        .padding()
-        .foregroundColor(.white)
+        .widgetURL(URL(string: "xkcdy://comics/\(entry.comic.id)"))
+    }
+}
+
+struct NewSmallComicWidgetEntryView: View {
+    var entry: Provider.Entry
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            ComicBadgeHeader(comic: entry.comic)
+
+            Text(entry.comic.title).font(.headline).lineLimit(1).padding(.bottom, 1)
+
+            Text(entry.comic.alt).font(.caption)
+        }.padding()
         .widgetURL(URL(string: "xkcdy://comics/\(entry.comic.id)"))
     }
 }
@@ -143,7 +156,13 @@ struct NewComicWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            NewComicWidgetEntryView(entry: entry).frame(maxWidth: .infinity, maxHeight: .infinity).background(Color(red: 0.12, green: 0.12, blue: 0.12))
+            Group {
+                if entry.family == .systemSmall {
+                    NewSmallComicWidgetEntryView(entry: entry)
+                } else {
+                    NewComicWidgetEntryView(entry: entry)
+                }
+            }.frame(maxWidth: .infinity, maxHeight: .infinity).background(Color(red: 0.12, green: 0.12, blue: 0.12))
         }
         .configurationDisplayName("Latest XKCD Comic")
         .description("Displays the latest XKCD comic.")
@@ -153,7 +172,7 @@ struct NewComicWidget: Widget {
 struct NewComicWidget_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            NewComicWidgetEntryView(entry: LastComicEntry(date: Date(), comic: .getTallSample(), uiImage: UIImage(named: "2329_2x.png")!, family: .systemSmall))
+            NewSmallComicWidgetEntryView(entry: LastComicEntry(date: Date(), comic: .getTallSample(), uiImage: UIImage(named: "2329_2x.png")!, family: .systemSmall))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
 
             NewComicWidgetEntryView(entry: LastComicEntry(date: Date(), comic: .getTallSample(), uiImage: UIImage(named: "2329_2x.png")!, family: .systemMedium))
