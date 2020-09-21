@@ -168,6 +168,7 @@
 	<array>
 		<string>GetComicIntent</string>
 		<string>GetLatestComicIntent</string>
+		<string>ViewLatestComicIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
