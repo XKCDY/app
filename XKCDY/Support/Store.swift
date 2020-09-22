@@ -68,7 +68,6 @@ final class Store: ObservableObject {
         }
     }
     @Published var frozenFilteredComics: Results<Comic>
-    @Published var isLoadingFromScratch = false
 
     @ObservedObject private var userSettings = UserSettings()
     @ObservedObject private var comics: RealmSwift.List<Comic>
@@ -255,10 +254,6 @@ final class Store: ObservableObject {
         let realm = try! Realm()
         let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
 
-        if storedComics!.comics.count == 0 {
-            self.isLoadingFromScratch = true
-        }
-
         API.getComics { result in
             switch result {
             case .success(let comics): do {
@@ -270,8 +265,6 @@ final class Store: ObservableObject {
                 callback?(.failure(.api))
                 }
             }
-
-            self.isLoadingFromScratch = false
         }
     }
 

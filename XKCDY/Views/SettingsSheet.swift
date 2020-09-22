@@ -91,7 +91,7 @@ struct SettingsSheet: View {
     @State private var alertItem: AlertItem?
     @ObservedObject private var userSettings = UserSettings()
     @State private var loading = false
-    @State private var localizedPrice = ""
+    @State private var localizedPrice: String?
 
     func openAlert(title: String, message: String) {
         self.alertItem = AlertItem(title: Text(title), message: Text(message))
@@ -183,9 +183,7 @@ struct SettingsSheet: View {
                                 Button(action: self.handlePurchase) {
                                     Image(systemName: "bag.fill")
 
-                                    if self.localizedPrice != "" {
-                                        Text("\(self.localizedPrice) / year")
-                                    }
+                                    Text("\(self.localizedPrice ?? "$2.99") / year")
                                 }
                                 .padding(10)
                                 .foregroundColor(Color.white)
@@ -259,21 +257,21 @@ struct SettingsSheet: View {
                         Text("Done")
                     }
                 })
-                    .alert(item: $alertItem) { alertItem in
-                        if let primaryButton = alertItem.primaryButton {
-                            return Alert(title: alertItem.title, message: alertItem.message, primaryButton: primaryButton, secondaryButton: alertItem.dismissButton)
-                        }
+                .alert(item: $alertItem) { alertItem in
+                    if let primaryButton = alertItem.primaryButton {
+                        return Alert(title: alertItem.title, message: alertItem.message, primaryButton: primaryButton, secondaryButton: alertItem.dismissButton)
+                    }
 
-                        return Alert(title: alertItem.title, message: alertItem.message)
+                    return Alert(title: alertItem.title, message: alertItem.message)
                 }
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-            // Yes, this is hacky but it works for now
-            .alert(isPresented: self.$notificationPreference.showAlert) {
-                Alert(title: Text(self.notificationPreference.alertTitle), message: Text(self.notificationPreference.alertMessage), primaryButton: Alert.Button.default(Text("OK"), action: {
-                    self.notificationPreference.alertClosed()
-                }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
+        // Yes, this is hacky but it works for now
+        .alert(isPresented: self.$notificationPreference.showAlert) {
+            Alert(title: Text(self.notificationPreference.alertTitle), message: Text(self.notificationPreference.alertMessage), primaryButton: Alert.Button.default(Text("OK"), action: {
+                self.notificationPreference.alertClosed()
+            }), secondaryButton: Alert.Button.cancel(Text("Cancel"), action: {}))
         }
         .onAppear {
             SwiftyStoreKit.retrieveProductsInfo([XKCDYPro]) { result in
