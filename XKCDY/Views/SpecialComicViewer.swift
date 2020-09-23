@@ -32,6 +32,7 @@ struct TimeComicViewer: View {
     @EnvironmentObject private var store: Store
     @State private var currentFrame: Double = 0
     @State private var areAllFramesCached = true
+    @State private var prefetcher: ImagePrefetcher?
 
     func cacheImages() {
         loading = true
@@ -44,13 +45,13 @@ struct TimeComicViewer: View {
             }
         }
 
-        let fetcher = ImagePrefetcher(urls: urls, progressBlock: self.onProgressUpdate, completionHandler: { _, _, _  in
+        prefetcher = ImagePrefetcher(urls: urls, progressBlock: self.onProgressUpdate, completionHandler: { _, _, _  in
             loading = false
             areAllFramesCached = true
         })
 
-        fetcher.maxConcurrentDownloads = 30
-        fetcher.start()
+        prefetcher?.maxConcurrentDownloads = 30
+        prefetcher?.start()
     }
 
     func onProgressUpdate(_ skippedResources: [Resource], _ failedResources: [Resource], _ completedResources: [Resource]) {
@@ -94,6 +95,9 @@ struct TimeComicViewer: View {
         Group {
             if self.loading {
                 ProgressBar(value: $loadingProgress).padding()
+                    .onDisappear {
+                        self.prefetcher?.stop()
+                    }
             } else if store.timeComicFrames.count > 0 {
                 GeometryReader { geom in
                     VStack {
@@ -188,7 +192,7 @@ struct TimeComicViewer: View {
                 }
                 .padding()
             } else {
-                EmptyView()
+                Text("Not loaded.")
             }
         }
         .animation(.default)
