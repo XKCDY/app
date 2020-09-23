@@ -117,10 +117,20 @@ struct ComicPager: View {
                     .edgesIgnoringSafeArea(.all)
 
                 ZStack {
-                    Pager<Comic, Int, AnyView>(page: self.$page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
-                        AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
+                    Pager<Comic, Int, Group>(page: self.$page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
+                        Group {
+                            if SUPPORTED_SPECIAL_COMICS.contains(item.id) {
+                                SpecialComicViewer(id: item.id)
+                                    .contentShape(Rectangle())
+                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                                    .onTapGesture {
+                                        self.handleSingleTap()
+                                    }
+                            } else {
+                                ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
                                     .frame(from: CGRect(origin: .zero, size: geometry.size))
-                        )
+                            }
+                        }
                     })
                     .allowsDragging(!self.isZoomed)
                     .itemSpacing(self.offset == .zero ? 30 : 1000)
@@ -192,8 +202,8 @@ struct ComicPager: View {
 
                     self.closePager()
                 })
-                    .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
-                    .opacity(self.showOverlay && !self.hidden ? 1 : 0)
+                .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
+                .opacity(self.showOverlay && !self.hidden ? 1 : 0)
             }
         }
         .onAppear {

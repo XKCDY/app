@@ -36,6 +36,7 @@ final class UserSettings: ObservableObject {
     @UserDefault(key: "showAltInPager", defaultValue: false) var showAltInPager: Bool
     @UserDefault(key: "showComicIdInPager", defaultValue: false) var showComicIdInPager: Bool
     @UserDefault(key: "showCOVIDComics", defaultValue: false) var showCOVIDComics: Bool
+
     var tintColor: UIColor {
         get {
             if let colorData = UserDefaults.standard.data(forKey: "tintColor") {
