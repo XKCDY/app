@@ -251,9 +251,6 @@ final class Store: ObservableObject {
     }
 
     func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
-        let realm = try! Realm()
-        let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
-
         API.getComics { result in
             switch result {
             case .success(let comics): do {
