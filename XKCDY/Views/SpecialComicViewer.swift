@@ -127,6 +127,7 @@ struct TimeComicViewer: View {
                             }
 
                             KFImage(self.store.timeComicFrames[Int(currentFrame)].getURL())
+                                .cancelOnDisappear(true)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: self.getImageWidthHeight(geom).width, height: self.getImageWidthHeight(geom).height)
@@ -172,7 +173,7 @@ struct TimeComicViewer: View {
                         }
 
                         if !self.isLandscape(geom) {
-                            Slider(value: $currentFrame, in: getFrameRange(), step: 1)
+                            Slider(value: $currentFrame, in: getFrameRange(), step: 1).gesture(DragGesture())
 
                             Spacer()
 
