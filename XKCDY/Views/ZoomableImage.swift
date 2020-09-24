@@ -24,14 +24,16 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
     var onSingleTap: () -> Void = {}
     var onLongPress: () -> Void = {}
     var onScale: (CGFloat) -> Void = {_ in}
+    var dimensions: CGSize = .zero
     var orientation = UIDevice.current.orientation
 
-    convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void, onLongPress: @escaping () -> Void, onScale: @escaping (CGFloat) -> Void) {
+    convenience init(frame f: CGRect, image: UIImageView, onSingleTap: @escaping () -> Void, onLongPress: @escaping () -> Void, onScale: @escaping (CGFloat) -> Void, dimensions: CGSize) {
         self.init(frame: f)
 
         self.onSingleTap = onSingleTap
         self.onLongPress = onLongPress
         self.onScale = onScale
+        self.dimensions = dimensions
 
         imageView = image
 
@@ -52,14 +54,14 @@ class ZoomableImage: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDele
     }
 
     func setupScrollView() {
-        let imageSize = imageView.image?.size ?? .zero
+        let imageSize = self.dimensions
 
         let initialDisplayedWidth = bounds.size.height * (imageSize.width / imageSize.height)
         let initialDisplayedHeight = bounds.size.width * (imageSize.height / imageSize.width)
 
         delegate = self
         minimumZoomScale = 1.0
-        maximumZoomScale = max(3.0, bounds.size.width / initialDisplayedWidth, bounds.size.height / initialDisplayedHeight)
+        maximumZoomScale = max(3.0, bounds.size.width / initialDisplayedWidth, bounds.size.height / initialDisplayedHeight, (imageSize.height * imageSize.width) / 5000000)
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
     }
@@ -124,13 +126,14 @@ struct ZoomableImageView: UIViewRepresentable {
     var onSingleTap: () -> Void
     var onLongPress: () -> Void
     var onScale: (CGFloat) -> Void
+    var dimensions: CGSize
     var frame: CGRect = .infinite
 
     func makeUIView(context: Context) -> ZoomableImage {
         let image = UIImageView()
         image.kf.setImage(with: imageURL)
 
-        return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap, onLongPress: onLongPress, onScale: onScale)
+        return ZoomableImage(frame: frame, image: image, onSingleTap: onSingleTap, onLongPress: onLongPress, onScale: onScale, dimensions: dimensions)
     }
 
     func updateUIView(_ uiView: ZoomableImage, context: Context) {
