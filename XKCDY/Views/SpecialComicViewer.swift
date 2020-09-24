@@ -50,7 +50,7 @@ struct TimeComicViewer: View {
             areAllFramesCached = true
         })
 
-        prefetcher?.maxConcurrentDownloads = 30
+        prefetcher?.maxConcurrentDownloads = 100
         prefetcher?.start()
     }
 

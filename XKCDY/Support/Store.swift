@@ -279,7 +279,9 @@ final class Store: ObservableObject {
                 case .success(let frames):
                     try! realm.write {
                         for frame in frames {
-                            realm.create(TimeComicFrame.self, value: frame.toObject())
+                            if frame.getImageURL() != nil {
+                                realm.create(TimeComicFrame.self, value: frame.toObject())
+                            }
                         }
                     }
                 case .failure:

@@ -33,7 +33,7 @@ extension TimeComicFrameResponse {
         frame.id = hash
         frame.date = Date(timeIntervalSince1970: Double(epoch) / 1000.0)
         frame.url = xkcdUrl
-        frame.frameNumber = Int(frameNo) ?? 0
+        frame.frameNumber = Int(baFrameNo) ?? 0
 
         return frame
     }
@@ -41,7 +41,7 @@ extension TimeComicFrameResponse {
 
 final class XKCDTimeClient {
     static func getFrames(completion: @escaping (Result<[TimeComicFrameResponse], APIError>) -> Void) {
-        AF.request("https://xkcd.mscha.org/time.json").responseDecodable(of: [TimeComicFrameResponse].self) { (response: AFDataResponse<[TimeComicFrameResponse]>) -> Void in
+        AF.request("https://api.xkcdy.com/static/time.json").responseDecodable(of: [TimeComicFrameResponse].self) { (response: AFDataResponse<[TimeComicFrameResponse]>) -> Void in
             do {
                 completion(.success(try response.result.get()))
             } catch {
