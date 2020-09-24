@@ -1,5 +1,6 @@
 import Foundation
 import RealmSwift
+import UIKit
 
 class ComicImage: Object {
     @objc dynamic var u = ""
@@ -7,6 +8,10 @@ class ComicImage: Object {
     var url: URL? {
         get { URL(string: u) }
         set { u = newValue!.absoluteString }
+    }
+
+    var size: CGSize {
+        CGSize(width: width, height: height)
     }
 
     @objc dynamic var width = 0

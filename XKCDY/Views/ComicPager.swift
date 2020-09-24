@@ -107,6 +107,10 @@ struct ComicPager: View {
         }
     }
 
+    func getImage(for comic: Comic) -> ComicImage? {
+        return comic.imgs?.x2 ?? comic.imgs?.x1
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -127,7 +131,7 @@ struct ComicPager: View {
                                         self.handleSingleTap()
                                     }
                             } else {
-                                ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
+                                ZoomableImageView(imageURL: self.getImage(for: item)!.url!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale, dimensions: self.getImage(for: item)!.size)
                                     .frame(from: CGRect(origin: .zero, size: geometry.size))
                             }
                         }
