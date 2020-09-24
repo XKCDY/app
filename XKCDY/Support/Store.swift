@@ -69,7 +69,6 @@ final class Store: ObservableObject {
     }
     @Published var timeComicFrames: AnyRealmCollection<TimeComicFrame>
     @Published var frozenFilteredComics: Results<Comic>
-    @Published var isLoadingFromScratch = false
 
     @ObservedObject private var userSettings = UserSettings()
     @ObservedObject private var comics: RealmSwift.List<Comic>
@@ -191,7 +190,10 @@ final class Store: ObservableObject {
             return
         }
 
-        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        if self.isLive {
+            ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        }
+
         self.nextShuffleResultId = randomComic.id
     }
 
@@ -199,7 +201,6 @@ final class Store: ObservableObject {
         if let id = self.nextShuffleResultId {
             // Make sure last cache result is still in current view
             if self.filteredComics.filter({ $0.id == id }).count == 1 {
-                print("changing")
                 self.currentComicId = id
                 completion()
             }
@@ -253,13 +254,6 @@ final class Store: ObservableObject {
     }
 
     func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
-        let realm = try! Realm()
-        let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
-
-        if storedComics!.comics.count == 0 {
-            self.isLoadingFromScratch = true
-        }
-
         API.getComics { result in
             switch result {
             case .success(let comics): do {
@@ -271,11 +265,10 @@ final class Store: ObservableObject {
                 callback?(.failure(.api))
             }
             }
-
-            self.isLoadingFromScratch = false
         }
 
         // Get frames for Time
+        let realm = try! Realm()
         let storedFrames = realm.objects(TimeComicFrame.self)
 
         if storedFrames.count == 0 {

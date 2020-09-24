@@ -10,6 +10,7 @@ import UIKit
 import SwiftUI
 import RealmSwift
 import Combine
+import WidgetKit
 
 class AnyGestureRecognizer: UIGestureRecognizer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -164,6 +165,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
         // swiftlint:disable:next force_cast
         (UIApplication.shared.delegate as! AppDelegate).scheduleBackgroundRefresh()
         timeTracker.stopTracker()
+
+        if #available(iOS 14.0, *) {
+            // Reload widgets showing latest comic
+            WidgetCenter.shared.getCurrentConfigurations { result in
+                guard case .success(let widgets) = result else { return }
+
+                for widget in widgets where (widget.configuration as? ViewLatestComicIntent) != nil {
+                    WidgetCenter.shared.reloadTimelines(ofKind: widget.kind)
+                }
+            }
+        }
     }
 
     func handleNotificationResponse(response: UNNotificationResponse) {

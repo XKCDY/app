@@ -83,7 +83,7 @@ struct ContentView: View {
                 ComicPager(onHide: self.hidePager).onAppear(perform: handleShowProAlert)
             }
 
-            if self.store.isLoadingFromScratch {
+            if self.store.filteredComics.count == 0 && self.store.searchText == "" && self.store.selectedPage == .all {
                 FortuneLoader()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(self.colorScheme == .dark ? Color.black : Color.white)
