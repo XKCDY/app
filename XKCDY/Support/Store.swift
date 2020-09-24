@@ -67,6 +67,7 @@ final class Store: ObservableObject {
             self.cacheNextShuffleResult()
         }
     }
+    @Published var timeComicFrames: AnyRealmCollection<TimeComicFrame>
     @Published var frozenFilteredComics: Results<Comic>
 
     @ObservedObject private var userSettings = UserSettings()
@@ -94,6 +95,8 @@ final class Store: ObservableObject {
         self.filteredComics = initialComics
 
         self.frozenFilteredComics = initialComics.freeze().sorted(byKeyPath: "id", ascending: false)
+
+        self.timeComicFrames = AnyRealmCollection(realm.objects(TimeComicFrame.self).sorted(byKeyPath: "frameNumber", ascending: true))
 
         self.updateFilteredComics()
         self.addFrozenObserver()
@@ -257,9 +260,32 @@ final class Store: ObservableObject {
                 self.updateDatabaseFrom(results: comics) {
                     callback?(.success(comics.map { $0.id }))
                 }
-                }
+            }
             case .failure: do {
                 callback?(.failure(.api))
+            }
+            }
+        }
+
+        // Get frames for Time
+        let realm = try! Realm()
+        let storedFrames = realm.objects(TimeComicFrame.self)
+
+        if storedFrames.count == 0 {
+            XKCDTimeClient.getFrames { result in
+                let realm = try! Realm()
+
+                switch result {
+                case .success(let frames):
+                    try! realm.write {
+                        for frame in frames {
+                            if frame.getImageURL() != nil {
+                                realm.create(TimeComicFrame.self, value: frame.toObject())
+                            }
+                        }
+                    }
+                case .failure:
+                    return
                 }
             }
         }
@@ -279,10 +305,10 @@ final class Store: ObservableObject {
                 self.updateDatabaseFrom(results: comics) {
                     callback?(.success(comics.map { $0.id }))
                 }
-                }
+            }
             case .failure: do {
                 callback?(.failure(.api))
-                }
+            }
             }
 
         }

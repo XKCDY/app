@@ -11,7 +11,7 @@ class ComicImage: Object {
     }
 
     var size: CGSize {
-        get { CGSize(width: width, height: height) }
+        CGSize(width: width, height: height)
     }
 
     @objc dynamic var width = 0

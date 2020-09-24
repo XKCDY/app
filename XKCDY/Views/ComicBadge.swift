@@ -19,6 +19,12 @@ struct ComicBadge: View {
                     .foregroundColor(.red)
             }
 
+            if SUPPORTED_SPECIAL_COMICS.contains(comic.id) {
+                Image(systemName: "sparkles")
+                    .font(.caption)
+                    .colorScheme(.dark)
+            }
+
             Text(String(comic.id))
                 .font(.caption)
                 .fontWeight(.bold)
