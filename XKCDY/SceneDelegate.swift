@@ -117,6 +117,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
         let realm = try! Realm()
 
         if realm.object(ofType: Comic.self, forPrimaryKey: id) != nil {
+            self.store.selectedPage = .all
+            self.store.searchText = ""
             self.store.currentComicId = id
             self.store.showPager = true
         }
