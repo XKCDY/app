@@ -97,14 +97,14 @@ struct SettingsSheet: View {
         self.alertItem = AlertItem(title: Text(title), message: Text(message))
     }
 
-    func markAsRead() {
+    func markAllAsRead(_ isRead: Bool) {
         let realm = try! Realm()
 
         let comics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
 
         do {
             try realm.write {
-                comics?.comics.setValue(true, forKey: "isRead")
+                comics?.comics.setValue(isRead, forKey: "isRead")
             }
         } catch { }
     }
@@ -206,10 +206,18 @@ struct SettingsSheet: View {
 
                         Button(action: {
                             self.alertItem = AlertItem(title: Text("Confirm"), message: Text("Are you sure you want to mark all as read? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
-                                self.markAsRead()
+                                self.markAllAsRead(true)
                             }))
                         }) {
                             Text("Mark all as read")
+                        }
+
+                        Button(action: {
+                            self.alertItem = AlertItem(title: Text("Confirm"), message: Text("Are you sure you want to mark all as unread? This is not undoable."), primaryButton: Alert.Button.default(Text("Yes"), action: {
+                                self.markAllAsRead(false)
+                            }))
+                        }) {
+                            Text("Mark all as unread")
                         }
                     }
 
