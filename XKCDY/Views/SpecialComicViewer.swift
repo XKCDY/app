@@ -93,12 +93,7 @@ struct TimeComicViewer: View {
 
     var body: some View {
         Group {
-            if self.loading {
-                ProgressBar(value: $loadingProgress).padding()
-                    .onDisappear {
-                        self.prefetcher?.stop()
-                    }
-            } else if store.timeComicFrames.count > 0 {
+            if store.timeComicFrames.count > 0 {
                 GeometryReader { geom in
                     VStack {
                         if !self.isLandscape(geom) {
@@ -121,6 +116,16 @@ struct TimeComicViewer: View {
                                         .padding()
                                         .frame(width: geom.size.height)
                                         .rotated(.degrees(90))
+
+                                    if self.loading {
+                                        ProgressBar(value: $loadingProgress)
+                                            .padding()
+                                            .frame(width: geom.size.height)
+                                            .rotated(.degrees(90))
+                                            .onDisappear {
+                                                self.prefetcher?.stop()
+                                            }
+                                    }
 
                                     Spacer()
                                 }
@@ -160,7 +165,7 @@ struct TimeComicViewer: View {
 
                                         Spacer()
 
-                                        if !self.areAllFramesCached {
+                                        if !self.areAllFramesCached && !self.loading {
                                             Button(action: {
                                                 self.cacheImages()
                                             }) {
@@ -180,12 +185,19 @@ struct TimeComicViewer: View {
                             HStack {
                                 Spacer()
 
-                                if !self.areAllFramesCached {
+                                if !self.areAllFramesCached && !self.loading {
                                     Button(action: {
                                         self.cacheImages()
                                     }) {
                                         Text("Load all frames")
                                     }.padding()
+                                }
+
+                                if self.loading {
+                                    ProgressBar(value: $loadingProgress).padding()
+                                        .onDisappear {
+                                            self.prefetcher?.stop()
+                                        }
                                 }
                             }
                         }
