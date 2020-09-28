@@ -42,9 +42,9 @@ struct LargeComicWidgetView: View {
     var body: some View {
         ZStack {
             GeometryReader { geom in
-                Image(uiImage: entry.uiImage).resizable().aspectRatio(contentMode: .fill).blur(radius: entry.shouldBlur ? 2 : 0)
+                Image(uiImage: entry.uiImage).resizable().aspectRatio(contentMode: .fill).scaleEffect(1.05).blur(radius: entry.shouldBlur ? 2 : 0)
 
-                Rectangle().fill(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.8), Color.black.opacity(0.3), Color.white.opacity(0)]), startPoint: .top, endPoint: .bottom)).frame(width: geom.size.width, height: geom.size.height / 2)
+                Rectangle().fill(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.8), Color.black.opacity(0.5), Color.white.opacity(0)]), startPoint: .top, endPoint: .bottom)).frame(width: geom.size.width, height: geom.size.height / 2)
 
                 HStack {
                     ComicBadgeHeader(comic: entry.comic)
