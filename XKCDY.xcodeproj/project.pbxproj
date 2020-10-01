@@ -61,6 +61,7 @@
 		6AAE179224B7D03700181C4B /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAE179124B7D03700181C4B /* RealmSwift */; };
 		6AAE179324B7E2F300181C4B /* Comic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AECCFD224B28CEA006BC9D9 /* Comic.swift */; };
 		6AB30F7724B5273E00A5FF80 /* ComicBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */; };
+		6AB6ECC225266BA3003DD7D1 /* NewOrRandomComic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB6ECC125266BA3003DD7D1 /* NewOrRandomComic.swift */; };
 		6AC1749B250D3E2000E46D21 /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC1749A250D3E2000E46D21 /* SafariView.swift */; };
 		6AC96CC425117EF500102031 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5F24C298D000D6EFE1 /* UserSettings.swift */; };
 		6ACD2C5B24C22C6700D6EFE1 /* ComicPagerOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */; };
@@ -218,6 +219,7 @@
 		6AAE179424B7EE2A00181C4B /* XKCDYIntentsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDYIntentsRelease.entitlements; sourceTree = "<group>"; };
 		6AAE179524B7EE3700181C4B /* XKCDYIntentsDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XKCDYIntentsDebug.entitlements; sourceTree = "<group>"; };
 		6AB30F7624B5273E00A5FF80 /* ComicBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicBadge.swift; sourceTree = "<group>"; };
+		6AB6ECC125266BA3003DD7D1 /* NewOrRandomComic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewOrRandomComic.swift; sourceTree = "<group>"; };
 		6AC1749A250D3E2000E46D21 /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
 		6AC3EDD72517B70400B03D77 /* WidgetOptionsIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WidgetOptionsIntent.intentdefinition; sourceTree = "<group>"; };
 		6ACD2C5A24C22C6700D6EFE1 /* ComicPagerOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComicPagerOverlay.swift; sourceTree = "<group>"; };
@@ -430,6 +432,7 @@
 				6A65E97F24F6C3670087A317 /* Assets.xcassets */,
 				6A65E98124F6C3670087A317 /* Info.plist */,
 				6A95D6032517EF2E0074273E /* Views.swift */,
+				6AB6ECC125266BA3003DD7D1 /* NewOrRandomComic.swift */,
 			);
 			path = Widgets;
 			sourceTree = "<group>";
@@ -842,6 +845,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AF8D68B24F7113200A518FA /* Store.swift in Sources */,
+				6AB6ECC225266BA3003DD7D1 /* NewOrRandomComic.swift in Sources */,
 				6A95D5EF2517E9120074273E /* RandomComicWidget.swift in Sources */,
 				6A95D5FD2517ECE30074273E /* XKCDYWidgetBundle.swift in Sources */,
 				6AF8D68924F7111600A518FA /* FloatingNavBar.swift in Sources */,
@@ -1053,7 +1057,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.maxisom.XKCDY";
@@ -1084,7 +1088,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.maxisom.XKCDY";
@@ -1195,7 +1199,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.Widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.maxisom.XKCDY.Widgets";
@@ -1222,7 +1226,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.Widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.maxisom.XKCDY.Widgets";
@@ -1247,7 +1251,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.XKCDYIntents;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.maxisom.XKCDY.XKCDYIntents";
@@ -1272,7 +1276,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.13;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.maxisom.XKCDY.XKCDYIntents;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.maxisom.XKCDY.XKCDYIntents";

@@ -13,6 +13,7 @@ import WidgetKit
 struct XKCDYWidgetBundle: WidgetBundle {
     @WidgetBundleBuilder
     var body: some Widget {
+        NewOrRandomComicWidget()
         RandomComicWidget()
         NewComicWidget()
     }
