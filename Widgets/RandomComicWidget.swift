@@ -88,7 +88,7 @@ struct RandomComicWidget: Widget {
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .configurationDisplayName("Random Comic")
-        .description("Displays a random XKCD comic.")
+        .configurationDisplayName("Random comic")
+        .description("Displays a random comic.")
     }
 }

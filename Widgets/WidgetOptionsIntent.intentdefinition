@@ -9,7 +9,7 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>am7pU3</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>20A5364e</string>
+	<string>20A5374i</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
 	<string>12A7208</string>
 	<key>INIntentDefinitionToolsVersion</key>
@@ -39,7 +39,7 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
-					<string>Blur unread comics</string>
+					<string>Blur latest comic if unread</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>fdTQ4r</string>
 					<key>INIntentParameterDisplayPriority</key>
