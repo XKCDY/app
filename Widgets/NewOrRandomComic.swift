@@ -72,7 +72,7 @@ struct NewOrRandomComicWidgetProvider: IntentTimelineProvider {
 
         let currentDate = Date()
 
-        for hourOffset in 0 ..< 5 {
+        for hourOffset in 0 ..< 1 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
 
             if let randomComic = self.getRandomComic() {
