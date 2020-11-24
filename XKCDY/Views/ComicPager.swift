@@ -226,6 +226,9 @@ struct ComicPager: View {
         .onReceive(self.store.$debouncedCurrentComicId) { _ in
             self.setPage()
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            self.offset = .zero
+        }
     }
 }
 
