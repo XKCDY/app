@@ -9,8 +9,28 @@
 import SwiftUI
 import RealmSwift
 import ASCollectionView
+import Introspect
+
+class HeaderSizeModel: ObservableObject {
+    @Published var collectionView: UICollectionView? {
+        didSet {
+            updateRefreshControlOffset()
+        }
+    }
+    @Published var headerSize: CGSize = .zero {
+        didSet {
+            updateRefreshControlOffset()
+        }
+    }
+
+    func updateRefreshControlOffset() {
+        collectionView?.verticalScrollIndicatorInsets.top = headerSize.height
+        collectionView?.refreshControl?.bounds.origin.y = -(headerSize.height / 2)
+    }
+}
 
 struct ContentView: View {
+    @ObservedObject var headerSizeModel = HeaderSizeModel()
     @State private var isSearching = false
     @EnvironmentObject private var store: Store
     @State private var scrollDirection: ScrollDirection = .up
@@ -49,7 +69,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             if self.store.filteredComics.count > 0 {
-                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection).edgesIgnoringSafeArea(.bottom)
+                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, collectionView: self.$headerSizeModel.collectionView).edgesIgnoringSafeArea(.bottom)
             } else if self.store.searchText == "" && self.store.filteredComics.count == 0 {
                 if self.store.selectedPage == .favorites {
                     Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
@@ -67,6 +87,7 @@ struct ContentView: View {
                     .padding()
                     .opacity(self.scrollDirection == .up || self.store.searchText != "" ? 1 : 0)
                     .animation(.default)
+                    .captureSize(in: self.$headerSizeModel.headerSize)
                     .sheet(isPresented: self.$store.showSettings) {
                         SettingsSheet(onDismiss: {
                             self.store.showSettings = false

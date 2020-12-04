@@ -13,12 +13,15 @@ import RealmSwift
 import ASCollectionView
 import class Kingfisher.ImagePrefetcher
 import class Kingfisher.ImageCache
+import Introspect
 
 enum ScrollDirection {
     case up, down
 }
 
 class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayoutDelegate {
+    public var collectionView: Binding<UICollectionView?> = .constant(nil)
+
     func heightForHeader(sectionIndex: Int) -> CGFloat? {
         0
     }
@@ -27,6 +30,12 @@ class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayout
         guard let comic: Comic = getDataForItem(at: indexPath) else { return 100 }
         let height = context.width / CGFloat(comic.imgs!.x1!.ratio)
         return height
+    }
+
+    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+        self.collectionView.wrappedValue = collectionView
+
+        return proposedContentOffset
     }
 }
 
@@ -86,8 +95,8 @@ class ScrollStateModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isScrolling = false
                 }
-        }
-        .store(in: &cancellables)
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -97,6 +106,7 @@ struct ComicsGridView: View {
     var onComicOpen: () -> Void
     var hideCurrentComic: Bool
     @Binding var scrollDirection: ScrollDirection
+    @Binding var collectionView: UICollectionView?
     @EnvironmentObject var store: Store
     @State private var scrollPosition: ASCollectionViewScrollPosition?
     @State private var showErrorAlert = false
@@ -165,8 +175,7 @@ struct ComicsGridView: View {
 
                         return provider
 
-                    }
-                ) { comic, _ -> AnyView in
+                    }) { comic, _ -> AnyView in
                     AnyView(
                         ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId, isScrolling: self.scrollState.isScrolling)
                             // Isn't SwiftUI fun?
@@ -174,27 +183,29 @@ struct ComicsGridView: View {
                             .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
                             .animation(.none)
                     )
-            })
-                .onPullToRefresh(self.onPullToRefresh)
-                .onScroll { (point, _) in
-                    self.scrollState.scrollPosition = point.y
+                }
+            )
+            .animateOnDataRefresh(false)
+            .onPullToRefresh(self.onPullToRefresh)
+            .onScroll { (point, _) in
+                self.scrollState.scrollPosition = point.y
 
-                    DispatchQueue.main.async {
-                        self.shouldBlurStatusBar = point.y > 80
+                DispatchQueue.main.async {
+                    self.shouldBlurStatusBar = point.y > 80
 
-                        if point.y < 5 {
-                            self.scrollDirection = .up
-                            return
-                        }
-
-                        self.lastScrollPositions.append(point.y)
-
-                        self.lastScrollPositions = self.lastScrollPositions.suffix(2)
-
-                        if self.lastScrollPositions.count == 2 {
-                            self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
-                        }
+                    if point.y < 5 {
+                        self.scrollDirection = .up
+                        return
                     }
+
+                    self.lastScrollPositions.append(point.y)
+
+                    self.lastScrollPositions = self.lastScrollPositions.suffix(2)
+
+                    if self.lastScrollPositions.count == 2 {
+                        self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
+                    }
+                }
             }
             .scrollPositionSetter(self.$scrollPosition)
             .layout(createCustomLayout: ASWaterfallLayout.init) { layout in
@@ -211,20 +222,24 @@ struct ComicsGridView: View {
                     layout.numberOfColumns = .fixed(columns)
                 }
             }
-            .customDelegate(WaterfallScreenLayoutDelegate.init)
+            .customDelegate({
+                let delegate = WaterfallScreenLayoutDelegate.init()
+                delegate.collectionView = $collectionView
+                return delegate
+            })
             .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
             )
-                .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
-                    if self.store.currentComicId == nil {
-                        return
-                    }
+            .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
+                if self.store.currentComicId == nil {
+                    return
+                }
 
-                    if let comicIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) {
-                        self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
-                    }
-                })
-                .alert(isPresented: self.$showErrorAlert) {
-                    Alert(title: Text("Error Refreshing"), message: Text("There was an error refreshing. Try again later."), dismissButton: .default(Text("Ok")))
+                if let comicIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) {
+                    self.scrollPosition = .indexPath(IndexPath(item: comicIndex, section: 0))
+                }
+            })
+            .alert(isPresented: self.$showErrorAlert) {
+                Alert(title: Text("Error Refreshing"), message: Text("There was an error refreshing. Try again later."), dismissButton: .default(Text("Ok")))
             }
 
             Rectangle().fill(Color.clear)
