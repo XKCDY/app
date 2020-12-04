@@ -80,7 +80,7 @@ platform :ios do
     )
 
     increment_version_number(
-        version_number: last_git_tag
+        version_number: last_git_tag.sub("v", "")
     )
 
     build_app(project: "XKCDY.xcodeproj", scheme: "XKCDY")
