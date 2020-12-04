@@ -13,7 +13,6 @@ import RealmSwift
 import ASCollectionView
 import class Kingfisher.ImagePrefetcher
 import class Kingfisher.ImageCache
-import Introspect
 
 enum ScrollDirection {
     case up, down

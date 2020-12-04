@@ -9,7 +9,6 @@
 import SwiftUI
 import RealmSwift
 import ASCollectionView
-import Introspect
 
 class HeaderSizeModel: ObservableObject {
     @Published var collectionView: UICollectionView? {
