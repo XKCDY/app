@@ -1,5 +1,6 @@
 import Foundation
 import RealmSwift
+import UIKit
 
 class ComicImage: Object {
     @objc dynamic var u = ""
@@ -7,6 +8,10 @@ class ComicImage: Object {
     var url: URL? {
         get { URL(string: u) }
         set { u = newValue!.absoluteString }
+    }
+
+    var size: CGSize {
+        CGSize(width: width, height: height)
     }
 
     @objc dynamic var width = 0
@@ -52,20 +57,6 @@ class Comic: Object, Identifiable {
         set { iURL = newValue != nil ? newValue!.absoluteString : nil }
     }
 
-    func getBestImageURL() -> URL? {
-        if let images = imgs {
-            if let x2 = images.x2 {
-                return x2.url
-            }
-
-            if let x1 = images.x1 {
-                return x1.url
-            }
-        }
-
-        return nil
-    }
-
     static func getSample() -> Comic {
         let comic = self.init()
 
@@ -92,8 +83,53 @@ class Comic: Object, Identifiable {
         return comic
     }
 
+    static func getTallSample() -> Comic {
+        let comic = self.init()
+
+        comic.id = 2329
+        comic.publishedAt = Date()
+        comic.safeTitle = "Universal Rating Scale"
+        comic.title = "Universal Rating Scale"
+        comic.transcript = "No transcript"
+        comic.alt = "There are plenty of finer gradations. I got 'critically endangered/extinct in the wild' on my exam, although the curve bumped it all the way up to 'venti.'"
+        comic.eURL = "https://www.explainxkcd.com/wiki/index.php/2329:_Universal_Rating_Scale"
+
+        let image = ComicImage()
+        image.height = 1945
+        image.width = 443
+        image.ratio = 0.227763496143959
+        image.url = URL(string: "https://imgs.xkcd.com/comics/universal_rating_scale_2x.png")
+
+        let images = ComicImages()
+        images.x2 = image
+
+        comic.imgs = images
+
+        return comic
+    }
+
     override static func primaryKey() -> String? {
         return "id"
+    }
+}
+
+extension Comic {
+    // Return x1 if x2 is absurdly large
+    func getReasonableImageURL() -> URL? {
+        if let images = imgs {
+            if let x2 = images.x2 {
+                if x2.width * x2.height < 50000000 {
+                    return x2.url
+                }
+            }
+        }
+
+        return imgs?.x1?.url
+    }
+
+    // Always return x2 if it exists
+    func getBestImageURL() -> URL? {
+        return imgs?.x2?.url ?? imgs?.x1?.url
     }
 }
 

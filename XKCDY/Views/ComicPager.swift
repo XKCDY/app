@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftUIPager
 import RealmSwift
 import KingfisherSwiftUI
+import class Kingfisher.ImageCache
 
 func CGPointToDegree(_ point: CGPoint) -> Double {
     // Provides a directional bearing from (0,0) to the given point.
@@ -106,6 +107,10 @@ struct ComicPager: View {
         }
     }
 
+    func getImage(for comic: Comic) -> ComicImage? {
+        return comic.imgs?.x2 ?? comic.imgs?.x1
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -116,10 +121,20 @@ struct ComicPager: View {
                     .edgesIgnoringSafeArea(.all)
 
                 ZStack {
-                    Pager<Comic, Int, AnyView>(page: self.$page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
-                        AnyView(ZoomableImageView(imageURL: item.getBestImageURL()!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale)
+                    Pager<Comic, Int, Group>(page: self.$page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
+                        Group {
+                            if SUPPORTED_SPECIAL_COMICS.contains(item.id) {
+                                SpecialComicViewer(id: item.id)
+                                    .contentShape(Rectangle())
+                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                                    .onTapGesture {
+                                        self.handleSingleTap()
+                                    }
+                            } else {
+                                ZoomableImageView(imageURL: self.getImage(for: item)!.url!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale, dimensions: self.getImage(for: item)!.size)
                                     .frame(from: CGRect(origin: .zero, size: geometry.size))
-                        )
+                            }
+                        }
                     })
                     .allowsDragging(!self.isZoomed)
                     .itemSpacing(self.offset == .zero ? 30 : 1000)
@@ -147,7 +162,15 @@ struct ComicPager: View {
                     .edgesIgnoringSafeArea(.all)
 
                     Group<AnyView> {
-                        let image = KFImage(self.store.comic.getBestImageURL()).resizable().aspectRatio(contentMode: .fit)
+                        var imageUrl = self.store.comic.getReasonableImageURL()
+
+                        if let bestUrl = self.store.comic.getBestImageURL() {
+                            if ImageCache.default.isCached(forKey: bestUrl.absoluteString) {
+                                imageUrl = bestUrl
+                            }
+                        }
+
+                        let image = KFImage(imageUrl).resizable().aspectRatio(contentMode: .fit)
 
                         guard let targetRect = self.store.positions[self.store.currentComicId ?? 100] else {
                             return AnyView(EmptyView())
@@ -183,8 +206,8 @@ struct ComicPager: View {
 
                     self.closePager()
                 })
-                    .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
-                    .opacity(self.showOverlay && !self.hidden ? 1 : 0)
+                .opacity(self.offset == .zero ? 1 : 2 - Double(abs(self.offset.height) / 100))
+                .opacity(self.showOverlay && !self.hidden ? 1 : 0)
             }
         }
         .onAppear {
@@ -202,6 +225,9 @@ struct ComicPager: View {
         }
         .onReceive(self.store.$debouncedCurrentComicId) { _ in
             self.setPage()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            self.offset = .zero
         }
     }
 }

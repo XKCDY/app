@@ -10,6 +10,7 @@ import UIKit
 import SwiftUI
 import RealmSwift
 import Combine
+import WidgetKit
 
 class AnyGestureRecognizer: UIGestureRecognizer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -43,10 +44,11 @@ protocol NotificationResponseHandler: UIWindowSceneDelegate {
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHandler {
-
     var window: UIWindow?
     var store = Store(isLive: true)
     var notificationSubscriptions: [AnyCancellable] = []
+    var hasBecameActive = false
+    var isLatestComicRead: Bool?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -116,6 +118,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
         let realm = try! Realm()
 
         if realm.object(ofType: Comic.self, forPrimaryKey: id) != nil {
+            self.store.selectedPage = .all
+            self.store.searchText = ""
             self.store.currentComicId = id
             self.store.showPager = true
         }
@@ -131,7 +135,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        DispatchQueue.global(qos: .background).async {
+            let store = Store(isLive: false)
+
+            // Only do a full refresh on first launch
+            if self.hasBecameActive {
+                store.partialRefetchComics { _ in
+                    self.updateIsLatestComicRead()
+                }
+            } else {
+                store.refetchComics { _ in
+                    self.updateIsLatestComicRead()
+                }
+            }
+
+            self.hasBecameActive = true
+        }
+
         timeTracker.startTracker()
+    }
+
+    func updateIsLatestComicRead() {
+        let realm = try! Realm()
+
+        self.isLatestComicRead = realm.object(ofType: Comics.self, forPrimaryKey: 0)?.comics.sorted(byKeyPath: "id").last?.isRead ?? nil
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -151,6 +178,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
         // swiftlint:disable:next force_cast
         (UIApplication.shared.delegate as! AppDelegate).scheduleBackgroundRefresh()
         timeTracker.stopTracker()
+
+        if #available(iOS 14.0, *) {
+            // Reload widgets showing latest comic
+            let wasRead = self.isLatestComicRead
+
+            self.updateIsLatestComicRead()
+
+            if self.isLatestComicRead != wasRead {
+                WidgetCenter.shared.getCurrentConfigurations { result in
+                    guard case .success(let widgets) = result else { return }
+
+                    for widget in widgets where (widget.configuration as? ViewLatestComicIntent) != nil {
+                        WidgetCenter.shared.reloadTimelines(ofKind: widget.kind)
+                    }
+                }
+            }
+        }
     }
 
     func handleNotificationResponse(response: UNNotificationResponse) {

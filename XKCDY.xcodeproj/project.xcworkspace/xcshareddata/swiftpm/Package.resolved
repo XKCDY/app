@@ -14,9 +14,9 @@
         "package": "ASCollectionView",
         "repositoryURL": "https://github.com/apptekstudios/ASCollectionView",
         "state": {
-          "branch": "v1.8.0WIP",
-          "revision": "9d6854e785926d5122d52a733e0a275146bc978d",
-          "version": null
+          "branch": null,
+          "revision": "4550cd5b5cfc3f437f8ff838939c6be21edfe992",
+          "version": "1.7.1"
         }
       },
       {
@@ -53,15 +53,6 @@
           "branch": null,
           "revision": "34d7fbcbab2a94bcad081bddf9d172961cd84659",
           "version": "6.0.25"
-        }
-      },
-      {
-        "package": "WebView",
-        "repositoryURL": "https://github.com/kylehickinson/SwiftUI-WebView.git",
-        "state": {
-          "branch": null,
-          "revision": "ec4352095428a06423868b3b2a92fdaa3c6281f7",
-          "version": "0.2.0"
         }
       },
       {

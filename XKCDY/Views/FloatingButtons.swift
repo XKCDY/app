@@ -43,6 +43,7 @@ struct CustomTextField: UIViewRepresentable {
         let textField = UITextField(frame: .zero)
         textField.delegate = context.coordinator
         textField.placeholder = placeholder
+        textField.contentVerticalAlignment = .center
         return textField
     }
 
@@ -66,6 +67,7 @@ struct FloatingButtons: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass: UserInterfaceSizeClass?
     @EnvironmentObject private var store: Store
     @State private var filteringDisabled = false
+    @State private var textFieldSize = CGSize.zero
 
     init(isSearching: Binding<Bool>, onShuffle: @escaping () -> Void) {
         self._isSearching = isSearching
@@ -78,36 +80,19 @@ struct FloatingButtons: View {
     }
 
     var body: some View {
-        GeometryReader { geom in
-            HStack {
-                if self.isLargeScreen() {
-                    Spacer()
+        HStack {
+            if self.isLargeScreen() {
+                Spacer()
+            }
+
+            if !self.isSearching {
+                Button(action: {
+                    self.store.showSettings = true
+                }) {
+                    Image(systemName: "gear")
+                        .modifier(RoundButtonIcon())
                 }
-
-                if !self.isSearching {
-                    Button(action: {
-                        self.store.showSettings = true
-                    }) {
-                        Image(systemName: "gear")
-                            .modifier(RoundButtonIcon())
-                    }
-                    .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
-
-                    if self.isLargeScreen() {
-                        Spacer().frame(width: 25)
-                    } else {
-                        Spacer()
-                    }
-
-                    Button(action: {
-                        self.onShuffle()
-                    }) {
-                        Image(systemName: "shuffle")
-                            .modifier(RoundButtonIcon())
-                    }
-                    .disabled(self.filteringDisabled)
-                    .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
-                }
+                .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
 
                 if self.isLargeScreen() {
                     Spacer().frame(width: 25)
@@ -115,33 +100,57 @@ struct FloatingButtons: View {
                     Spacer()
                 }
 
-                HStack {
-                    Button(action: {
-                        withAnimation(.spring()) {
-                            if self.isSearching {
-                                self.store.searchText = ""
-                            }
+                Button(action: {
+                    self.onShuffle()
+                }) {
+                    Image(systemName: "shuffle")
+                        .modifier(RoundButtonIcon())
+                }
+                .disabled(self.filteringDisabled)
+                .transition(AnyTransition.opacity.combined(with: .move(edge: .leading)))
+            }
 
-                            self.isSearching.toggle()
+            if self.isLargeScreen() {
+                Spacer().frame(width: 25)
+            } else {
+                Spacer()
+            }
+
+            HStack {
+                if self.isSearching && self.isLargeScreen() {
+                    GeometryReader { _ in
+                        EmptyView()
+                    }.frame(height: self.textFieldSize.height)
+                }
+
+                Button(action: {
+                    withAnimation(.spring()) {
+                        if self.isSearching {
+                            self.store.searchText = ""
                         }
-                    }) {
-                        Image(systemName: self.isSearching ? "arrow.left" : "magnifyingglass")
-                            .transition(.opacity)
-                            .id("FloatingButton" + String(self.isSearching))
-                            .modifier(RoundButtonIcon())
-                    }
-                    .transition(.move(edge: .trailing))
-                    .disabled(self.filteringDisabled)
 
-                    if self.isSearching {
-                        HStack {
+                        self.isSearching.toggle()
+                    }
+                }) {
+                    Image(systemName: self.isSearching ? "arrow.left" : "magnifyingglass")
+                        .transition(.opacity)
+                        .modifier(RoundButtonIcon())
+                }
+                .transition(.move(edge: .trailing))
+                .disabled(self.filteringDisabled)
+
+                if self.isSearching {
+                    // Yes, this whole thing is extremely ugly.
+                    // I can't figure out a better way to do it.
+                    GeometryReader { _ in
+                        HStack(alignment: .center) {
                             Image(systemName: "magnifyingglass")
 
-                            // Hack to size text field correctly
                             Text("")
                                 .font(.title)
                                 .padding(6)
-                                .frame(maxWidth: self.isLargeScreen() ? geom.size.width / 2 : .infinity)
+                                .frame(maxWidth: .infinity)
+                                .layoutPriority(1000)
                                 .overlay(
                                     CustomTextField(placeholder: "Start typing...", text: self.$store.searchText, isFirstResponder: true)
                                 )
@@ -149,12 +158,12 @@ struct FloatingButtons: View {
                         .padding(12)
                         .background(Blur())
                         .cornerRadius(8)
-                        .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
+                        .captureSize(in: self.$textFieldSize)
                     }
+                    .frame(height: self.textFieldSize.height)
+                    .transition(AnyTransition.opacity.combined(with: .move(edge: .trailing)))
                 }
             }
-
-            Spacer()
         }
         .onReceive(self.store.objectWillChange) { _ in
             if self.store.filteredComics.count == 0 && self.store.searchText == "" {

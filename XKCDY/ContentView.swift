@@ -9,8 +9,28 @@
 import SwiftUI
 import RealmSwift
 import ASCollectionView
+import Introspect
+
+class HeaderSizeModel: ObservableObject {
+    @Published var collectionView: UICollectionView? {
+        didSet {
+            updateRefreshControlOffset()
+        }
+    }
+    @Published var headerSize: CGSize = .zero {
+        didSet {
+            updateRefreshControlOffset()
+        }
+    }
+
+    func updateRefreshControlOffset() {
+        collectionView?.verticalScrollIndicatorInsets.top = headerSize.height
+        collectionView?.refreshControl?.bounds.origin.y = -(headerSize.height / 2)
+    }
+}
 
 struct ContentView: View {
+    @ObservedObject var headerSizeModel = HeaderSizeModel()
     @State private var isSearching = false
     @EnvironmentObject private var store: Store
     @State private var scrollDirection: ScrollDirection = .up
@@ -25,14 +45,6 @@ struct ContentView: View {
 
     func handleComicOpen() {
         store.showPager = true
-    }
-
-    func refetchComics() {
-        self.store.partialRefetchComics()
-    }
-
-    func handleAppear() {
-        self.refetchComics()
     }
 
     func handleShowProAlert() {
@@ -57,7 +69,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             if self.store.filteredComics.count > 0 {
-                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection).edgesIgnoringSafeArea(.bottom)
+                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, collectionView: self.$headerSizeModel.collectionView).edgesIgnoringSafeArea(.bottom)
             } else if self.store.searchText == "" && self.store.filteredComics.count == 0 {
                 if self.store.selectedPage == .favorites {
                     Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
@@ -75,6 +87,7 @@ struct ContentView: View {
                     .padding()
                     .opacity(self.scrollDirection == .up || self.store.searchText != "" ? 1 : 0)
                     .animation(.default)
+                    .captureSize(in: self.$headerSizeModel.headerSize)
                     .sheet(isPresented: self.$store.showSettings) {
                         SettingsSheet(onDismiss: {
                             self.store.showSettings = false
@@ -91,7 +104,7 @@ struct ContentView: View {
                 ComicPager(onHide: self.hidePager).onAppear(perform: handleShowProAlert)
             }
 
-            if self.store.isLoadingFromScratch {
+            if self.store.filteredComics.count == 0 && self.store.searchText == "" && self.store.selectedPage == .all {
                 FortuneLoader()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(self.colorScheme == .dark ? Color.black : Color.white)
@@ -99,10 +112,6 @@ struct ContentView: View {
         }
         .alert(isPresented: self.$showProAlert) {
             Alert(title: Text("Enjoying XKCDY?"), message: Text("Consider upgrading to XKCDY Pro for a few perks and to help support development!"), primaryButton: .default(Text("More Details"), action: self.handleProDetailsOpen), secondaryButton: .default(Text("Don't show this again")))
-        }
-        .onAppear(perform: handleAppear)
-        .onReceive(foregroundPublisher) { _ in
-            self.refetchComics()
         }
     }
 }

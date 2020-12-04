@@ -67,8 +67,8 @@ final class Store: ObservableObject {
             self.cacheNextShuffleResult()
         }
     }
+    @Published var timeComicFrames: AnyRealmCollection<TimeComicFrame>
     @Published var frozenFilteredComics: Results<Comic>
-    @Published var isLoadingFromScratch = false
 
     @ObservedObject private var userSettings = UserSettings()
     @ObservedObject private var comics: RealmSwift.List<Comic>
@@ -95,6 +95,8 @@ final class Store: ObservableObject {
         self.filteredComics = initialComics
 
         self.frozenFilteredComics = initialComics.freeze().sorted(byKeyPath: "id", ascending: false)
+
+        self.timeComicFrames = AnyRealmCollection(realm.objects(TimeComicFrame.self).sorted(byKeyPath: "frameNumber", ascending: true))
 
         self.updateFilteredComics()
         self.addFrozenObserver()
@@ -188,7 +190,10 @@ final class Store: ObservableObject {
             return
         }
 
-        ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        if self.isLive {
+            ImagePrefetcher(urls: [randomComic.getBestImageURL()!]).start()
+        }
+
         self.nextShuffleResultId = randomComic.id
     }
 
@@ -196,7 +201,6 @@ final class Store: ObservableObject {
         if let id = self.nextShuffleResultId {
             // Make sure last cache result is still in current view
             if self.filteredComics.filter({ $0.id == id }).count == 1 {
-                print("changing")
                 self.currentComicId = id
                 completion()
             }
@@ -250,26 +254,40 @@ final class Store: ObservableObject {
     }
 
     func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {
-        let realm = try! Realm()
-        let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
-
-        if storedComics!.comics.count == 0 {
-            self.isLoadingFromScratch = true
-        }
-
         API.getComics { result in
             switch result {
             case .success(let comics): do {
                 self.updateDatabaseFrom(results: comics) {
                     callback?(.success(comics.map { $0.id }))
                 }
-                }
+            }
             case .failure: do {
                 callback?(.failure(.api))
+            }
+            }
+        }
+
+        // Get frames for Time
+        let realm = try! Realm()
+        let storedFrames = realm.objects(TimeComicFrame.self)
+
+        if storedFrames.count == 0 {
+            XKCDTimeClient.getFrames { result in
+                let realm = try! Realm()
+
+                switch result {
+                case .success(let frames):
+                    try! realm.write {
+                        for frame in frames {
+                            if frame.getImageURL() != nil {
+                                realm.create(TimeComicFrame.self, value: frame.toObject())
+                            }
+                        }
+                    }
+                case .failure:
+                    return
                 }
             }
-
-            self.isLoadingFromScratch = false
         }
     }
 
@@ -287,10 +305,10 @@ final class Store: ObservableObject {
                 self.updateDatabaseFrom(results: comics) {
                     callback?(.success(comics.map { $0.id }))
                 }
-                }
+            }
             case .failure: do {
                 callback?(.failure(.api))
-                }
+            }
             }
 
         }

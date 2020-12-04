@@ -13,12 +13,15 @@ import RealmSwift
 import ASCollectionView
 import class Kingfisher.ImagePrefetcher
 import class Kingfisher.ImageCache
+import Introspect
 
 enum ScrollDirection {
     case up, down
 }
 
 class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayoutDelegate {
+    public var collectionView: Binding<UICollectionView?> = .constant(nil)
+
     func heightForHeader(sectionIndex: Int) -> CGFloat? {
         0
     }
@@ -27,6 +30,12 @@ class WaterfallScreenLayoutDelegate: ASCollectionViewDelegate, ASWaterfallLayout
         guard let comic: Comic = getDataForItem(at: indexPath) else { return 100 }
         let height = context.width / CGFloat(comic.imgs!.x1!.ratio)
         return height
+    }
+
+    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+        self.collectionView.wrappedValue = collectionView
+
+        return proposedContentOffset
     }
 }
 
@@ -63,9 +72,7 @@ extension ASWaterfallLayout.ColumnCount: Equatable {
     }
 
     var projectedValue: PassthroughSubject<Void, Never> {
-        //        get {
         self.publisher
-        //        }
     }
 }
 
@@ -99,6 +106,7 @@ struct ComicsGridView: View {
     var onComicOpen: () -> Void
     var hideCurrentComic: Bool
     @Binding var scrollDirection: ScrollDirection
+    @Binding var collectionView: UICollectionView?
     @EnvironmentObject var store: Store
     @State private var scrollPosition: ASCollectionViewScrollPosition?
     @State private var showErrorAlert = false
@@ -109,9 +117,9 @@ struct ComicsGridView: View {
     func onCellEvent(_ event: CellEvent<Comic>) {
         switch event {
         case let .prefetchForData(data):
-            ImagePrefetcher(urls: data.map {$0.getBestImageURL()!}).start()
+            ImagePrefetcher(urls: data.map {$0.getReasonableImageURL()!}).start()
         case let .cancelPrefetchForData(data):
-            ImagePrefetcher(urls: data.map {$0.getBestImageURL()!}).stop()
+            ImagePrefetcher(urls: data.map {$0.getReasonableImageURL()!}).stop()
         default:
             return
         }
@@ -140,81 +148,86 @@ struct ComicsGridView: View {
     var body: some View {
         GeometryReader {geom in
             AnyView(ASCollectionView(
-                        section: ASSection(
-                            id: 0,
-                            // Wrapping with Array() results in significantly better performance
-                            // (even though it shouldn't) because Realm has its own extremely slow
-                            // implementation of .firstIndex(), which ASCollectionView calls when rendering.
-                            // Don't believe me? Try unwrapping it and scrolling to the bottom.
-                            data: Array(self.store.frozenFilteredComics),
-                            dataID: \.self,
-                            onCellEvent: self.onCellEvent,
-                            dragDropConfig: ASDragDropConfig<Comic>(dataBinding: .constant([]), dragEnabled: true, dropEnabled: false, reorderingEnabled: false)
-                                .dragItemProvider { item in
-                                    let provider = NSItemProvider()
+                section: ASSection(
+                    id: 0,
+                    // Wrapping with Array() results in significantly better performance
+                    // (even though it shouldn't) because Realm has its own extremely slow
+                    // implementation of .firstIndex(), which ASCollectionView calls when rendering.
+                    // Don't believe me? Try unwrapping it and scrolling to the bottom.
+                    data: Array(self.store.frozenFilteredComics),
+                    dataID: \.self,
+                    onCellEvent: self.onCellEvent,
+                    dragDropConfig: ASDragDropConfig<Comic>(dataBinding: .constant([])).dragItemProvider { item in
+                        let provider = NSItemProvider()
 
-                                    provider.registerObject(ofClass: UIImage.self, visibility: .all) { completion in
-                                        ImageCache.default.retrieveImage(forKey: item.getBestImageURL()!.absoluteString) { result in
-                                            switch result {
-                                            case .success(let value):
-                                                completion(value.image, nil)
-                                            case .failure(let error):
-                                                completion(nil, error)
-                                            }
-                                        }
-
-                                        return Progress.discreteProgress(totalUnitCount: 0)
-                                    }
-
-                                    return provider
-                                }
-                        ) { comic, _ -> AnyView in
-                            AnyView(
-                                ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId, isScrolling: self.scrollState.isScrolling)
-                                    // Isn't SwiftUI fun?
-                                    .environmentObject(self.store)
-                                    .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
-                                    .animation(.none)
-                            )
-                        })
-                        .onPullToRefresh(self.onPullToRefresh)
-                        .onScroll { (point, _) in
-                            self.scrollState.scrollPosition = point.y
-
-                            DispatchQueue.main.async {
-                                self.shouldBlurStatusBar = point.y > 80
-
-                                if point.y < 5 {
-                                    self.scrollDirection = .up
-                                    return
-                                }
-
-                                self.lastScrollPositions.append(point.y)
-
-                                self.lastScrollPositions = self.lastScrollPositions.suffix(2)
-
-                                if self.lastScrollPositions.count == 2 {
-                                    self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
+                        provider.registerObject(ofClass: UIImage.self, visibility: .all) { completion in
+                            ImageCache.default.retrieveImage(forKey: item.getBestImageURL()!.absoluteString) { result in
+                                switch result {
+                                case .success(let value):
+                                    completion(value.image, nil)
+                                case .failure(let error):
+                                    completion(nil, error)
                                 }
                             }
+
+                            return Progress.discreteProgress(totalUnitCount: 0)
                         }
-                        .scrollPositionSetter(self.$scrollPosition)
-                        .layout(createCustomLayout: ASWaterfallLayout.init) { layout in
-                            let columns = min(Int(UIScreen.main.bounds.width / self.columnMinSize), 4)
 
-                            if layout.columnSpacing != 10 {
-                                layout.columnSpacing = 10
-                            }
-                            if layout.itemSpacing != 10 {
-                                layout.itemSpacing = 10
-                            }
+                        return provider
 
-                            if layout.numberOfColumns != .fixed(columns) {
-                                layout.numberOfColumns = .fixed(columns)
-                            }
-                        }
-                        .customDelegate(WaterfallScreenLayoutDelegate.init)
-                        .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
+                    }) { comic, _ -> AnyView in
+                    AnyView(
+                        ComicGridItem(comic: comic, onTap: self.handleComicTap, hideBadge: self.hideCurrentComic && comic.id == self.store.currentComicId, isScrolling: self.scrollState.isScrolling)
+                            // Isn't SwiftUI fun?
+                            .environmentObject(self.store)
+                            .opacity(self.hideCurrentComic && comic.id == self.store.currentComicId ? 0 : 1)
+                            .animation(.none)
+                    )
+                }
+            )
+            .animateOnDataRefresh(false)
+            .onPullToRefresh(self.onPullToRefresh)
+            .onScroll { (point, _) in
+                self.scrollState.scrollPosition = point.y
+
+                DispatchQueue.main.async {
+                    self.shouldBlurStatusBar = point.y > 80
+
+                    if point.y < 5 {
+                        self.scrollDirection = .up
+                        return
+                    }
+
+                    self.lastScrollPositions.append(point.y)
+
+                    self.lastScrollPositions = self.lastScrollPositions.suffix(2)
+
+                    if self.lastScrollPositions.count == 2 {
+                        self.scrollDirection = self.lastScrollPositions[0] < self.lastScrollPositions[1] ? .down : .up
+                    }
+                }
+            }
+            .scrollPositionSetter(self.$scrollPosition)
+            .layout(createCustomLayout: ASWaterfallLayout.init) { layout in
+                let columns = min(Int(UIScreen.main.bounds.width / self.columnMinSize), 4)
+
+                if layout.columnSpacing != 10 {
+                    layout.columnSpacing = 10
+                }
+                if layout.itemSpacing != 10 {
+                    layout.itemSpacing = 10
+                }
+
+                if layout.numberOfColumns != .fixed(columns) {
+                    layout.numberOfColumns = .fixed(columns)
+                }
+            }
+            .customDelegate({
+                let delegate = WaterfallScreenLayoutDelegate.init()
+                delegate.collectionView = $collectionView
+                return delegate
+            })
+            .contentInsets(.init(top: 40, left: 10, bottom: 80, right: 10))
             )
             .onReceive(self.store.$debouncedCurrentComicId, perform: { _ -> Void in
                 if self.store.currentComicId == nil {
