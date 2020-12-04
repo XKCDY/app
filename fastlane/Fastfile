@@ -34,7 +34,7 @@ platform :ios do
 
     match(
       type: "appstore",
-      app_identifier: ["com.maxisom.XKCDY", "com.maxisom.XKCDY.XKCDYIntents"],
+      app_identifier: ["com.maxisom.XKCDY", "com.maxisom.XKCDY.XKCDYIntents", "com.maxisom.XKCDY.Widgets"],
       readonly: true,
       keychain_name: keychain_name,
       keychain_password: keychain_password
@@ -73,7 +73,7 @@ platform :ios do
 
     match(
       type: "appstore",
-      app_identifier: ["com.maxisom.XKCDY", "com.maxisom.XKCDY.XKCDYIntents"],
+      app_identifier: ["com.maxisom.XKCDY", "com.maxisom.XKCDY.XKCDYIntents", "com.maxisom.XKCDY.Widgets"],
       readonly: true,
       keychain_name: keychain_name,
       keychain_password: keychain_password
