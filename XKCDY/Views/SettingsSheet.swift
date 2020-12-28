@@ -235,7 +235,7 @@ struct SettingsSheet: View {
                         }
 
                         Button(action: {
-                            SKStoreReviewController.requestReview()
+                            UIApplication.shared.open(URL(string: "https://apps.apple.com/app/id1520259318?action=write-review")!)
                         }) {
                             Text("Rate on the App Store")
                         }
