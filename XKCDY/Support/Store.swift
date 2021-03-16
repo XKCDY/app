@@ -323,6 +323,7 @@ extension ComicResponse {
         obj.publishedAt = publishedAt
         obj.news = news
         obj.title = title
+        obj.safeTitle = safeTitle
         obj.transcript = transcript
         obj.alt = alt
         obj.sourceURL = URL(string: sourceUrl)

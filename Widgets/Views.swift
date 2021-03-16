@@ -49,7 +49,7 @@ struct LargeComicWidgetView: View {
                 HStack {
                     ComicBadgeHeader(comic: entry.comic)
 
-                    Text(entry.comic.title).font(.headline).lineLimit(1).foregroundColor(.white)
+                    Text(entry.comic.safeTitle).font(.headline).lineLimit(1).foregroundColor(.white)
                 }
                 .padding()
             }
@@ -65,7 +65,7 @@ struct SmallComicWidgetView: View {
         VStack(alignment: .leading) {
             ComicBadgeHeader(comic: entry.comic)
 
-            Text(verbatim: entry.comic.title).font(.headline).lineLimit(1).padding(.bottom, 1)
+            Text(verbatim: entry.comic.safeTitle).font(.headline).lineLimit(1).padding(.bottom, 1)
 
             Text(verbatim: entry.comic.alt).font(.caption)
 

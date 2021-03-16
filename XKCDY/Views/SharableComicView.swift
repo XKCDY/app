@@ -28,7 +28,7 @@ struct SharableComicView: View {
                     .font(Font.system(size: self.getFontSize()).bold())
                     .foregroundColor(Color.white)
 
-                Text(comic.title)
+                Text(comic.safeTitle)
                     .lineLimit(1)
                     .foregroundColor(Color.white)
 

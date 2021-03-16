@@ -75,7 +75,7 @@ struct ComicDetailsSheet: View {
                 }
                 .padding(30)
             }
-            .navigationBarTitle(Text(comic.title), displayMode: .inline)
+            .navigationBarTitle(Text(comic.safeTitle), displayMode: .inline)
             .navigationBarItems(trailing: Button(action: self.onDismiss) {
                 Text("Done").bold()
             })

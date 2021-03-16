@@ -37,7 +37,7 @@ extension Comic {
         let comic = ComicSiri(identifier: String(id), display: title)
 
         comic.publishedAt = Calendar.current.dateComponents([.year, .month, .day], from: publishedAt)
-        comic.title = title
+        comic.title = safeTitle
         comic.transcript = transcript
         comic.alt = alt
         comic.sourceUrl = sourceURL

@@ -83,7 +83,7 @@ struct ComicPagerOverlay: View {
                         }
 
                         VStack {
-                            Text(self.store.comic.title)
+                            Text(self.store.comic.safeTitle)
                                 .font(.title)
                                 .multilineTextAlignment(.center)
 
@@ -197,7 +197,7 @@ struct ComicPagerOverlay: View {
                 if self.imageToShare == nil {
                     URLActivityViewController(url: self.store.comic.sourceURL!)
                 } else {
-                    UIImageActivityViewController(uiImage: self.imageToShare!, title: self.store.comic.title, url: self.store.comic.sourceURL!)
+                    UIImageActivityViewController(uiImage: self.imageToShare!, title: self.store.comic.safeTitle, url: self.store.comic.sourceURL!)
                 }
             } else if self.activeSheet == .details {
                 ComicDetailsSheet(comic: self.store.comic, onDismiss: {
