@@ -195,6 +195,16 @@ struct SettingsSheet: View {
                                 }
                             }
                         }
+
+                        Group {
+                            Text("Want to support Randall Munroe (the creator of xkcd) instead?")
+
+                            Button(action: {
+                                UIApplication.shared.open(URL(string: "https://store.xkcd.com/")!)
+                            }) {
+                                Text("Check out the xkcd store!")
+                            }
+                        }.padding(.top, 10)
                     }
 
                     SettingsGroup(label: "Options") {
