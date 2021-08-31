@@ -1359,7 +1359,7 @@
 			repositoryURL = "https://github.com/realm/realm-cocoa";
 			requirement = {
 				kind = exactVersion;
-				version = 5.4.0;
+				version = 5.5.1;
 			};
 		};
 		6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
@@ -1398,8 +1398,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/fermoya/SwiftUIPager.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.9.2;
+				kind = exactVersion;
+				version = 1.9.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

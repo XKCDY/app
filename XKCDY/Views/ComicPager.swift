@@ -111,6 +111,19 @@ struct ComicPager: View {
         return comic.imgs?.x2 ?? comic.imgs?.x1
     }
 
+    func markComicAsReadIfNecessary() {
+        let currentTimestamp = Date().currentTimeMillis()
+
+        if currentTimestamp > self.startedViewingAt + TIME_TO_MARK_AS_READ_MS {
+            let realm = try! Realm()
+            try! realm.write {
+                self.store.comic.isRead = true
+            }
+        }
+
+        self.startedViewingAt = Date().currentTimeMillis()
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -143,16 +156,7 @@ struct ComicPager: View {
                             return
                         }
 
-                        let currentTimestamp = Date().currentTimeMillis()
-
-                        if currentTimestamp > self.startedViewingAt + TIME_TO_MARK_AS_READ_MS {
-                            let realm = try! Realm()
-                            try! realm.write {
-                                self.store.comic.isRead = true
-                            }
-                        }
-
-                        self.startedViewingAt = Date().currentTimeMillis()
+                        self.markComicAsReadIfNecessary()
 
                         DispatchQueue.main.async {
                             self.store.currentComicId = self.store.filteredComics[newIndex].id
@@ -203,6 +207,8 @@ struct ComicPager: View {
                 ComicPagerOverlay(showSheet: self.$showSheet, activeSheet: self.$activeSheet, onShuffle: self.handleShuffle, onClose: {
                     // Make sure closing animation applies
                     self.offset = CGSize(width: 0.1, height: 0.1)
+
+                    self.markComicAsReadIfNecessary()
 
                     self.closePager()
                 })
