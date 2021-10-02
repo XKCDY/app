@@ -89,13 +89,17 @@ struct ComicPager: View {
         self.showSheet = true
     }
 
-    func setPage() {
-        self.page = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
+    func updatePage() {
+        let newIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
+
+        if newIndex != self.page {
+            self.page = newIndex
+        }
     }
 
     func handleShuffle() {
         self.store.shuffle {
-            self.setPage()
+            self.updatePage()
         }
     }
 
@@ -150,7 +154,7 @@ struct ComicPager: View {
                         }
                     })
                     .allowsDragging(!self.isZoomed)
-                    .itemSpacing(self.offset == .zero ? 30 : 1000)
+                    .itemSpacing(self.offset == .zero ? 0 : 1000)
                     .onPageChanged({ newIndex in
                         if newIndex == -1 {
                             return
@@ -217,7 +221,7 @@ struct ComicPager: View {
             }
         }
         .onAppear {
-            self.setPage()
+            self.updatePage()
 
             self.hidden = true
 
@@ -230,7 +234,7 @@ struct ComicPager: View {
             }
         }
         .onReceive(self.store.$debouncedCurrentComicId) { _ in
-            self.setPage()
+            self.updatePage()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             self.offset = .zero
