@@ -32,15 +32,7 @@ enum Page: String, CaseIterable, Hashable, Identifiable {
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
     var isLive: Bool
-    @Published var currentComicId: Int? {
-        didSet {
-            if self.isLive {
-                comicToken = self.comic.observe { _ in
-                    self.objectWillChange.send()
-                }
-            }
-        }
-    }
+    @Published var currentComicId: Int?
     var comic: Comic {
         try! Realm().object(ofType: Comic.self, forPrimaryKey: self.currentComicId)!
     }
