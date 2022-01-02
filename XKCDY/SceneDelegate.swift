@@ -14,7 +14,7 @@ import WidgetKit
 
 class AnyGestureRecognizer: UIGestureRecognizer {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        //To prevent keyboard hide and show when switching from one textfield to another
+        // To prevent keyboard hide and show when switching from one textfield to another
         if let textField = touches.first?.view, textField is UITextField {
             state = .failed
         } else {
@@ -84,7 +84,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
             let tapGesture = AnyGestureRecognizer(target: window, action: #selector(UIView.endEditing))
             tapGesture.requiresExclusiveTouchType = false
             tapGesture.cancelsTouchesInView = false
-            tapGesture.delegate = self //I don't use window as delegate to minimize possible side effects
+            tapGesture.delegate = self // I don't use window as delegate to minimize possible side effects
             window.addGestureRecognizer(tapGesture)
 
             // Set and update tint color

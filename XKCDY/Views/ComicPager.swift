@@ -30,7 +30,7 @@ let TIME_TO_MARK_AS_READ_MS: Int64 = 2 * 1000
 let SPRING_ANIMATION_TIME_SECONDS = 0.60
 
 struct ComicPager: View {
-    @State var page: Int = 0
+    @StateObject var page: SwiftUIPager.Page = .first()
     var onHide: () -> Void
     @State private var showOverlay = false
     @State private var offset = CGSize.zero
@@ -89,17 +89,17 @@ struct ComicPager: View {
         self.showSheet = true
     }
 
-    func updatePage() {
-        let newIndex = self.store.filteredComics.firstIndex(where: { $0.id == self.store.currentComicId }) ?? 0
+    func updatePage(newComicId: Int? = nil) {
+        let newIndex = self.store.filteredComics.firstIndex(where: { $0.id == newComicId ?? self.store.currentComicId }) ?? 0
 
-        if newIndex != self.page {
-            self.page = newIndex
+        if newIndex != self.page.index {
+            self.page.update(.new(index: newIndex))
         }
     }
 
     func handleShuffle() {
         self.store.shuffle {
-            self.updatePage()
+            self.updatePage(newComicId: nil)
         }
     }
 
@@ -138,7 +138,7 @@ struct ComicPager: View {
                     .edgesIgnoringSafeArea(.all)
 
                 ZStack {
-                    Pager<Comic, Int, Group>(page: self.$page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
+                    Pager<Comic, Int, Group>(page: self.page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
                         Group {
                             if SUPPORTED_SPECIAL_COMICS.contains(item.id) {
                                 SpecialComicViewer(id: item.id)
@@ -155,15 +155,15 @@ struct ComicPager: View {
                     })
                     .allowsDragging(!self.isZoomed)
                     .itemSpacing(self.offset == .zero ? 0 : 1000)
-                    .onPageChanged({ newIndex in
-                        if newIndex == -1 {
+                    .onPageChanged({ newPage in
+                        if newPage == -1 {
                             return
                         }
 
                         self.markComicAsReadIfNecessary()
 
                         DispatchQueue.main.async {
-                            self.store.currentComicId = self.store.filteredComics[newIndex].id
+                            self.store.currentComicId = self.store.filteredComics[newPage].id
                         }
                     })
                     .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
@@ -233,8 +233,10 @@ struct ComicPager: View {
                 self.isLoading = false
             }
         }
-        .onReceive(self.store.$debouncedCurrentComicId) { _ in
-            self.updatePage()
+        .onReceive(self.store.$currentComicId) { nextId in
+            if nextId != nil {
+                self.updatePage(newComicId: nextId)
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             self.offset = .zero
