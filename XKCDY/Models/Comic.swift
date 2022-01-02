@@ -3,7 +3,7 @@ import RealmSwift
 import UIKit
 
 class ComicImage: Object {
-    @objc dynamic var u = ""
+    @Persisted var u = ""
 
     var url: URL? {
         get { URL(string: u) }
@@ -14,30 +14,30 @@ class ComicImage: Object {
         CGSize(width: width, height: height)
     }
 
-    @objc dynamic var width = 0
-    @objc dynamic var height = 0
-    @objc dynamic var ratio: Float = 0.0
+    @Persisted var width = 0
+    @Persisted var height = 0
+    @Persisted var ratio: Float = 0.0
 }
 
 class ComicImages: Object {
-    @objc dynamic var x1: ComicImage?
-    @objc dynamic var x2: ComicImage?
+    @Persisted var x1: ComicImage?
+    @Persisted var x2: ComicImage?
 }
 
-class Comic: Object, Identifiable {
-    @objc dynamic var id = 0
-    @objc dynamic var publishedAt = Date()
-    @objc dynamic var news = ""
-    @objc dynamic var safeTitle = ""
-    @objc dynamic var title = ""
-    @objc dynamic var transcript = ""
-    @objc dynamic var alt = ""
-    @objc dynamic var sURL = ""
-    @objc dynamic var eURL = ""
-    @objc dynamic var iURL: String?
-    @objc dynamic var imgs: ComicImages?
-    @objc dynamic var isFavorite = false
-    @objc dynamic var isRead = false
+class Comic: Object {
+    @Persisted(primaryKey: true) var id = 0
+    @Persisted var publishedAt = Date()
+    @Persisted var news = ""
+    @Persisted var safeTitle = ""
+    @Persisted var title = ""
+    @Persisted var transcript = ""
+    @Persisted var alt = ""
+    @Persisted var sURL = ""
+    @Persisted var eURL = ""
+    @Persisted var iURL: String?
+    @Persisted var imgs: ComicImages?
+    @Persisted var isFavorite = false
+    @Persisted var isRead = false
 
     var sourceURL: URL? {
         get { URL(string: sURL) }
@@ -58,7 +58,7 @@ class Comic: Object, Identifiable {
     }
 
     static func getSample() -> Comic {
-        let comic = self.init()
+        let comic = Comic()
 
         comic.id = 100
         comic.publishedAt = Date()
@@ -84,7 +84,7 @@ class Comic: Object, Identifiable {
     }
 
     static func getTallSample() -> Comic {
-        let comic = self.init()
+        let comic = Comic()
 
         comic.id = 2329
         comic.publishedAt = Date()

@@ -234,7 +234,7 @@ struct ComicPager: View {
             }
         }
         .onReceive(self.store.$currentComicId) { nextId in
-            if (nextId != nil) {
+            if nextId != nil {
                 self.updatePage(newComicId: nextId)
             }
         }
