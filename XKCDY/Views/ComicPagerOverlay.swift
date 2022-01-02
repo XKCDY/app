@@ -44,11 +44,12 @@ struct ComicPagerOverlay: View {
     }
 
     private func shareImage(withDetails: Bool) {
+        self.activeSheet = .share
+
         if withDetails {
             SharableComicView(comic: self.store.comic).asImage { image in
                 self.imageToShare = image
 
-                self.activeSheet = .share
                 self.showSheet = true
             }
         } else {
@@ -57,7 +58,6 @@ struct ComicPagerOverlay: View {
                 case .success(let value):
                     self.imageToShare = value.image
 
-                    self.activeSheet = .share
                     self.showSheet = true
 
                 case .failure:
