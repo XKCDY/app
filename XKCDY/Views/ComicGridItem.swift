@@ -52,9 +52,6 @@ struct ComicGridItem: View {
                                 self.isLoaded = true
                             })
                             .cancelOnDisappear(true)
-//                            .setProcessor(DownsamplingImageProcessor(size: geom.size))
-//                            .scaleFactor(UIScreen.main.scale)
-//                            .cacheOriginalImage()
                             .resizable()
                             .scaledToFill()
                             .opacity(self.isLoaded ? 1 : 0)
