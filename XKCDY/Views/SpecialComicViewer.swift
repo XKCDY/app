@@ -9,7 +9,7 @@
 import SwiftUI
 import SwiftUIPager
 import RealmSwift
-import KingfisherSwiftUI
+import Kingfisher
 import class Kingfisher.ImagePrefetcher
 import protocol Kingfisher.Resource
 import class Kingfisher.ImageCache

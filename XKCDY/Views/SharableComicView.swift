@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import KingfisherSwiftUI
+import Kingfisher
 
 struct SharableComicView: View {
     var comic: Comic
@@ -40,7 +40,10 @@ struct SharableComicView: View {
             .padding(.horizontal)
             .padding(.vertical, self.getFontSize() / 2)
 
-            KFImage(comic.getBestImageURL(), isLoaded: self.$isLoaded)
+            KFImage(comic.getBestImageURL())
+                .onSuccess({ _ in
+                    self.isLoaded = true
+                })
 
             HStack {
                 Text(comic.alt)

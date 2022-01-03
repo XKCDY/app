@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import KingfisherSwiftUI
+import Kingfisher
 import RealmSwift
 
 struct AnimatableFontModifier: AnimatableModifier {
@@ -45,13 +45,21 @@ struct ComicGridItem: View {
             }
 
             let stack = ZStack {
-                VStack {
-                    KFImage(self.comic.getReasonableImageURL()!, isLoaded: self.$isLoaded)
-                        .cancelOnDisappear(true)
-                        .resizable()
-                        .scaledToFill()
-                        .opacity(self.isLoaded ? 1 : 0)
-                        .animation(.none)
+                GeometryReader { _ in
+                    VStack {
+                        KFImage(self.comic.getReasonableImageURL()!)
+                            .onSuccess({ _ in
+                                self.isLoaded = true
+                            })
+                            .cancelOnDisappear(true)
+//                            .setProcessor(DownsamplingImageProcessor(size: geom.size))
+//                            .scaleFactor(UIScreen.main.scale)
+//                            .cacheOriginalImage()
+                            .resizable()
+                            .scaledToFill()
+                            .opacity(self.isLoaded ? 1 : 0)
+                            .animation(.none)
+                    }
                 }
 
                 if !self.isLoaded {

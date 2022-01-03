@@ -217,32 +217,36 @@ final class Store: ObservableObject {
         positions[id] = at
     }
 
-    func updateDatabaseFrom(results: [ComicResponse], callback: () -> Void) {
-        let realm = try! Realm()
-        let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
+    func updateDatabaseFrom(results: [ComicResponse], callback: @escaping () -> Void) {
+        DispatchQueue.global(qos: .userInteractive).async {
+            let realm = try! Realm()
+            let storedComics = realm.object(ofType: Comics.self, forPrimaryKey: 0)
 
-        try! realm.write {
-            for comic in results {
-                let updatedComic = comic.toObject()
+            try! realm.write {
+                for comic in results {
+                    let updatedComic = comic.toObject()
 
-                if let currentlySavedComic = realm.object(ofType: Comic.self, forPrimaryKey: updatedComic.id) {
-                    updatedComic.isFavorite = currentlySavedComic.isFavorite
-                    updatedComic.isRead = currentlySavedComic.isRead
-                }
+                    if let currentlySavedComic = realm.object(ofType: Comic.self, forPrimaryKey: updatedComic.id) {
+                        updatedComic.isFavorite = currentlySavedComic.isFavorite
+                        updatedComic.isRead = currentlySavedComic.isRead
+                    }
 
-                realm.add(updatedComic, update: .modified)
+                    realm.add(updatedComic, update: .modified)
 
-                if storedComics!.comics.filter("id == %@", updatedComic.id).count == 0 {
-                    storedComics!.comics.append(updatedComic)
+                    if storedComics!.comics.filter("id == %@", updatedComic.id).count == 0 {
+                        storedComics!.comics.append(updatedComic)
+                    }
                 }
             }
-        }
 
-        if results.count > 0 {
-            self.updateFilteredComics()
-        }
+            if results.count > 0 {
+                self.updateFilteredComics()
+            }
 
-        callback()
+            DispatchQueue.main.async {
+                callback()
+            }
+        }
     }
 
     func refetchComics(callback: ((Result<[Int], StoreError>) -> Void)? = nil) {

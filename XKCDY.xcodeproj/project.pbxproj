@@ -17,6 +17,9 @@
 		6A4A353E24BA48C700D4EDED /* ComicGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4A353D24BA48C700D4EDED /* ComicGridItem.swift */; };
 		6A53239424C50D8A003D0D12 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A53239324C50D8A003D0D12 /* Notifications.swift */; };
 		6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6A5430E624994A6500C92B78 /* RealmSwift */; };
+		6A60631D278274FD00A84692 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6A60631C278274FD00A84692 /* Kingfisher */; };
+		6A60631F2782751100A84692 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6A60631E2782751100A84692 /* Kingfisher */; };
+		6A6063212782751900A84692 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6A6063202782751900A84692 /* Kingfisher */; };
 		6A60FB7A244535A70070A76B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB79244535A70070A76B /* AppDelegate.swift */; };
 		6A60FB7C244535A70070A76B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB7B244535A70070A76B /* SceneDelegate.swift */; };
 		6A60FB7E244535A70070A76B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A60FB7D244535A70070A76B /* ContentView.swift */; };
@@ -44,13 +47,10 @@
 		6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7D1C9824B8E57F005F2F9A /* Alamofire */; };
 		6A83F89A24E9A756002F1F96 /* SharableComicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A83F89924E9A756002F1F96 /* SharableComicView.swift */; };
 		6A84EEB124C09A71000BB80B /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84EEB024C09A71000BB80B /* SegmentedPicker.swift */; };
-		6A937A6D24FF0D60006383A9 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6A937A6C24FF0D60006383A9 /* Kingfisher */; };
 		6A95D5EF2517E9120074273E /* RandomComicWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D5EE2517E9120074273E /* RandomComicWidget.swift */; };
 		6A95D5F62517E95A0074273E /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D5F52517E95A0074273E /* Common.swift */; };
 		6A95D5FD2517ECE30074273E /* XKCDYWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D5FC2517ECE30074273E /* XKCDYWidgetBundle.swift */; };
 		6A95D6042517EF2E0074273E /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A95D6032517EF2E0074273E /* Views.swift */; };
-		6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123324B62C7000F51ABF /* Kingfisher */; };
-		6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */; };
 		6AA0123824B64F0700F51ABF /* ComicDetailsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA0123724B64F0700F51ABF /* ComicDetailsSheet.swift */; };
 		6AAE174E24B7968E00181C4B /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 6AAE174D24B7968E00181C4B /* Intents.intentdefinition */; };
 		6AAE177F24B79CD700181C4B /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AAE177E24B79CD700181C4B /* IntentHandler.swift */; };
@@ -73,8 +73,6 @@
 		6ADEB77724F6D4C400D819C0 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADEB77624F6D4C400D819C0 /* Alamofire */; };
 		6ADEB77924F6D4C400D819C0 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADEB77824F6D4C400D819C0 /* Realm */; };
 		6ADEB77B24F6D4C400D819C0 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADEB77A24F6D4C400D819C0 /* RealmSwift */; };
-		6ADEB77D24F6D66600D819C0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADEB77C24F6D66600D819C0 /* Kingfisher */; };
-		6ADEB77F24F6D66700D819C0 /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADEB77E24F6D66700D819C0 /* KingfisherSwiftUI */; };
 		6AE0D7B6244FF1A700AE982C /* FloatingNavBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE0D7B5244FF1A700AE982C /* FloatingNavBar.swift */; };
 		6AE116F02465F82B00194F57 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE116EF2465F82B00194F57 /* ShareSheet.swift */; };
 		6AE116F4246653CE00194F57 /* ComicPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE116F3246653CE00194F57 /* ComicPager.swift */; };
@@ -265,13 +263,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A64932724CDF0A9004BC488 /* StoreKit.framework in Frameworks */,
-				6AA0123624B62C7000F51ABF /* KingfisherSwiftUI in Frameworks */,
 				6ADBCBD42447B65100594DBD /* Alamofire in Frameworks */,
 				6A64932E24CDF2CF004BC488 /* SwiftyStoreKit in Frameworks */,
 				6A64933324CE6F87004BC488 /* TPInAppReceipt in Frameworks */,
+				6A60631D278274FD00A84692 /* Kingfisher in Frameworks */,
 				6AEB62B4246373E7001FAF67 /* SwiftUIPager in Frameworks */,
 				6A5430E724994A6500C92B78 /* RealmSwift in Frameworks */,
-				6AA0123424B62C7000F51ABF /* Kingfisher in Frameworks */,
 				6A06FAC82445517B002202DC /* ASCollectionView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,12 +291,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6ADEB77D24F6D66600D819C0 /* Kingfisher in Frameworks */,
+				6A6063212782751900A84692 /* Kingfisher in Frameworks */,
 				6ADEB77724F6D4C400D819C0 /* Alamofire in Frameworks */,
 				6A65E97B24F6C3660087A317 /* SwiftUI.framework in Frameworks */,
 				6ADEB77924F6D4C400D819C0 /* Realm in Frameworks */,
 				6ADEB77B24F6D4C400D819C0 /* RealmSwift in Frameworks */,
-				6ADEB77F24F6D66700D819C0 /* KingfisherSwiftUI in Frameworks */,
 				6A65E97924F6C3650087A317 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -308,7 +304,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A937A6D24FF0D60006383A9 /* Kingfisher in Frameworks */,
+				6A60631F2782751100A84692 /* Kingfisher in Frameworks */,
 				6A7D1C9924B8E57F005F2F9A /* Alamofire in Frameworks */,
 				6AAE179224B7D03700181C4B /* RealmSwift in Frameworks */,
 				6AAE179024B7D03700181C4B /* Realm in Frameworks */,
@@ -544,10 +540,9 @@
 				6ADBCBD32447B65100594DBD /* Alamofire */,
 				6AEB62B3246373E7001FAF67 /* SwiftUIPager */,
 				6A5430E624994A6500C92B78 /* RealmSwift */,
-				6AA0123324B62C7000F51ABF /* Kingfisher */,
-				6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */,
 				6A64932D24CDF2CF004BC488 /* SwiftyStoreKit */,
 				6A64933224CE6F87004BC488 /* TPInAppReceipt */,
+				6A60631C278274FD00A84692 /* Kingfisher */,
 			);
 			productName = DCKX;
 			productReference = 6A60FB76244535A70070A76B /* XKCDY.app */;
@@ -606,8 +601,7 @@
 				6ADEB77624F6D4C400D819C0 /* Alamofire */,
 				6ADEB77824F6D4C400D819C0 /* Realm */,
 				6ADEB77A24F6D4C400D819C0 /* RealmSwift */,
-				6ADEB77C24F6D66600D819C0 /* Kingfisher */,
-				6ADEB77E24F6D66700D819C0 /* KingfisherSwiftUI */,
+				6A6063202782751900A84692 /* Kingfisher */,
 			);
 			productName = NewComicWidgetExtension;
 			productReference = 6A65E97724F6C3650087A317 /* Widgets.appex */;
@@ -630,7 +624,7 @@
 				6AAE178F24B7D03700181C4B /* Realm */,
 				6AAE179124B7D03700181C4B /* RealmSwift */,
 				6A7D1C9824B8E57F005F2F9A /* Alamofire */,
-				6A937A6C24FF0D60006383A9 /* Kingfisher */,
+				6A60631E2782751100A84692 /* Kingfisher */,
 			);
 			productName = XKCDYIntents;
 			productReference = 6AAE177C24B79CD700181C4B /* XKCDYIntents.appex */;
@@ -679,9 +673,9 @@
 				6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */,
 				6AEB62B2246373E7001FAF67 /* XCRemoteSwiftPackageReference "SwiftUIPager" */,
 				6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
-				6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				6A64933124CE6F87004BC488 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
+				6A60631B278274FD00A84692 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 6A60FB77244535A70070A76B /* Products */;
 			projectDirPath = "";
@@ -1041,6 +1035,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -1072,8 +1067,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_ENTITLEMENTS = XKCDY/XKCDY.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 18;
 				DEAD_CODE_STRIPPING = YES;
@@ -1187,6 +1183,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_ENTITLEMENTS = ComicWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -1214,6 +1211,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				CODE_SIGN_ENTITLEMENTS = ComicWidgetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -1239,6 +1237,7 @@
 		6AAE178524B79CD700181C4B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_ENTITLEMENTS = XKCDYIntents/XKCDYIntentsDebug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -1264,6 +1263,7 @@
 		6AAE178624B79CD700181C4B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CODE_SIGN_ENTITLEMENTS = XKCDYIntents/XKCDYIntentsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -1362,6 +1362,14 @@
 				minimumVersion = 10.0.0;
 			};
 		};
+		6A60631B278274FD00A84692 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit.git";
@@ -1376,14 +1384,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.6.2;
-			};
-		};
-		6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.14.1;
 			};
 		};
 		6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */ = {
@@ -1415,6 +1415,21 @@
 			package = 6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
 		};
+		6A60631C278274FD00A84692 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A60631B278274FD00A84692 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		6A60631E2782751100A84692 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A60631B278274FD00A84692 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		6A6063202782751900A84692 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A60631B278274FD00A84692 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		6A64932D24CDF2CF004BC488 /* SwiftyStoreKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6A64932C24CDF2CF004BC488 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
@@ -1429,21 +1444,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6ADBCBD22447B65100594DBD /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		6A937A6C24FF0D60006383A9 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		6AA0123324B62C7000F51ABF /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		6AA0123524B62C7000F51ABF /* KingfisherSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = KingfisherSwiftUI;
 		};
 		6AAE178F24B7D03700181C4B /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1474,16 +1474,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A5430E524994A6500C92B78 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
-		};
-		6ADEB77C24F6D66600D819C0 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		6ADEB77E24F6D66700D819C0 /* KingfisherSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6AA0123224B62C7000F51ABF /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = KingfisherSwiftUI;
 		};
 		6AEB62B3246373E7001FAF67 /* SwiftUIPager */ = {
 			isa = XCSwiftPackageProductDependency;
