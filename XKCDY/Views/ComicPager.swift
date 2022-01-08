@@ -53,6 +53,8 @@ struct ComicPager: View {
             hidden = true
         }
 
+        self.markComicAsReadIfNecessary()
+
         DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
             self.onHide()
         }
