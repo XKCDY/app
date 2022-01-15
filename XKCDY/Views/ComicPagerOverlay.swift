@@ -47,11 +47,9 @@ struct ComicPagerOverlay: View {
         self.activeSheet = .share
 
         if withDetails {
-            SharableComicView(comic: self.store.comic).asImage { image in
-                self.imageToShare = image
+            self.imageToShare = SharableComicView(comic: self.store.comic).snapshot()
 
-                self.showSheet = true
-            }
+            self.showSheet = true
         } else {
             ImageCache.default.retrieveImage(forKey: self.store.comic.getBestImageURL()!.absoluteString) { result in
                 switch result {

@@ -14,8 +14,10 @@ struct SharableComicView: View {
     @State private var isLoaded = false
 
     func getFontSize() -> CGFloat {
-        if comic.imgs?.x2 != nil {
-            return 30
+        if let ratio = comic.imgs?.x1?.ratio {
+            if ratio > 1 {
+                return 30
+            }
         }
 
         return 20
@@ -44,6 +46,8 @@ struct SharableComicView: View {
                 .onSuccess({ _ in
                     self.isLoaded = true
                 })
+                .resizable()
+                .frame(height: CGFloat(comic.getBestAvailableSize()?.height ?? 0))
 
             HStack {
                 Text(comic.alt)
@@ -55,8 +59,10 @@ struct SharableComicView: View {
             .padding(.vertical, self.getFontSize() / 2)
         }
         .padding(.vertical)
-        .background(Color.black)
         .font(Font.system(size: self.getFontSize()))
+        .frame(width: CGFloat(comic.getBestAvailableSize()?.width ?? 0))
+        .ignoresSafeArea()
+        .background(Color.black)
     }
 
     func getDateFormatter() -> DateFormatter {
@@ -70,36 +76,19 @@ struct SharableComicView: View {
 
 // https://stackoverflow.com/a/59333377/2129808, https://ericasadun.com/2019/06/20/swiftui-render-your-mojave-swiftui-views-on-the-fly/
 extension View {
-    func asImage(completionHandler: @escaping (UIImage) -> Void) {
+    func snapshot() -> UIImage {
         let controller = UIHostingController(rootView: self)
+        let view = controller.view
 
-        // locate far out of screen
-        controller.view.frame = CGRect(x: 0, y: CGFloat(Int.max), width: 1, height: 1)
-        UIApplication.shared.windows.first!.rootViewController?.view.addSubview(controller.view)
+        let targetSize = controller.view.intrinsicContentSize
+        view?.bounds = CGRect(origin: .zero, size: targetSize)
+        view?.backgroundColor = .black
 
-        let size = controller.sizeThatFits(in: UIScreen.main.bounds.size)
-        controller.view.bounds = CGRect(origin: .zero, size: size)
-        controller.view.sizeToFit()
-        controller.view.backgroundColor = .black
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
 
-        DispatchQueue.main.async {
-            let image = controller.view.renderedImage
-            controller.view.removeFromSuperview()
-
-            completionHandler(image)
+        return renderer.image { _ in
+            view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
         }
-    }
-}
-
-extension UIView {
-    var renderedImage: UIImage {
-        let image = UIGraphicsImageRenderer(size: self.bounds.size).image { context in
-            UIRectFill(bounds)
-
-            self.layer.render(in: context.cgContext)
-        }
-
-        return image
     }
 }
 

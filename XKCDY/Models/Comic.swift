@@ -127,9 +127,13 @@ extension Comic {
         return imgs?.x1?.url
     }
 
+    func getBestAvailableSize() -> ComicImage? {
+        return imgs?.x2 ?? imgs?.x1
+    }
+
     // Always return x2 if it exists
     func getBestImageURL() -> URL? {
-        return imgs?.x2?.url ?? imgs?.x1?.url
+        return self.getBestAvailableSize()?.url
     }
 }
 
