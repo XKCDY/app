@@ -1,88 +1,86 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Alamofire",
-        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
-        "state": {
-          "branch": null,
-          "revision": "becd9a729a37bdbef5bc39dc3c702b99f9e3d046",
-          "version": "5.2.2"
-        }
-      },
-      {
-        "package": "ASCollectionView",
-        "repositoryURL": "https://github.com/apptekstudios/ASCollectionView",
-        "state": {
-          "branch": null,
-          "revision": "4288744ba484c1062c109c0f28d72b629d321d55",
-          "version": "2.1.1"
-        }
-      },
-      {
-        "package": "DifferenceKit",
-        "repositoryURL": "https://github.com/ra1028/DifferenceKit",
-        "state": {
-          "branch": null,
-          "revision": "14c66681e12a38b81045f44c6c29724a0d4b0e72",
-          "version": "1.1.5"
-        }
-      },
-      {
-        "package": "Kingfisher",
-        "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
-        "state": {
-          "branch": null,
-          "revision": "0c02c46cfdc0656ce74fd0963a75e5000a0b7f23",
-          "version": "7.1.2"
-        }
-      },
-      {
-        "package": "Realm",
-        "repositoryURL": "https://github.com/realm/realm-cocoa",
-        "state": {
-          "branch": null,
-          "revision": "e83cc9f28e8bccd477b6b81cee521c02239d2773",
-          "version": "10.20.2"
-        }
-      },
-      {
-        "package": "RealmDatabase",
-        "repositoryURL": "https://github.com/realm/realm-core",
-        "state": {
-          "branch": null,
-          "revision": "c3c11a841642ac93c27bd1edd61f989fc0bfb809",
-          "version": "11.6.1"
-        }
-      },
-      {
-        "package": "SwiftUIPager",
-        "repositoryURL": "https://github.com/fermoya/SwiftUIPager.git",
-        "state": {
-          "branch": null,
-          "revision": "3c0485ffc369f2138477ec508cafc5fffd39f2bf",
-          "version": "2.3.2"
-        }
-      },
-      {
-        "package": "SwiftyStoreKit",
-        "repositoryURL": "https://github.com/bizz84/SwiftyStoreKit.git",
-        "state": {
-          "branch": null,
-          "revision": "9974acf07b31b6f5bf363d5118dc1bd4fcac6122",
-          "version": "0.16.1"
-        }
-      },
-      {
-        "package": "TPInAppReceipt",
-        "repositoryURL": "https://github.com/tikhop/TPInAppReceipt.git",
-        "state": {
-          "branch": null,
-          "revision": "61591a73792280d73baade63f2429b87e0659125",
-          "version": "2.6.2"
-        }
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "becd9a729a37bdbef5bc39dc3c702b99f9e3d046",
+        "version" : "5.2.2"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "ascollectionview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apptekstudios/ASCollectionView",
+      "state" : {
+        "revision" : "4288744ba484c1062c109c0f28d72b629d321d55",
+        "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "differencekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ra1028/DifferenceKit",
+      "state" : {
+        "revision" : "14c66681e12a38b81045f44c6c29724a0d4b0e72",
+        "version" : "1.1.5"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "0c02c46cfdc0656ce74fd0963a75e5000a0b7f23",
+        "version" : "7.1.2"
+      }
+    },
+    {
+      "identity" : "realm-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/realm/realm-cocoa",
+      "state" : {
+        "revision" : "fd279e0a94b46c5bd65b17e36817a4365c7a5482",
+        "version" : "10.28.2"
+      }
+    },
+    {
+      "identity" : "realm-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/realm/realm-core",
+      "state" : {
+        "revision" : "55a48c287b5e3a8ca129c257ec7e3b92bcb2a05f",
+        "version" : "12.3.0"
+      }
+    },
+    {
+      "identity" : "swiftuipager",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/fermoya/SwiftUIPager.git",
+      "state" : {
+        "revision" : "3c0485ffc369f2138477ec508cafc5fffd39f2bf",
+        "version" : "2.3.2"
+      }
+    },
+    {
+      "identity" : "swiftystorekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bizz84/SwiftyStoreKit.git",
+      "state" : {
+        "revision" : "9974acf07b31b6f5bf363d5118dc1bd4fcac6122",
+        "version" : "0.16.1"
+      }
+    },
+    {
+      "identity" : "tpinappreceipt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tikhop/TPInAppReceipt.git",
+      "state" : {
+        "revision" : "61591a73792280d73baade63f2429b87e0659125",
+        "version" : "2.6.2"
+      }
+    }
+  ],
+  "version" : 2
 }
