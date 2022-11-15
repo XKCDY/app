@@ -5,7 +5,7 @@ import CHTCollectionViewWaterfallLayout
 
 import Foundation
 
-final class FeedCollectionCell: UICollectionViewCell {
+final class ComicCollectionCell: UICollectionViewCell {
     var viewModel: Comic? {
         didSet {
             guard let viewModel = viewModel else {
@@ -47,7 +47,7 @@ final class FeedCollectionCell: UICollectionViewCell {
 
 typealias PullToRefreshCompletion = () -> Void
 
-final class FeedViewController: UIViewController, CHTCollectionViewDelegateWaterfallLayout {
+final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDelegateWaterfallLayout {
     init(loadMoreSubject: PassthroughSubject<Void, Never>? = nil,
          itemSelectionSubject: PassthroughSubject<IndexPath, Never>? = nil,
          pullToRefreshSubject: PassthroughSubject<PullToRefreshCompletion, Never>? = nil,
@@ -123,8 +123,8 @@ final class FeedViewController: UIViewController, CHTCollectionViewDelegateWater
         let collectionView = UICollectionView(frame: view.bounds,
                                               collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground
-        collectionView.register(FeedCollectionCell.self,
-                                forCellWithReuseIdentifier: "FeedCollectionCell")
+        collectionView.register(ComicCollectionCell.self,
+                                forCellWithReuseIdentifier: "ComicCollectionCell")
 
         collectionView.delegate = self
         collectionView.refreshControl = UIRefreshControl()
@@ -146,10 +146,10 @@ final class FeedViewController: UIViewController, CHTCollectionViewDelegateWater
                 collectionView: collectionView
             ) { [weak self] collectionView, indexPath, viewModel in
                 guard let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "FeedCollectionCell",
+                    withReuseIdentifier: "ComicCollectionCell",
                     for: indexPath
-                ) as? FeedCollectionCell
-                else { fatalError("Cannot create feed cell") }
+                ) as? ComicCollectionCell
+                else { fatalError("Cannot create comic cell") }
 
                 cell.viewModel = viewModel
 
@@ -160,7 +160,7 @@ final class FeedViewController: UIViewController, CHTCollectionViewDelegateWater
     }()
 }
 
-extension FeedViewController {
+extension ComicWaterfallViewController {
     @objc private func pullToRefreshAction() {
         pullToRefreshSubject?.send {
             self.collectionView.refreshControl?.endRefreshing()
@@ -168,7 +168,7 @@ extension FeedViewController {
     }
 }
 
-extension FeedViewController: UICollectionViewDelegate {
+extension ComicWaterfallViewController: UICollectionViewDelegate {
     func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         itemSelectionSubject?.send(indexPath)
     }
@@ -185,7 +185,7 @@ extension FeedViewController: UICollectionViewDelegate {
 
 
 
-struct FeedView: UIViewControllerRepresentable {
+struct ComicWaterfallView: UIViewControllerRepresentable {
     private var items: [Comic]
 
     private let loadMoreSubject: PassthroughSubject<Void, Never>?
@@ -208,8 +208,8 @@ struct FeedView: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context _: Context)
-        -> FeedViewController {
-        FeedViewController(
+        -> ComicWaterfallViewController {
+        ComicWaterfallViewController(
             loadMoreSubject: loadMoreSubject,
             itemSelectionSubject: itemSelectionSubject,
             pullToRefreshSubject: pullToRefreshSubject,
@@ -218,7 +218,7 @@ struct FeedView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(
-        _ view: FeedViewController,
+        _ view: ComicWaterfallViewController,
         context _: Context
     ) {
         view.updateSnapshot(items: items)
