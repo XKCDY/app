@@ -8,7 +8,6 @@
 
 import SwiftUI
 import RealmSwift
-import ASCollectionView
 
 class HeaderSizeModel: ObservableObject {
     @Published var collectionView: UICollectionView? {

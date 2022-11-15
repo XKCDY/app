@@ -24,7 +24,7 @@ class ComicImages: Object {
     @Persisted var x2: ComicImage?
 }
 
-class Comic: Object {
+class Comic: Object, Identifiable {
     @Persisted(primaryKey: true) var id = 0
     @Persisted var publishedAt = Date()
     @Persisted var news = ""
@@ -130,7 +130,7 @@ extension Comic {
     func getBestAvailableSize() -> ComicImage? {
         return imgs?.x2 ?? imgs?.x1
     }
-
+    
     // Always return x2 if it exists
     func getBestImageURL() -> URL? {
         return self.getBestAvailableSize()?.url
