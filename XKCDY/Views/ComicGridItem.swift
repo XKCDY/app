@@ -11,7 +11,7 @@ import Kingfisher
 import RealmSwift
 
 struct ComicGridItem: View {
-    var comic: Comic
+    @ObservedObject var vm: ComicGridItemViewModel
 //    var onTap: (Int) -> Void
 //    var hideBadge = false
 //    @EnvironmentObject var store: Store
@@ -21,7 +21,7 @@ struct ComicGridItem: View {
 //                self.onTap(self.comic.id)
 //            }
 
-                KFImage(self.comic.getReasonableImageURL()!)
+        KFImage(self.vm.comic.getReasonableImageURL()!)
                                     .placeholder {
                                         Rectangle()
                                             .fill(Color.secondary)
@@ -29,18 +29,13 @@ struct ComicGridItem: View {
                                     }
                                     .cancelOnDisappear(true)
                                     .resizable()
-                    .aspectRatio(CGSize(width: comic.getBestAvailableSize()?.width ?? 0, height: comic.getBestAvailableSize()?.height ?? 0), contentMode: .fit)
-                    .overlay(ComicBadge(comic: self.comic), alignment: .bottomTrailing)
-//                        ComicBadge(comic: self.comic)
-//                            .opacity(self.hideBadge ? 0 : 1)
-//                            .animation(.easeInOut, value: self.hideBadge).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)),
-//                        alignment: .bottomTrailing
-//                    )
+                                    .aspectRatio(CGSize(width: vm.comic.getBestAvailableSize()?.width ?? 0, height: vm.comic.getBestAvailableSize()?.height ?? 0), contentMode: .fit)
+                                    .overlay(ComicBadge(comic: self.vm.comic), alignment: .bottomTrailing)
     }
 }
 
 struct ComicGridItem_Previews: PreviewProvider {
     static var previews: some View {
-        ComicGridItem(comic: Comic.getSample())
+        ComicGridItem(vm: ComicGridItemViewModel(comic: Comic.getSample()))
     }
 }

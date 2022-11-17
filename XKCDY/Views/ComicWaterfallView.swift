@@ -2,28 +2,45 @@ import SwiftUI
 import UIKit
 import Combine
 import CHTCollectionViewWaterfallLayout
+import class Kingfisher.ImagePrefetcher
 
 import Foundation
 
+// todo: better pull to refresh animation
+
+
+
 final class ComicCollectionCell: UICollectionViewCell {
+    private var vm: ComicGridItemViewModel?
+    private var cell: ComicGridItem?
+
     var viewModel: Comic? {
         didSet {
-            guard let viewModel = viewModel else {
+            guard let comic = viewModel else {
                 fatalError()
             }
-            let cell = ComicGridItem(comic: viewModel)
-            let hostingController = UIHostingController(rootView: cell)
-            hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-            contentView.addSubview(hostingController.view)
 
-            hostingController.view.topAnchor.constraint(equalTo: contentView.topAnchor)
-                .isActive = true
-            hostingController.view.leftAnchor.constraint(equalTo: contentView.leftAnchor)
-                .isActive = true
-            hostingController.view.rightAnchor.constraint(equalTo: contentView.rightAnchor)
-                .isActive = true
-            hostingController.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-                .isActive = true
+            if self.vm == nil {
+                self.vm = ComicGridItemViewModel(comic: comic)
+            } else {
+                self.vm?.comic = comic
+            }
+
+            if self.cell == nil {
+                self.cell = ComicGridItem(vm: self.vm!)
+                let hostingController = UIHostingController(rootView: self.cell)
+                hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+                contentView.addSubview(hostingController.view)
+
+                hostingController.view.topAnchor.constraint(equalTo: contentView.topAnchor)
+                    .isActive = true
+                hostingController.view.leftAnchor.constraint(equalTo: contentView.leftAnchor)
+                    .isActive = true
+                hostingController.view.rightAnchor.constraint(equalTo: contentView.rightAnchor)
+                    .isActive = true
+                hostingController.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+                    .isActive = true
+            }
         }
     }
 
@@ -39,15 +56,9 @@ final class ComicCollectionCell: UICollectionViewCell {
 
 
 
-
-
-
-
-
-
 typealias PullToRefreshCompletion = () -> Void
 
-final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDelegateWaterfallLayout {
+final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDelegateWaterfallLayout, UICollectionViewDataSourcePrefetching {
     init(loadMoreSubject: PassthroughSubject<Void, Never>? = nil,
          itemSelectionSubject: PassthroughSubject<IndexPath, Never>? = nil,
          pullToRefreshSubject: PassthroughSubject<PullToRefreshCompletion, Never>? = nil,
@@ -104,7 +115,7 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
     private let itemSelectionSubject: PassthroughSubject<IndexPath, Never>?
     private let pullToRefreshSubject: PassthroughSubject<PullToRefreshCompletion, Never>?
 
-    private enum Section {
+    enum Section {
         case main
     }
 
@@ -120,8 +131,8 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
     }()
 
     private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: view.bounds,
-                                              collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: self.view.bounds,
+                                              collectionViewLayout: self.layout)
         collectionView.backgroundColor = .systemBackground
         collectionView.register(ComicCollectionCell.self,
                                 forCellWithReuseIdentifier: "ComicCollectionCell")
@@ -136,6 +147,8 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
 
         collectionView.refreshControl?.tintColor = traitCollection
             .userInterfaceStyle == .dark ? .white : .black
+
+        collectionView.prefetchDataSource = self
 
         return collectionView
     }()
@@ -158,6 +171,17 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
 
         return dataSource
     }()
+
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        ImagePrefetcher(urls: indexPaths.compactMap { [weak self] in self?.dataSource.itemIdentifier(for: $0)}.compactMap {$0.getReasonableImageURL()}).start()
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cancelPrefetchingForItemsAt indexPaths: [IndexPath]
+    ) {
+        ImagePrefetcher(urls: indexPaths.compactMap { [weak self] in self?.dataSource.itemIdentifier(for: $0)}.compactMap {$0.getReasonableImageURL()}).stop()
+    }
 }
 
 extension ComicWaterfallViewController {
@@ -173,9 +197,6 @@ extension ComicWaterfallViewController: UICollectionViewDelegate {
         itemSelectionSubject?.send(indexPath)
     }
 }
-
-
-
 
 
 

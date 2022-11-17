@@ -29,6 +29,7 @@ enum Page: String, CaseIterable, Hashable, Identifiable {
     var id: Page {self}
 }
 
+// todo: investigate Realm's new SwiftUI support
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
     var isLive: Bool
@@ -240,6 +241,7 @@ final class Store: ObservableObject {
         API.getComics { result in
             switch result {
             case .success(let comics): do {
+                // todo: infinite load bug on first open
                 self.updateDatabaseFrom(results: comics) {
                     callback?(.success(comics.map { $0.id }))
                 }
