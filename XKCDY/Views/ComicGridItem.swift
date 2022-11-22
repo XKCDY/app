@@ -12,25 +12,43 @@ import RealmSwift
 
 struct ComicGridItem: View {
     @ObservedObject var vm: ComicGridItemViewModel
-//    var onTap: (Int) -> Void
-//    var hideBadge = false
-//    @EnvironmentObject var store: Store
+    @EnvironmentObject var galleryVm: ComicGalleryViewModel
+    @EnvironmentObject var store: Store
+    @EnvironmentObject var namespaces: Namespaces
+
+    private func isSelfOpenInPager() -> Bool {
+        return galleryVm.pager.isOpen && galleryVm.pager.lastOpenComicId == vm.comic.id
+    }
 
     var body: some View {
-//                .onTapGesture {
-//                self.onTap(self.comic.id)
-//            }
+        ZStack {
+            if isSelfOpenInPager() {
+                EmptyView()
+            } else {
+                KFImage(self.vm.comic.getReasonableImageURL()!)
+                    .placeholder {
+                        Rectangle()
+                            .fill(Color.secondary)
+                            .opacity(0.2)
+                    }
+                    .resizable()
+                    .aspectRatio(CGSize(width: vm.comic.getBestAvailableSize()?.width ?? 0, height: vm.comic.getBestAvailableSize()?.height ?? 0), contentMode: .fit)
+                    .matchedGeometryEffect(id: String(self.vm.comic.id), in: self.namespaces.gallery)
 
-        KFImage(self.vm.comic.getReasonableImageURL()!)
-                                    .placeholder {
-                                        Rectangle()
-                                            .fill(Color.secondary)
-                                            .opacity(0.2)
-                                    }
-                                    .cancelOnDisappear(true)
-                                    .resizable()
-                                    .aspectRatio(CGSize(width: vm.comic.getBestAvailableSize()?.width ?? 0, height: vm.comic.getBestAvailableSize()?.height ?? 0), contentMode: .fit)
-                                    .overlay(ComicBadge(comic: self.vm.comic), alignment: .bottomTrailing)
+                    .onTapGesture {
+                        withAnimation {
+                            self.galleryVm.pager = PagerState(lastOpenComicId: self.vm.comic.id, isOpen: true)
+                        }
+                    }
+            }
+
+            ComicBadge(comic: self.vm.comic)
+                .padding(.trailing, 5)
+                .padding(.bottom, 5)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                .opacity(isSelfOpenInPager() ? 0 : 1)
+                .animation(isSelfOpenInPager() ? .default : .easeInOut, value: isSelfOpenInPager())
+        }
     }
 }
 
