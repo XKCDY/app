@@ -33,12 +33,11 @@ enum Page: String, CaseIterable, Hashable, Identifiable {
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
     var isLive: Bool
-    @Published var currentComicId: Int?
+    @Published var currentComicId: Int? = 2699
     var comic: Comic {
         try! Realm().object(ofType: Comic.self, forPrimaryKey: self.currentComicId)!
     }
     @Published var debouncedCurrentComicId: Int?
-    @Published var showPager = false
     @Published var showSettings = false
     @Published var selectedPage: Page = .all {
         willSet {
@@ -197,8 +196,6 @@ final class Store: ObservableObject {
         } else {
             self.currentFavoriteIds = []
         }
-
-        self.showPager = false
     }
 
     func updatePosition(for id: Int, at: CGRect) {

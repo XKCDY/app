@@ -166,6 +166,10 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
 
                 cell.viewModel = viewModel
 
+                if viewModel.id == 2701 {
+                    cell.layer.zPosition = 10000
+                }
+
                 return cell
             }
 

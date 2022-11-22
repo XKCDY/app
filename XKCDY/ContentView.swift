@@ -31,19 +31,16 @@ struct ContentView: View {
     @ObservedObject var headerSizeModel = HeaderSizeModel()
     @State private var isSearching = false
     @EnvironmentObject private var store: Store
+    @EnvironmentObject private var galleryVm: ComicGalleryViewModel
     @State private var scrollDirection: ScrollDirection = .up
     @State private var showProAlert = false
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var userSettings = UserSettings()
+    @Namespace var gallery
+    private var namespaces: Namespaces {
+        Namespaces(gallery: gallery)
+    }
     private var foregroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
-
-    func hidePager() {
-        store.showPager = false
-    }
-
-    func handleComicOpen() {
-        store.showPager = true
-    }
 
     func handleShowProAlert() {
         let FIVE_MINUTES_IN_MS = 5 * 60 * 1000
@@ -60,14 +57,14 @@ struct ContentView: View {
 
     func handleShuffleButtonPress() {
         self.store.shuffle {
-            handleComicOpen()
+            self.galleryVm.pager.isOpen = true
         }
     }
 
     var body: some View {
         ZStack {
             if self.store.filteredComics.count > 0 {
-                ComicsGridView(onComicOpen: self.handleComicOpen, hideCurrentComic: self.store.showPager, scrollDirection: self.$scrollDirection, collectionView: self.$headerSizeModel.collectionView).edgesIgnoringSafeArea(.bottom)
+                ComicsGridView(scrollDirection: self.$scrollDirection).edgesIgnoringSafeArea(.bottom)
             } else if self.store.searchText == "" && self.store.filteredComics.count == 0 {
                 if self.store.selectedPage == .favorites {
                     Text("Go make some new favorites!").font(Font.body.bold()).foregroundColor(.secondary)
@@ -98,8 +95,8 @@ struct ContentView: View {
                     .animation(.spring())
             }
 
-            if self.store.showPager {
-                ComicPager(onHide: self.hidePager).onAppear(perform: handleShowProAlert)
+            if self.galleryVm.pager.isOpen {
+                ComicPager().onAppear(perform: handleShowProAlert)
             }
 
             if self.store.filteredComics.count == 0 && self.store.searchText == "" && self.store.selectedPage == .all {
@@ -108,6 +105,7 @@ struct ContentView: View {
                     .background(self.colorScheme == .dark ? Color.black : Color.white)
             }
         }
+        .environmentObject(self.namespaces)
         .alert(isPresented: self.$showProAlert) {
             Alert(title: Text("Enjoying XKCDY?"), message: Text("Consider upgrading to XKCDY Pro for a few perks and to help support development!"), primaryButton: .default(Text("More Details"), action: self.handleProDetailsOpen), secondaryButton: .default(Text("Don't show this again")))
         }

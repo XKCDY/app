@@ -31,12 +31,13 @@ struct ComicGridItem: View {
                             .fill(Color.secondary)
                             .opacity(0.2)
                     }
+                    .cancelOnDisappear(true)
                     .resizable()
                     .aspectRatio(CGSize(width: vm.comic.getBestAvailableSize()?.width ?? 0, height: vm.comic.getBestAvailableSize()?.height ?? 0), contentMode: .fit)
+                    .id(String(self.vm.comic.id))
                     .matchedGeometryEffect(id: String(self.vm.comic.id), in: self.namespaces.gallery)
-
                     .onTapGesture {
-                        withAnimation {
+                        withAnimation(.interactiveSpring()) {
                             self.galleryVm.pager = PagerState(lastOpenComicId: self.vm.comic.id, isOpen: true)
                         }
                     }

@@ -64,24 +64,19 @@ class ScrollStateModel: ObservableObject {
     }
 }
 
+
+
 struct ComicsGridView: View {
     @State var columnMinSize: CGFloat = 150
     @State var inViewUrls: [String] = []
-    var onComicOpen: () -> Void
-    var hideCurrentComic: Bool
     @Binding var scrollDirection: ScrollDirection
-    @Binding var collectionView: UICollectionView?
     @EnvironmentObject var store: Store
-//    @State private var scrollPosition: ASCollectionViewScrollPosition?
     @State private var showErrorAlert = false
     @State private var lastScrollPositions: [CGFloat] = []
     @State private var shouldBlurStatusBar = false
     @ObservedObject private var scrollState = ScrollStateModel()
-    
-    func handleComicTap(of comicId: Int) {
-        self.store.currentComicId = comicId
-        self.onComicOpen()
-    }
+
+    @EnvironmentObject var galleryVm: ComicGalleryViewModel
 
     func onPullToRefresh(_ endRefreshing: @escaping () -> Void) {
         DispatchQueue.global(qos: .background).async {
@@ -99,6 +94,8 @@ struct ComicsGridView: View {
     }
 
     var body: some View {
-        ComicWaterfallView(items: self.store.filteredComics.sorted(byKeyPath: "id", ascending: false).enumerated().map { $1 })
+        VStack {
+            ComicWaterfallView(items: self.store.filteredComics.sorted(byKeyPath: "id", ascending: false).enumerated().map { $1 })
+        }
     }
 }
