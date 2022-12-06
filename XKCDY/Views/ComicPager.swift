@@ -162,9 +162,10 @@ struct ComicPager: View {
 //                                ZoomableImageView(imageURL: self.getImage(for: item)!.url!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale, dimensions: self.getImage(for: item)!.size)
 //                                    .frame(CGRect(origin: .zero, size: geometry.size))
 //                            .frame(width: geometry.size.width, height: geometry.size.height)
-                            .offset(self.offset)
+
 //                            .id(String(item.id))
                             .matchedGeometryEffect(id: self.getMatchedIdFor(id: item.id), in: self.namespaces.gallery)
+                            .offset(self.offset)
 //                            }
 //                        }
                     })

@@ -8,22 +8,28 @@ import Foundation
 
 // todo: better pull to refresh animation
 
+struct PlaceholderCellVm: Hashable {
+    var comic: Comic
+    var wasLastOpen: Bool
+}
 
 
 final class ComicCollectionCell: UICollectionViewCell {
     private var vm: ComicGridItemViewModel?
     private var cell: ComicGridItem?
 
-    var viewModel: Comic? {
+    var viewModel: PlaceholderCellVm? {
         didSet {
             guard let comic = viewModel else {
                 fatalError()
             }
 
             if self.vm == nil {
-                self.vm = ComicGridItemViewModel(comic: comic)
+                self.vm = ComicGridItemViewModel(comic: comic.comic)
             } else {
-                self.vm?.comic = comic
+                DispatchQueue.main.async {
+                    self.vm?.comic = comic.comic
+                }
             }
 
             if self.cell == nil {
@@ -54,8 +60,6 @@ final class ComicCollectionCell: UICollectionViewCell {
 }
 
 
-
-
 typealias PullToRefreshCompletion = () -> Void
 
 final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDelegateWaterfallLayout, UICollectionViewDataSourcePrefetching {
@@ -74,13 +78,13 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
         fatalError("init(coder:) has not been implemented")
     }
 
-    func updateSnapshot(items: [Comic]) {
+    func updateSnapshot(items: [Comic], lastOpenComicId: Int?) {
         isPaginating = false
         self.items = items
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Comic>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PlaceholderCellVm>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(items)
-        dataSource.apply(snapshot, animatingDifferences: true)
+        snapshot.appendItems(items.map { PlaceholderCellVm(comic: $0, wasLastOpen: $0.id == lastOpenComicId) })
+        dataSource.apply(snapshot)
     }
 
     override func viewDidLoad() {
@@ -153,8 +157,8 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
         return collectionView
     }()
 
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Comic> = {
-        let dataSource: UICollectionViewDiffableDataSource<Section, Comic> =
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, PlaceholderCellVm> = {
+        let dataSource: UICollectionViewDiffableDataSource<Section, PlaceholderCellVm> =
             UICollectionViewDiffableDataSource(
                 collectionView: collectionView
             ) { [weak self] collectionView, indexPath, viewModel in
@@ -166,8 +170,10 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
 
                 cell.viewModel = viewModel
 
-                if viewModel.id == 2701 {
-                    cell.layer.zPosition = 10000
+                if viewModel.wasLastOpen {
+                    cell.layer.zPosition = 2
+                } else {
+                    cell.layer.zPosition = 1
                 }
 
                 return cell
@@ -177,14 +183,14 @@ final class ComicWaterfallViewController: UIViewController, CHTCollectionViewDel
     }()
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        ImagePrefetcher(urls: indexPaths.compactMap { [weak self] in self?.dataSource.itemIdentifier(for: $0)}.compactMap {$0.getReasonableImageURL()}).start()
+        ImagePrefetcher(urls: indexPaths.compactMap { [weak self] in self?.dataSource.itemIdentifier(for: $0)}.compactMap {$0.comic.getReasonableImageURL()}).start()
     }
 
     func collectionView(
         _ collectionView: UICollectionView,
         cancelPrefetchingForItemsAt indexPaths: [IndexPath]
     ) {
-        ImagePrefetcher(urls: indexPaths.compactMap { [weak self] in self?.dataSource.itemIdentifier(for: $0)}.compactMap {$0.getReasonableImageURL()}).stop()
+        ImagePrefetcher(urls: indexPaths.compactMap { [weak self] in self?.dataSource.itemIdentifier(for: $0)}.compactMap {$0.comic.getReasonableImageURL()}).stop()
     }
 }
 
@@ -211,26 +217,14 @@ extension ComicWaterfallViewController: UICollectionViewDelegate {
 
 
 struct ComicWaterfallView: UIViewControllerRepresentable {
-    private var items: [Comic]
+    var items: [Comic]
+//    @Binding var galleryVm: ComicGalleryViewModel
+    var lastOpenComicId: Int?
 
-    private let loadMoreSubject: PassthroughSubject<Void, Never>?
-    private let itemSelectionSubject: PassthroughSubject<IndexPath, Never>?
-    private let pullToRefreshSubject: PassthroughSubject<PullToRefreshCompletion, Never>?
-    private let prefetchLimit: Int
-
-    // MARK: Init
-
-    init(items: [Comic],
-         loadMoreSubject: PassthroughSubject<Void, Never>? = nil,
-         itemSelectionSubject: PassthroughSubject<IndexPath, Never>? = nil,
-         pullToRefreshSubject: PassthroughSubject<PullToRefreshCompletion, Never>? = nil,
-         prefetchLimit: Int = 10) {
-        self.items = items
-        self.loadMoreSubject = loadMoreSubject
-        self.itemSelectionSubject = itemSelectionSubject
-        self.pullToRefreshSubject = pullToRefreshSubject
-        self.prefetchLimit = prefetchLimit
-    }
+    let loadMoreSubject: PassthroughSubject<Void, Never>? = nil
+    let itemSelectionSubject: PassthroughSubject<IndexPath, Never>? = nil
+    let pullToRefreshSubject: PassthroughSubject<PullToRefreshCompletion, Never>? = nil
+    let prefetchLimit: Int = 10
 
     func makeUIViewController(context _: Context)
         -> ComicWaterfallViewController {
@@ -246,7 +240,7 @@ struct ComicWaterfallView: UIViewControllerRepresentable {
         _ view: ComicWaterfallViewController,
         context _: Context
     ) {
-        view.updateSnapshot(items: items)
+        view.updateSnapshot(items: items, lastOpenComicId: lastOpenComicId)
     }
 }
 

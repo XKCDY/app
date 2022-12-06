@@ -94,8 +94,6 @@ struct ComicsGridView: View {
     }
 
     var body: some View {
-        VStack {
-            ComicWaterfallView(items: self.store.filteredComics.sorted(byKeyPath: "id", ascending: false).enumerated().map { $1 })
-        }
+        ComicWaterfallView(items: self.store.filteredComics.sorted(byKeyPath: "id", ascending: false).enumerated().map { $1 }, lastOpenComicId: galleryVm.pager.lastOpenComicId)
     }
 }
