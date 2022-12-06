@@ -45,10 +45,21 @@ protocol NotificationResponseHandler: UIWindowSceneDelegate {
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHandler {
     var window: UIWindow?
-    var store = Store(isLive: true)
+    var store: Store
+    var galleryVm: ComicGalleryViewModel
     var notificationSubscriptions: [AnyCancellable] = []
     var hasBecameActive = false
     var isLatestComicRead: Bool?
+
+    override init() {
+        let store = Store(isLive: true)
+        let galleryVm = ComicGalleryViewModel(store: store)
+
+        self.store = store
+        self.galleryVm = galleryVm
+
+        super.init()
+    }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -75,7 +86,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
                 comics = try! realm.write { realm.create(Comics.self, value: []) }
             }
 
-            let controller = UIHostingController(rootView: ContentView().environmentObject(comics!.comics).environmentObject(store))
+            let controller = UIHostingController(rootView: ContentView().environmentObject(comics!.comics).environmentObject(store).environmentObject(galleryVm))
 
             window.rootViewController = controller
             self.window = window
@@ -121,7 +132,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, NotificationResponseHan
             self.store.selectedPage = .all
             self.store.searchText = ""
             self.store.currentComicId = id
-            self.store.showPager = true
+//            self.store.showPager = true
         }
     }
 

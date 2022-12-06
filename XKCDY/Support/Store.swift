@@ -29,15 +29,15 @@ enum Page: String, CaseIterable, Hashable, Identifiable {
     var id: Page {self}
 }
 
+// todo: investigate Realm's new SwiftUI support
 final class Store: ObservableObject {
     var positions: [Int: CGRect] = [Int: CGRect]()
     var isLive: Bool
-    @Published var currentComicId: Int?
+    @Published var currentComicId: Int? = 2699
     var comic: Comic {
         try! Realm().object(ofType: Comic.self, forPrimaryKey: self.currentComicId)!
     }
     @Published var debouncedCurrentComicId: Int?
-    @Published var showPager = false
     @Published var showSettings = false
     @Published var selectedPage: Page = .all {
         willSet {
@@ -55,12 +55,10 @@ final class Store: ObservableObject {
     @Published var currentFavoriteIds: [Int] = []
     @Published var filteredComics: Results<Comic> {
         didSet {
-            self.addFrozenObserver()
             self.cacheNextShuffleResult()
         }
     }
     @Published var timeComicFrames: AnyRealmCollection<TimeComicFrame>
-    @Published var frozenFilteredComics: Results<Comic>
 
     @ObservedObject private var userSettings = UserSettings()
     @ObservedObject private var comics: RealmSwift.List<Comic>
@@ -86,12 +84,9 @@ final class Store: ObservableObject {
         let initialComics = comics!.comics.sorted(byKeyPath: "id", ascending: false)
         self.filteredComics = initialComics
 
-        self.frozenFilteredComics = initialComics.freeze().sorted(byKeyPath: "id", ascending: false)
-
         self.timeComicFrames = AnyRealmCollection(realm.objects(TimeComicFrame.self).sorted(byKeyPath: "frameNumber", ascending: true))
 
         self.updateFilteredComics()
-        self.addFrozenObserver()
         self.cacheNextShuffleResult()
 
         if self.isLive {
@@ -119,14 +114,6 @@ final class Store: ObservableObject {
         }
 
         return filtered!
-    }
-
-    private func addFrozenObserver() {
-        if self.isLive {
-            self.comicsToken = self.filteredComics.observe { _ in
-                self.frozenFilteredComics = self.filteredComics.freeze().sorted(byKeyPath: "id", ascending: false)
-            }
-        }
     }
 
     private func updateFilteredComics() {
@@ -209,8 +196,6 @@ final class Store: ObservableObject {
         } else {
             self.currentFavoriteIds = []
         }
-
-        self.showPager = false
     }
 
     func updatePosition(for id: Int, at: CGRect) {
@@ -253,6 +238,7 @@ final class Store: ObservableObject {
         API.getComics { result in
             switch result {
             case .success(let comics): do {
+                // todo: infinite load bug on first open
                 self.updateDatabaseFrom(results: comics) {
                     callback?(.success(comics.map { $0.id }))
                 }

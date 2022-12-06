@@ -10,91 +10,49 @@ import SwiftUI
 import Kingfisher
 import RealmSwift
 
-struct AnimatableFontModifier: AnimatableModifier {
-    var size: CGFloat
-
-    var animatableData: CGFloat {
-        get {size}
-        set {size = newValue}
-    }
-
-    func body(content: Content) -> some View {
-        content.font(.system(size: size))
-    }
-}
-
-extension View {
-    func animatableFont( size: CGFloat) -> some View {
-        self.modifier(AnimatableFontModifier(size: size))
-    }
-}
-
 struct ComicGridItem: View {
-    var comic: Comic
-    var onTap: (Int) -> Void
-    var hideBadge = false
-    var isScrolling: Bool
+    @ObservedObject var vm: ComicGridItemViewModel
+    @EnvironmentObject var galleryVm: ComicGalleryViewModel
     @EnvironmentObject var store: Store
-    @State private var pulseEnded = false
-    @State private var isLoaded = false
+    @EnvironmentObject var namespaces: Namespaces
+
+    private func isSelfOpenInPager() -> Bool {
+        return galleryVm.pager.isOpen && galleryVm.pager.lastOpenComicId == vm.comic.id
+    }
 
     var body: some View {
-        GeometryReader { geom -> AnyView in
-            if !self.isScrolling {
-                self.store.updatePosition(for: self.comic.id, at: CGRect(x: geom.frame(in: .global).midX, y: geom.frame(in: .global).midY, width: geom.size.width, height: geom.size.height))
-            }
-
-            let stack = ZStack {
-                GeometryReader { _ in
-                    VStack {
-                        KFImage(self.comic.getReasonableImageURL()!)
-                            .onSuccess({ _ in
-                                self.isLoaded = true
-                            })
-                            .cancelOnDisappear(true)
-                            .resizable()
-                            .scaledToFill()
-                            .opacity(self.isLoaded ? 1 : 0)
-                            .animation(.none)
-                    }
-                }
-
-                if !self.isLoaded {
-                    VStack {
+        ZStack {
+            if isSelfOpenInPager() {
+                EmptyView()
+            } else {
+                KFImage(self.vm.comic.getReasonableImageURL()!)
+                    .placeholder {
                         Rectangle()
                             .fill(Color.secondary)
-                            .opacity(self.pulseEnded ? 0.4 : 0.2)
-                            .frame(width: geom.size.width, height: geom.size.height)
-                            .animation(Animation.easeInOut(duration: 0.75).repeatForever())
-                            .onAppear {
-                                self.pulseEnded = true
-                            }
-                            .transition(.opacity)
+                            .opacity(0.2)
                     }
-                }
-            }
-            .frame(width: geom.size.width, height: geom.size.height)
-            .onTapGesture {
-                self.onTap(self.comic.id)
+                    .resizable()
+                    .aspectRatio(CGSize(width: vm.comic.getBestAvailableSize()?.width ?? 0, height: vm.comic.getBestAvailableSize()?.height ?? 0), contentMode: .fit)
+                    .matchedGeometryEffect(id: String(self.vm.comic.id), in: self.namespaces.gallery)
+                    .onTapGesture {
+                        withAnimation(.interactiveSpring()) {
+                            self.galleryVm.pager = PagerState(lastOpenComicId: self.vm.comic.id, isOpen: true)
+                        }
+                    }
             }
 
-            return AnyView(
-                stack
-                    .overlay(
-                        ComicBadge(comic: self.comic)
-                            .opacity(self.hideBadge ? 0 : 1)
-                            .animation(.easeInOut, value: self.hideBadge).padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 5)),
-                        alignment: .bottomTrailing
-                    )
-            )
+            ComicBadge(comic: self.vm.comic)
+                .padding(.trailing, 5)
+                .padding(.bottom, 5)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                .opacity(isSelfOpenInPager() ? 0 : 1)
+                .animation(isSelfOpenInPager() ? .default : .easeInOut, value: isSelfOpenInPager())
         }
     }
 }
 
 struct ComicGridItem_Previews: PreviewProvider {
     static var previews: some View {
-        ComicGridItem(comic: Comic.getSample(), onTap: { id in
-            print(id)
-        }, isScrolling: false)
+        ComicGridItem(vm: ComicGridItemViewModel(comic: Comic.getSample()))
     }
 }

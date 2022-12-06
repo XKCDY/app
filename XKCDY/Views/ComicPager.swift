@@ -30,34 +30,28 @@ let TIME_TO_MARK_AS_READ_MS: Int64 = 2 * 1000
 let SPRING_ANIMATION_TIME_SECONDS = 0.60
 
 struct ComicPager: View {
-    @StateObject var page: SwiftUIPager.Page = .first()
-    var onHide: () -> Void
+//    @StateObject var page: SwiftUIPager.Page = .first()
     @State private var showOverlay = false
     @State private var offset = CGSize.zero
     @State private var scale: CGFloat = 0
     @EnvironmentObject var store: Store
     @State private var hidden = false
     @State private var imageFrame: CGRect = CGRect()
-    @State private var isLoading = true
     @State private var startedViewingAt: Int64 = Date().currentTimeMillis()
     @State private var showSheet = false
     @State private var activeSheet: ActiveSheet = .details
     @State private var isZoomed = false
 
-    init(onHide: @escaping () -> Void) {
-        self.onHide = onHide
-    }
+    @EnvironmentObject private var galleryVm: ComicGalleryViewModel
+    @EnvironmentObject private var namespaces: Namespaces
 
     func closePager() {
-        withAnimation(.spring()) {
-            hidden = true
+        withAnimation(.interactiveSpring()) {
+            self.galleryVm.pager.isOpen = false
         }
+        self.hidden = true
 
         self.markComicAsReadIfNecessary()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
-            self.onHide()
-        }
     }
 
     func handleDragChange(_ value: DragGesture.Value) {
@@ -79,6 +73,10 @@ struct ComicPager: View {
         }
     }
 
+    func onClose() {
+        self.closePager()
+    }
+
     func handleSingleTap() {
         withAnimation {
             showOverlay.toggle()
@@ -91,17 +89,17 @@ struct ComicPager: View {
         self.showSheet = true
     }
 
-    func updatePage(newComicId: Int? = nil) {
-        let newIndex = self.store.filteredComics.firstIndex(where: { $0.id == newComicId ?? self.store.currentComicId }) ?? 0
-
-        if newIndex != self.page.index {
-            self.page.update(.new(index: newIndex))
-        }
-    }
+//    func updatePage(newComicId: Int? = nil) {
+//        let newIndex = self.store.filteredComics.firstIndex(where: { $0.id == newComicId ?? self.galleryVm.pager.lastOpenComicId }) ?? 0
+//
+//        if newIndex != self.page.index {
+//            self.page.update(.new(index: newIndex))
+//        }
+//    }
 
     func handleShuffle() {
         self.store.shuffle {
-            self.updatePage(newComicId: nil)
+//            self.updatePage(newComicId: nil)
         }
     }
 
@@ -130,6 +128,14 @@ struct ComicPager: View {
         self.startedViewingAt = Date().currentTimeMillis()
     }
 
+    func getMatchedIdFor(id: Comic.ID) -> String {
+        if self.galleryVm.pager.lastOpenComicId == id {
+            return String(id)
+        }
+
+        return UUID().uuidString
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -140,22 +146,30 @@ struct ComicPager: View {
                     .edgesIgnoringSafeArea(.all)
 
                 ZStack {
-                    Pager<Comic, Int, Group>(page: self.page, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
-                        Group {
-                            if SUPPORTED_SPECIAL_COMICS.contains(item.id) {
-                                SpecialComicViewer(id: item.id)
-                                    .contentShape(Rectangle())
-                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                                    .onTapGesture {
-                                        self.handleSingleTap()
-                                    }
-                            } else {
-                                ZoomableImageView(imageURL: self.getImage(for: item)!.url!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale, dimensions: self.getImage(for: item)!.size)
-                                    .frame(from: CGRect(origin: .zero, size: geometry.size))
-                            }
-                        }
+                    Pager(page: self.galleryVm.pagerPage, data: self.store.filteredComics.map({$0}), id: \.id, content: { item in
+//                        Group {
+//                            if SUPPORTED_SPECIAL_COMICS.contains(item.id) {
+//                                SpecialComicViewer(id: item.id)
+//                                    .contentShape(Rectangle())
+//                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+//                                    .onTapGesture {
+//                                        self.handleSingleTap()
+//                                    }
+//                            } else {
+                                KFImage(item.getBestImageURL())
+                            .resizable()
+                            .aspectRatio(CGSize(width: item.getBestAvailableSize()?.width ?? 0, height: item.getBestAvailableSize()?.height ?? 0), contentMode: .fit)
+//                                ZoomableImageView(imageURL: self.getImage(for: item)!.url!, onSingleTap: self.handleSingleTap, onLongPress: self.handleLongPress, onScale: self.handleImageScale, dimensions: self.getImage(for: item)!.size)
+//                                    .frame(CGRect(origin: .zero, size: geometry.size))
+//                            .frame(width: geometry.size.width, height: geometry.size.height)
+
+//                            .id(String(item.id))
+                            .matchedGeometryEffect(id: self.getMatchedIdFor(id: item.id), in: self.namespaces.gallery)
+                            .offset(self.offset)
+//                            }
+//                        }
                     })
-                    .allowsDragging(!self.isZoomed)
+                    .allowsDragging(!self.isZoomed && self.offset == .zero)
                     .itemSpacing(self.offset == .zero ? 0 : 1000)
                     .onPageChanged({ newPage in
                         if newPage == -1 {
@@ -168,43 +182,43 @@ struct ComicPager: View {
                             self.store.currentComicId = self.store.filteredComics[newPage].id
                         }
                     })
-                    .opacity(self.offset == .zero && !self.isLoading ? 1 : 0)
+//                    .opacity(self.offset == .zero ? 1 : 0)
                     .edgesIgnoringSafeArea(.all)
 
-                    Group<AnyView> {
-                        var imageUrl = self.store.comic.getReasonableImageURL()
-
-                        if let bestUrl = self.store.comic.getBestImageURL() {
-                            if ImageCache.default.isCached(forKey: bestUrl.absoluteString) {
-                                imageUrl = bestUrl
-                            }
-                        }
-
-                        let image = KFImage(imageUrl).resizable().aspectRatio(contentMode: .fit)
-
-                        guard let targetRect = self.store.positions[self.store.currentComicId ?? 100] else {
-                            return AnyView(EmptyView())
-                        }
-
-                        // Get offset between parent coords and global coords
-                        let globalOffset = geometry.frame(in: .global).origin
-
-                        let origin = CGPoint(
-                            x: targetRect.origin.x,
-                            y: targetRect.origin.y - globalOffset.y + geometry.safeAreaInsets.top)
-
-                        let framedSize = self.hidden ? CGSize(width: targetRect.size.width, height: targetRect.size.height) : geometry.size
-
-                        return AnyView(
-                            image
-                                .frame(width: framedSize.width, height: framedSize.height)
-                                .scaleEffect(self.hidden ? 1 : 1 - CGFloat(abs(self.offset.height) / geometry.size.width))
-                                .offset(self.hidden ? .zero : self.offset)
-                                .position(self.hidden ? origin : CGPoint(x: framedSize.width / 2 + geometry.safeAreaInsets.leading, y: framedSize.height / 2 + geometry.safeAreaInsets.top))
-                                .edgesIgnoringSafeArea(.all)
-                        )
-                    }
-                    .opacity(self.offset == .zero && !self.isLoading ? 0 : 1)
+//                    Group<AnyView> {
+//                        var imageUrl = self.store.comic.getReasonableImageURL()
+//
+//                        if let bestUrl = self.store.comic.getBestImageURL() {
+//                            if ImageCache.default.isCached(forKey: bestUrl.absoluteString) {
+//                                imageUrl = bestUrl
+//                            }
+//                        }
+//
+//                        let image = KFImage(imageUrl).resizable().aspectRatio(contentMode: .fit)
+//
+//                        guard let targetRect = self.store.positions[self.store.currentComicId ?? 100] else {
+//                            return AnyView(EmptyView())
+//                        }
+//
+//                        // Get offset between parent coords and global coords
+//                        let globalOffset = geometry.frame(in: .global).origin
+//
+//                        let origin = CGPoint(
+//                            x: targetRect.origin.x,
+//                            y: targetRect.origin.y - globalOffset.y + geometry.safeAreaInsets.top)
+//
+//                        let framedSize = self.hidden ? CGSize(width: targetRect.size.width, height: targetRect.size.height) : geometry.size
+//
+//                        return AnyView(
+//                            image
+//                                .frame(width: framedSize.width, height: framedSize.height)
+//                                .scaleEffect(self.hidden ? 1 : 1 - CGFloat(abs(self.offset.height) / geometry.size.width))
+//                                .offset(self.hidden ? .zero : self.offset)
+//                                .position(self.hidden ? origin : CGPoint(x: framedSize.width / 2 + geometry.safeAreaInsets.leading, y: framedSize.height / 2 + geometry.safeAreaInsets.top))
+//                                .edgesIgnoringSafeArea(.all)
+//                        )
+//                    }
+//                    .opacity(self.offset == .zero && !self.isLoading ? 0 : 1)
                 }
                 .simultaneousGesture(DragGesture(minimumDistance: 60)
                                         .onChanged(self.handleDragChange)
@@ -223,21 +237,17 @@ struct ComicPager: View {
             }
         }
         .onAppear {
-            self.updatePage()
+//            self.updatePage()
 
             self.hidden = true
 
             withAnimation(.spring()) {
                 self.hidden = false
             }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + SPRING_ANIMATION_TIME_SECONDS) {
-                self.isLoading = false
-            }
         }
         .onReceive(self.store.$currentComicId) { nextId in
             if nextId != nil {
-                self.updatePage(newComicId: nextId)
+//                self.updatePage(newComicId: nextId)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in

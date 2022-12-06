@@ -10,21 +10,12 @@
       }
     },
     {
-      "identity" : "ascollectionview",
+      "identity" : "chtcollectionviewwaterfalllayout",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apptekstudios/ASCollectionView",
+      "location" : "https://github.com/chiahsien/CHTCollectionViewWaterfallLayout.git",
       "state" : {
-        "revision" : "4288744ba484c1062c109c0f28d72b629d321d55",
-        "version" : "2.1.1"
-      }
-    },
-    {
-      "identity" : "differencekit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ra1028/DifferenceKit",
-      "state" : {
-        "revision" : "14c66681e12a38b81045f44c6c29724a0d4b0e72",
-        "version" : "1.1.5"
+        "revision" : "1fe42247efc8aea1ad03332d2b44f2d7fb1644bc",
+        "version" : "0.9.10"
       }
     },
     {
@@ -32,17 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "0c02c46cfdc0656ce74fd0963a75e5000a0b7f23",
-        "version" : "7.1.2"
-      }
-    },
-    {
-      "identity" : "realm-cocoa",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-cocoa",
-      "state" : {
-        "revision" : "fd279e0a94b46c5bd65b17e36817a4365c7a5482",
-        "version" : "10.28.2"
+        "revision" : "d0d669fba45e16b0669ce4986725b71da41c4049",
+        "version" : "6.0.1"
       }
     },
     {
@@ -50,8 +32,25 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-core",
       "state" : {
-        "revision" : "55a48c287b5e3a8ca129c257ec7e3b92bcb2a05f",
-        "version" : "12.3.0"
+        "revision" : "3c4b86da569368c4ee5ccca2a112d511cc6fa936",
+        "version" : "12.11.0"
+      }
+    },
+    {
+      "identity" : "realm-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/realm/realm-swift.git",
+      "state" : {
+        "revision" : "72a0dd9dc0ec1bab417155471191ef68e1bb0eaf",
+        "version" : "10.32.3"
+      }
+    },
+    {
+      "identity" : "swiftuilayouts",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apptekstudios/SwiftUILayouts",
+      "state" : {
+        "revision" : "1d004de5588d2e0f669f61ff8709aeef9db2e8d3"
       }
     },
     {
@@ -59,8 +58,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/fermoya/SwiftUIPager.git",
       "state" : {
-        "revision" : "3c0485ffc369f2138477ec508cafc5fffd39f2bf",
-        "version" : "2.3.2"
+        "revision" : "4ddc04c801aac143090bb14cf26603a3bf9c74cb",
+        "version" : "2.5.0"
       }
     },
     {
