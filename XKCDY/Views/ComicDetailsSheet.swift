@@ -54,7 +54,7 @@ struct ComicDetailsSheet: View {
 
                     Button(action: {
                         if let explainURL = self.comic.explainURL {
-                            self.webViewUrl = explainURL
+                            self.webViewUrl = explainURL + "?action=render"
                             self.showSheet = true
                         }
                     }) {
